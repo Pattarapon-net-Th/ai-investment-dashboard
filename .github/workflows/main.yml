@@ -24,9 +24,9 @@ jobs:
           
           # ลิงก์ เผยแพร่ไปยังเว็บ (Publish to web) ของเอกสารทั้ง 3 ไฟล์
           docs = {
-              'doc_news.html': 'https://docs.google.com/document/d/e/2PACX-1vSNiyDfbJVZpflA0act_QhOPpIJmMl8IdNyykWI4ft_OOnqXuP_cnjz0qVFKrL1EindN6oVhlCwWA1T/pub',
-              'doc_portfolio.html': 'https://docs.google.com/document/d/e/2PACX-1vThZWexqCf6uYyqNPG9lBJ4zuz7ij2WDfRkCspE00lhf0UY5YAhD54YL7LgS4EvdcYH7nhR6b_6QUOm/pub',
-              'doc_report.html': 'https://docs.google.com/document/d/e/2PACX-1vRYI9on5s5Jangd9f6VwrfDMjyekN0Fsf5zjdJEctTo1899hoZPXj4-EZX4T3MhBNsBcJZrHOFJGqnH/pub'
+              'doc_news.html': 'https://docs.google.com/document/d/e/2PACX-1vRYI9on5s5Jangd9f6VwrfDMjyekN0Fsf5zjdJEctTo1899hoZPXj4-EZX4T3MhBNsBcJZrHOFJGqnH/pub',
+              'doc_portfolio.html': 'https://docs.google.com/document/d/e/2PACX-1vSNiyDfbJVZpflA0act_QhOPpIJmMl8IdNyykWI4ft_OOnqXuP_cnjz0qVFKrL1EindN6oVhlCwWA1T/pub',
+              'doc_report.html': 'https://docs.google.com/document/d/e/2PACX-1vThZWexqCf6uYyqNPG9lBJ4zuz7ij2WDfRkCspE00lhf0UY5YAhD54YL7LgS4EvdcYH7nhR6b_6QUOm/pub'
           }
           
           for filename, url in docs.items():
