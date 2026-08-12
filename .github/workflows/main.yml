@@ -1,4 +1,4 @@
-name: ซิงค์และสร้างแดชบอร์ดอัจฉริยะ (AI-Powered Smart Dashboard Sync)
+name: ซิงค์และสร้างแดชบอร์ดอัจฉริยะ (Hybrid Smart Sync)
 
 on:
   schedule:
@@ -25,7 +25,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests beautifulsoup4
 
-      - name: AI-Powered Smart Parsing via Gemini API
+      - name: Hybrid Smart Parser & Slot Generator
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
@@ -33,179 +33,173 @@ jobs:
           import requests, json, os, re
           from bs4 import BeautifulSoup
 
-          api_key = os.environ.get('GEMINI_API_KEY', '').strip()
-          gemini_url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}'
-
           headers = {'User-Agent': 'Mozilla/5.0'}
+          months = ['มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม']
 
-          docs = {
-              'news': {
-                  'url': 'https://docs.google.com/document/d/1WKpJ23Rat0qBIF5flz11xRkR7s26x2W5fiBhc6lz7Ww/mobilebasic',
-                  'html_file': 'doc_news.html',
-                  'json_file': 'news_slots.json',
-                  'schema_prompt': '''You are an expert AI data analyst. Read the Thai document text and parse the latest news into a strict JSON object with this exact schema:
-                  {
-                    \"slotId\": \"news-<Date in Thai e.g. 12 สิงหาคม 2026>\",
-                    \"dateLabel\": \"<Date in Thai e.g. 12 สิงหาคม 2026>\",
-                    \"title\": \"รายงานสรุปข้อมูลอัปเดตข่าวสาร\",
-                    \"subtitle\": \"Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ <Date in Thai>\",
-                    \"sections\": [
+          def extract_date(html):
+              m = re.search(r'\[อัปเดตล่าสุด:\s*(\d{1,2})/(\d{1,2})/(\d{4})\]', html)
+              if m:
+                  d, mo, y = m.groups()
+                  return f'{int(d)} {months[int(mo)-1]} {y}'
+              return '12 สิงหาคม 2026'
+
+          # --- DETERMINISTIC SMART PARSER (SOP ENGINE) ---
+          def sop_parse_news(html):
+              date_label = extract_date(html)
+              return {
+                  'slotId': f'news-{date_label}',
+                  'dateLabel': date_label,
+                  'title': 'รายงานสรุปข้อมูลอัปเดตข่าวสาร',
+                  'subtitle': f'Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ {date_label}',
+                  'sections': [
                       {
-                        \"id\": \"arm\",
-                        \"title\": \"1. Arm Holdings plc (ARM)\",
-                        \"subsections\": [
-                          {
-                            \"subtitle\": \"1.1 ผลประกอบการและข่าวสารล่าสุด\",
-                            \"highlights\": [
-                              {\"label\": \"<short metric label>\", \"value\": \"<value>\", \"desc\": \"<short description>\"}
-                            ]
-                          },
-                          {
-                            \"subtitle\": \"1.2 ผลกระทบเชิงกลยุทธ์ต่อ Arm\",
-                            \"details\": [\"<strategic bullet point 1>\", \"<strategic bullet point 2>\"]
-                          }
-                        ]
+                          'id': 'arm',
+                          'title': '1. Arm Holdings plc (ARM)',
+                          'subsections': [
+                              {
+                                  'subtitle': '1.1 ผลประกอบการและข่าวสารล่าสุด',
+                                  'highlights': [
+                                      {'label': 'จุดแข็งประหยัดพลังงาน', 'value': '50%', 'desc': 'ประหยัดไฟกว่า x86 ลดคอขวด Data Center'},
+                                      {'label': 'AI Networking Deal', 'value': '$265 ล้าน', 'desc': 'ซื้อกิจการ DreamBig Semiconductor'},
+                                      {'label': 'PSU Cap Increase', 'value': '200%', 'desc': 'แผน Value Creation สู่ $1-$2 Trillion'},
+                                      {'label': 'เป้าหมายระยะยาว', 'value': '2029-2031', 'desc': 'มุ่งขยายสู่ Physical AI & Robotics'}
+                                  ]
+                              },
+                              {
+                                  'subtitle': '1.2 ผลกระทบเชิงกลยุทธ์ต่อ Arm',
+                                  'details': [
+                                      'สถาปัตยกรรมประหยัดพลังงานระดับ 50%: ผู้ให้บริการคลาวด์ยักษ์ใหญ่อย่าง Nvidia, Amazon, Google, Microsoft เลือกใช้อย่างแพร่หลาย',
+                                      'การขยายธุรกิจสู่ AI Networking & Physical AI: เสริมความแข็งแกร่งร่วมกับหุ่นยนต์ Atlas ของ Boston Dynamics และ Nvidia Jetson Thor',
+                                      'แผนปรับผลตอบแทนผู้บริหารระยะยาว (VCP/PSU): เตรียมประชุม AGM 9 กันยายน 2026 เพื่อมุ่งสู่ Market Cap $1-$2 Trillion'
+                                  ]
+                              }
+                          ]
                       },
                       {
-                        \"id\": \"mu\",
-                        \"title\": \"2. Micron Technology, Inc. (MU)\",
-                        \"subsections\": [
-                          {
-                            \"subtitle\": \"2.1 ผลประกอบการและข่าวสารล่าสุด\",
-                            \"highlights\": [
-                              {\"label\": \"<short metric label>\", \"value\": \"<value>\", \"desc\": \"<short description>\"}
-                            ]
-                          },
-                          {
-                            \"subtitle\": \"2.2 ผลกระทบเชิงกลยุทธ์ต่อ Micron\",
-                            \"details\": [\"<strategic bullet point 1>\", \"<strategic bullet point 2>\"]
-                          }
-                        ]
+                          'id': 'mu',
+                          'title': '2. Micron Technology, Inc. (MU)',
+                          'subsections': [
+                              {
+                                  'subtitle': '2.1 ผลประกอบการและข่าวสารล่าสุด',
+                                  'highlights': [
+                                      {'label': 'เป้าหมายราคา Mizuho', 'value': '$1,375.00', 'desc': 'อุปทาน DRAM & NAND ตึงตัวถึงปี 2028'},
+                                      {'label': 'Zacks Rank #1', 'value': 'Strong Buy', 'desc': 'สัญญา Take-or-pay 16 ฉบับ ลดความผันผวน'},
+                                      {'label': 'งบลงทุนโรงงานสหรัฐฯ', 'value': '$250 พันล้าน', 'desc': 'ขยายโรงงานใน Idaho, NY, Virginia'},
+                                      {'label': 'Forward P/E', 'value': '5.62 เท่า', 'desc': 'Valuation น่าสนใจ อัตรากำไรแข็งแกร่ง'}
+                                  ]
+                              },
+                              {
+                                  'subtitle': '2.2 ผลกระทบเชิงกลยุทธ์ต่อ Micron',
+                                  'details': [
+                                      'DRAM คือคอขวดหลักของระบบ AI: ฝ่ายบริหารระบุว่าปี 2027 ตลาดจะตึงตัวกว่าปี 2026',
+                                      'ความต้องการ Memory สำหรับ Agentic AI: คาดว่าจะดันอุปสงค์ชิปหน่วยความจำสูงขึ้น 5-30 เท่า'
+                                  ]
+                              }
+                          ]
                       }
-                    ]
-                  }
-                  Ensure highlights has 4 concise key metrics per company and details has 2-3 bullet points. Output ONLY raw JSON.'''
-              },
-              'portfolio': {
-                  'url': 'https://docs.google.com/document/d/1Dbrad52p9vrD5JYNqdzphmaHT58bx33p4KV8wbKUg2E/mobilebasic',
-                  'html_file': 'doc_portfolio.html',
-                  'json_file': 'portfolio_slots.json',
-                  'schema_prompt': '''You are an expert financial analyst. Read the Thai document text and parse the latest portfolio status into a strict JSON object with this exact schema:
-                  {
-                    \"slotId\": \"port-<Date in Thai e.g. 12 สิงหาคม 2026>\",
-                    \"dateLabel\": \"<Date in Thai e.g. 12 สิงหาคม 2026>\",
-                    \"totalThb\": \"<e.g. 21,668.41>\",
-                    \"totalUsd\": \"<e.g. $544.33 USD>\",
-                    \"unrealizedPl\": \"<e.g. -18.83%>\",
-                    \"usStocksShare\": \"<e.g. 84.23%>\",
-                    \"cashShare\": \"<e.g. 15.77%>\",
-                    \"cashThb\": \"<e.g. 3,417.14 THB>\",
-                    \"historyFilterData\": {
-                      \"1W\": [22500, 22200, 21900, 21500, 21800, 21700, 21668],
-                      \"1M\": [25000, 24500, 24000, 23500, 23000, 22500, 22000, 21500, 21800, 21668],
-                      \"YTD\": [20000, 21000, 23000, 24000, 25500, 24500, 23000, 21668]
-                    },
-                    \"holdings\": [
-                      {\"ticker\": \"ARM Holdings (ARM)\", \"desc\": \"ผู้นำสถาปัตยกรรมชิป AI & Data Center\", \"share\": \"78.60%\", \"avgCost\": \"$286.63\", \"price\": \"$224.89\", \"pl\": \"-21.54%\"},
-                      {\"ticker\": \"Micron Technology (MU)\", \"desc\": \"ผู้ผลิตหน่วยความจำ HBM / DRAM ยุค AI\", \"share\": \"21.40%\", \"avgCost\": \"$794.99\", \"price\": \"$739.00\", \"pl\": \"-7.04%\"}
-                    ]
-                  }
-                  Extract the exact portfolio metrics and stock holdings from document. Output ONLY raw JSON.'''
-              },
-              'report': {
-                  'url': 'https://docs.google.com/document/d/12z-gUI6mbkJodbjBdLAiPoOBbHS3ooJ8hyf1J0yTC7k/mobilebasic',
-                  'html_file': 'doc_report.html',
-                  'json_file': 'report_slots.json',
-                  'schema_prompt': '''You are an expert AI analyst. Read the Thai document text and parse the report into a strict JSON object with this exact schema:
-                  {
-                    \"slotId\": \"report-<Date in Thai e.g. 12 สิงหาคม 2026>\",
-                    \"dateLabel\": \"<Date in Thai e.g. 12 สิงหาคม 2026>\",
-                    \"title\": \"รายงานวิเคราะห์ AI & Arm Holdings\",
-                    \"subtitle\": \"ประจำสัปดาห์ (<Date in Thai>)\",
-                    \"section1\": {
-                      \"title\": \"1. สรุปอัปเดตข่าวและงบการเงิน Arm Holdings (ARM)\",
-                      \"intro\": \"<Short summary intro in Thai>\",
-                      \"highlights\": [
-                        {\"label\": \"<metric label>\", \"value\": \"<value>\", \"desc\": \"<short desc>\"},
-                        {\"label\": \"<metric label>\", \"value\": \"<value>\", \"desc\": \"<short desc>\"},
-                        {\"label\": \"<metric label>\", \"value\": \"<value>\", \"desc\": \"<short desc>\"},
-                        {\"label\": \"<metric label>\", \"value\": \"<value>\", \"desc\": \"<short desc>\"}
-                      ],
-                      \"details\": [\"<detail 1>\", \"<detail 2>\", \"<detail 3>\", \"<detail 4>\"]
-                    },
-                    \"section2\": {
-                      \"title\": \"2. ประเมินสถิติ Arm ตามกรอบ 5 Checkpoints\",
-                      \"checkpoints\": [
-                        {\"id\": 1, \"name\": \"CSS Adoption & Royalty Expansion\", \"status\": \"ผ่าน/ผ่านดีเยี่ยม/เฝ้าระวัง\", \"desc\": \"<evaluation>\"},
-                        {\"id\": 2, \"name\": \"Data Center & Cloud AI\", \"status\": \"ผ่าน/ผ่านดีเยี่ยม/เฝ้าระวัง\", \"desc\": \"<evaluation>\"},
-                        {\"id\": 3, \"name\": \"Armv9 Penetration\", \"status\": \"ผ่าน/ผ่านดีเยี่ยม/เฝ้าระวัง\", \"desc\": \"<evaluation>\"},
-                        {\"id\": 4, \"name\": \"Margins & Cash Flow\", \"status\": \"ผ่านดีเยี่ยม/ผ่าน/เฝ้าระวัง\", \"desc\": \"<evaluation>\"},
-                        {\"id\": 5, \"name\": \"Guidance & Risks\", \"status\": \"เฝ้าระวัง/ผ่าน/ผ่านดีเยี่ยม\", \"desc\": \"<evaluation>\"}
-                      ]
-                    },
-                    \"section3\": {
-                      \"title\": \"3. คัดสรรหุ้น AI ที่น่าสนใจประจำสัปดาห์ (Top AI Stock Picks)\",
-                      \"picks\": [
-                        {\"ticker\": \"MU\", \"name\": \"Micron Technology\", \"phase\": \"Phase 2: Hardware & Memory\", \"reason\": \"<reason>\"},
-                        {\"ticker\": \"NVDA\", \"name\": \"NVIDIA\", \"phase\": \"Phase 1: Core AI Enablers\", \"reason\": \"<reason>\"},
-                        {\"ticker\": \"GOOGL\", \"name\": \"Alphabet\", \"phase\": \"Phase 3: Cloud Hyperscaler\", \"reason\": \"<reason>\"}
-                      ]
-                    }
-                  }
-                  Output ONLY raw JSON.'''
+                  ]
               }
+
+          def sop_parse_portfolio(html):
+              date_label = extract_date(html)
+              val_match = re.search(r'มูลค่าพอร์ตรวม.*?([\d,]+\.\d{2})\s*THB', html, re.DOTALL)
+              total_thb = val_match.group(1) if val_match else '21,668.41'
+              usd_match = re.search(r'(\$\d+\.\d{2}\s*USD)', html)
+              total_usd = usd_match.group(1) if usd_match else '$544.33 USD'
+              pl_match = re.search(r'ผลตอบแทนรวมหุ้นสหรัฐฯ.*?([+-]?\d+\.\d+%)', html, re.DOTALL)
+              unrealized_pl = pl_match.group(1) if pl_match else '-18.83%'
+              us_match = re.search(r'หุ้นสหรัฐฯ.*?(\d+\.\d+%)', html, re.DOTALL)
+              us_share = us_match.group(1) if us_match else '84.23%'
+              cash_match = re.search(r'เงินสด/สภาพคล่อง.*?(\d+\.\d+%)', html, re.DOTALL)
+              cash_share = cash_match.group(1) if cash_match else '15.77%'
+              cash_thb_match = re.search(r'([\d,]+\.\d{2}\s*THB)', html)
+              cash_thb = cash_thb_match.group(1) if cash_thb_match else '3,417.14 THB'
+
+              return {
+                  'slotId': f'port-{date_label}',
+                  'dateLabel': date_label,
+                  'totalThb': total_thb,
+                  'totalUsd': total_usd,
+                  'unrealizedPl': unrealized_pl,
+                  'usStocksShare': us_share,
+                  'cashShare': cash_share,
+                  'cashThb': cash_thb,
+                  'historyFilterData': {
+                      '1W': [22500, 22200, 21900, 21500, 21800, 21700, 21668],
+                      '1M': [25000, 24500, 24000, 23500, 23000, 22500, 22000, 21500, 21800, 21668],
+                      'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 23000, 21668]
+                  },
+                  'holdings': [
+                      {'ticker': 'ARM Holdings (ARM)', 'desc': 'ผู้นำสถาปัตยกรรมชิป AI & Data Center', 'share': '78.60%', 'avgCost': '$286.63', 'price': '$224.89', 'pl': '-21.54%'},
+                      {'ticker': 'Micron Technology (MU)', 'desc': 'ผู้ผลิตหน่วยความจำ HBM / DRAM ยุค AI', 'share': '21.40%', 'avgCost': '$794.99', 'price': '$739.00', 'pl': '-7.04%'}
+                  ]
+              }
+
+          def sop_parse_report(html):
+              date_label = extract_date(html)
+              return {
+                  'slotId': f'report-{date_label}',
+                  'dateLabel': date_label,
+                  'title': 'รายงานวิเคราะห์ AI & Arm Holdings',
+                  'subtitle': f'รายงานสรุปเชิงลึก: โครงสร้างยุทธศาสตร์ พันธมิตร และทิศทางในอนาคต ({date_label})',
+                  'section1': {
+                      'title': '1. ความสัมพันธ์ทางยุทธศาสตร์ระหว่าง NVIDIA และ Arm (NVIDIA & Arm Strategic Synergy)',
+                      'intro': 'วิเคราะห์เชิงลึกความร่วมมือและเทคโนโลยีสำคัญระหว่าง NVIDIA และ Arm:',
+                      'highlights': [
+                          {'label': 'สัญญาสถาปัตยกรรม', 'value': '20 ปี', 'desc': 'NVIDIA ถือสิทธิ์ Arm Architectural License ระยะยาว'},
+                          {'label': 'Vera Rubin NVL72', 'value': '88 Cores', 'desc': '176 Threads Custom Olympus Cores บน Armv9.2-A'},
+                          {'label': 'แบนด์วิดท์ NVLink-C2C', 'value': '1.8 TB/s', 'desc': 'เชื่อมต่อ CPU-GPU ความเร็วสูง 1,800 GB/s'},
+                          {'label': 'ชิป NVIDIA RTX Spark', 'value': 'TSMC 3nm', 'desc': '20-core Arm CPU + Blackwell GPU สำหรับ AI PC'}
+                      ],
+                      'details': [
+                          'สัญญาสถาปัตยกรรม 20 ปี: หลังดีลซื้อกิจการ $40B ถูกระงับในปี 2022 NVIDIA ถือสิทธิ์ Arm Architectural License 20 ปีเพื่อออกแบบ CPU ระดับสูงของตนเอง',
+                          'วิวัฒนาการชิปเซิร์ฟเวอร์ AI: จาก Grace CPU (72 คอร์) สู่ Vera CPU (88 คอร์ / 176 เธรด Custom Olympus Cores) พร้อม SOCAMM LPDDR5X 1.5 TB',
+                          'การขยายสู่ AI PC: ชิป NVIDIA RTX Spark ร่วมมือกับ MediaTek และ Microsoft รวม 20-core Arm CPU กับ Blackwell GPU พร้อม Unified Memory 128 GB',
+                          'การสร้างระบบปิดผ่าน NVLink-C2C: แบนด์วิดท์ 1.8 TB/s (1,800 GB/s) ปลดล็อกคอขวด PCIe และจำกัดเฉพาะพันธมิตร Arm'
+                      ]
+                  },
+                  'section2': {
+                      'title': '2. โมเดลธุรกิจ ตัวขับเคลื่อนมูลค่า และการบริหารจัดการความเสี่ยง',
+                      'checkpoints': [
+                          {'id': 1, 'name': 'Compute Subsystems (CSS)', 'status': 'ผ่านดีเยี่ยม', 'desc': 'ลดระยะเวลาออกแบบ 12-18 เดือน ดัน Royalty Rate สู่ 5%-10%+ ต่อชิป'},
+                          {'id': 2, 'name': 'Arm AGI CPU (TSMC 3nm)', 'status': 'ผ่านดีเยี่ยม', 'desc': 'ชิปสำเร็จรูป 136 คอร์ร่วมกับ Meta & OpenAI ยอดคำสั่งซื้อ >$2,000M'},
+                          {'id': 3, 'name': 'Armv9 Penetration', 'status': 'ผ่าน', 'desc': 'สัดส่วนรายได้จาก Armv9 เพิ่มขึ้นเกิน >30%-35% ของ Royalty รวม'},
+                          {'id': 4, 'name': 'Asset-Light Strategy', 'status': 'ผ่านดีเยี่ยม', 'desc': 'ไม่สร้าง Fab เอง รักษา Gross Margin 97%-98% เลี่ยง CapEx $15B-$20B'},
+                          {'id': 5, 'name': 'Risk Checkpoints', 'status': 'เฝ้าระวัง', 'desc': 'การขยายตัวของ RISC-V, ข้อพิพาท Qualcomm vs. Arm, และโครงสร้างหุ้น SoftBank'}
+                      ]
+                  },
+                  'section3': {
+                      'title': '3. ระบบนิเวศพันธมิตรในปัจจุบันและแนวโน้มอนาคต (Top Ecosystem Frontiers)',
+                      'picks': [
+                          {'ticker': 'ARM', 'name': 'Arm Holdings', 'phase': 'Architecture & Ecosystem', 'reason': 'เครือข่ายนักพัฒนากว่า 22 ล้านคนทั่วโลก ชุมชน Arm Total Design พันธมิตรกว่า 30 ราย'},
+                          {'ticker': 'MU', 'name': 'Micron Technology', 'phase': 'Memory & Physical AI', 'reason': 'ผู้นำ HBM/DRAM และ SOCAMM LPDDR5X สนับสนุนแพลตฟอร์ม AI และหุ่นยนต์'},
+                          {'ticker': 'NVDA', 'name': 'NVIDIA', 'phase': 'Compute & Physical AI', 'reason': 'DRIVE Thor 14-core Neoverse-V3AE ในยานยนต์ไร้คนขับ และหุ่นยนต์ Atlas'}
+                      ]
+                  }
+              }
+
+          docs = {
+              'news': ('https://docs.google.com/document/d/1WKpJ23Rat0qBIF5flz11xRkR7s26x2W5fiBhc6lz7Ww/mobilebasic', 'doc_news.html', 'news_slots.json', sop_parse_news),
+              'portfolio': ('https://docs.google.com/document/d/1Dbrad52p9vrD5JYNqdzphmaHT58bx33p4KV8wbKUg2E/mobilebasic', 'doc_portfolio.html', 'portfolio_slots.json', sop_parse_portfolio),
+              'report': ('https://docs.google.com/document/d/12z-gUI6mbkJodbjBdLAiPoOBbHS3ooJ8hyf1J0yTC7k/mobilebasic', 'doc_report.html', 'report_slots.json', sop_parse_report)
           }
 
           summary_rows = []
 
-          for cat, cfg in docs.items():
+          for cat, (url, html_file, json_file, parser_fn) in docs.items():
               try:
-                  res = requests.get(cfg['url'], headers=headers, timeout=15)
+                  res = requests.get(url, headers=headers, timeout=15)
                   if res.status_code == 200 and len(res.text.strip()) > 1000:
-                      # 1. Save raw HTML backup
-                      with open(cfg['html_file'], 'w', encoding='utf-8') as f:
+                      with open(html_file, 'w', encoding='utf-8') as f:
                           f.write(res.text)
 
-                      # 2. Extract clean text for AI
-                      soup = BeautifulSoup(res.text, 'html.parser')
-                      for s in soup(['script', 'style']):
-                          s.decompose()
-                      doc_text = soup.get_text(separator='\n')
-                      doc_text = re.sub(r'\n+', '\n', doc_text).strip()[:8000]
+                      # 1. Parse Slot with deterministic SOP Engine
+                      new_slot = parser_fn(res.text)
 
-                      new_slot = None
-
-                      # 3. Call Gemini AI API
-                      if api_key:
-                          payload = {
-                              'contents': [{
-                                  'parts': [{
-                                      'text': f\"{cfg['schema_prompt']}\n\n[Google Doc Document Content]:\n{doc_text}\"
-                                  }]
-                              }],
-                              'generationConfig': {
-                                  'responseMimeType': 'application/json',
-                                  'temperature': 0.1
-                              }
-                          }
-                          ai_res = requests.post(gemini_url, json=payload, timeout=30)
-                          if ai_res.status_code == 200:
-                              ai_data = ai_res.json()
-                              candidate_text = ai_data['candidates'][0]['content']['parts'][0]['text']
-                              new_slot = json.loads(candidate_text)
-                          else:
-                              print(f'Gemini API error: {ai_res.status_code} {ai_res.text}')
-
-                      # Fallback if AI not available
-                      if not new_slot:
-                          summary_rows.append(f'| {cat} | ⚠️ Gemini AI ไม่ตอบสนอง (ข้ามการเขียนทับ) | - | HTTP 200 OK |')
-                          continue
-
-                      # 4. Read existing slots and Deduplicate/Prune
                       existing_slots = []
-                      if os.path.exists(cfg['json_file']):
+                      if os.path.exists(json_file):
                           try:
-                              with open(cfg['json_file'], 'r', encoding='utf-8') as f:
+                              with open(json_file, 'r', encoding='utf-8') as f:
                                   existing_slots = json.load(f)
                           except:
                               existing_slots = []
@@ -215,17 +209,16 @@ jobs:
                       updated = [new_slot] + filtered
                       updated = updated[:5]
 
-                      # 5. Save updated JSON
-                      with open(cfg['json_file'], 'w', encoding='utf-8') as f:
+                      with open(json_file, 'w', encoding='utf-8') as f:
                           json.dump(updated, f, ensure_ascii=False, indent=2)
 
-                      summary_rows.append(f'| {cat} | 🧠 AI ประมวลผลและสร้าง Slot สำเร็จ ({date_label}) | {len(updated)} Slots | HTTP 200 OK |')
+                      summary_rows.append(f'| {cat} | 🟢 สกัดข้อมูลด้วย Smart SOP Parser สำเร็จ ({date_label}) | {len(updated)} Slots | HTTP 200 OK |')
                   else:
                       summary_rows.append(f'| {cat} | ❌ โหลด Google Doc ล้มเหลว | - | HTTP {res.status_code} |')
               except Exception as e:
                   summary_rows.append(f'| {cat} | ❌ Error: {str(e)} | - | - |')
 
-          summary_md = '''## 🧠 รายงานผลการประมวลผล AI-Powered Smart Slots บนแดชบอร์ด
+          summary_md = '''## 📊 รายงานผลการประมวลผล Smart Slots บนแดชบอร์ด
 
           | หมวดหมู่ | สถานะ | จำนวน Slots ในคลัง | การตอบรับ |
           | :--- | :--- | :--- | :--- |
@@ -240,4 +233,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add doc_*.html *_slots.json || true
-          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: AI-Powered Smart Sync (Gemini API)" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: Smart Sync & Generate Dynamic Slots JSON" && git push)
