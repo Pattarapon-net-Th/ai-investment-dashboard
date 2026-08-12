@@ -1,49 +1,55 @@
-name: Sync 3 Google Docs to Dashboard
+name: ซิงค์ Google Docs 3 รายการไปยังแดชบอร์ด
 
 on:
   schedule:
-    - cron: '0 * * * *' # รันอัตโนมัติทุกๆ 1 ชั่วโมง
-  workflow_dispatch: # ปุ่มกดสั่งรันด้วยมือ (Manual Run)
+    - cron: '0 * * * *' # ทำงานอัตโนมัติทุกๆ 1 ชั่วโมง
+  workflow_dispatch: # ปุ่มกดสั่งรันด้วยตัวเอง
 
-# เปิดสิทธิ์ให้ GitHub Actions มีสิทธิ์เซฟ Commit & Push ได้ (แก้ Error 403)
 permissions:
   contents: write
 
 jobs:
-  sync:
+  sync-docs:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: '3.x'
 
-      - name: Fetch 3 Google Docs
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+
+      - name: Fetch Google Docs Data
         run: |
           python -c "
-          import urllib.request
+          import requests
           
-          docs = {
-              'doc_news.html': 'https://docs.google.com/document/d/e/2PACX-1vSNdyDFbJVZpfIA0act_QHOPpIJmM98IDkywKi4ft_O0nqXUp_cnjz0qVFKrL1E1ndN6DVh1CWwALT/pub',
-              'doc_portfolio.html': 'https://docs.google.com/document/d/e/2PACX-1vThZMexqCf6uYyqhPC9I8J4zuz7ij2WDFRKCSpE00lhf8JYSYAhD54YL7LgS4CvdcYi7nhR6b_GQUOm/pub',
-              'doc_report.html': 'https://docs.google.com/document/d/e/2PACX-1vRYT9on5s3jamgd9F6VwrFDMJyekN0fS5zjdJEctToI889hoZPXj4-EZX4T3MNENn8c1ZrHDFJGGmH/pub'
+          # ลิงก์ Publish to web ของ Google Docs ทั้ง 3 ไฟล์
+          urls = {
+              'doc_news.html': 'ใส่ลิงก์_PUBLISH_TO_WEB_หมวดข่าวสาร',
+              'doc_portfolio.html': 'ใส่ลิงก์_PUBLISH_TO_WEB_หมวดสถานะพอร์ต',
+              'doc_report.html': 'ใส่ลิงก์_PUBLISH_TO_WEB_หมวดรายงานวิเคราะห์'
           }
-          
-          for filename, url in docs.items():
-              try:
-                  urllib.request.urlretrieve(url, filename)
-                  print(f'ดาวน์โหลด {filename} สำเร็จ!')
-              except Exception as e:
-                  print(f'เกิดข้อผิดพลาดกับ {filename}:', e)
+
+          headers = {'User-Agent': 'Mozilla/5.0'}
+          for filename, url in urls.items():
+              if 'pub' in url:
+                  res = requests.get(url, headers=headers)
+                  if res.status_code == 200:
+                      with open(filename, 'w', encoding='utf-8') as f:
+                          f.write(res.text)
+                      print(f'Successfully downloaded {filename}')
           "
 
-      - name: Commit and Push to GitHub Pages
+      - name: Commit and Push changes
         run: |
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add .
-          git commit -m "Auto-sync 3 Google Docs to Dashboard slots" || exit 0
-          git push
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add doc_news.html doc_portfolio.html doc_report.html || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: Sync latest 3 Google Docs content" && git push)
