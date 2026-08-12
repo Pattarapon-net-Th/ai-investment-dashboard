@@ -1,9 +1,9 @@
-name: Sync Google Data to Dashboard
+name: Sync 3 Google Docs to Dashboard
 
 on:
   schedule:
-    - cron: '0 * * * *' # รันอัตโนมัติทุกๆ 1 ชั่วโมง
-  workflow_dispatch: # ปุ่มกดสั่งรันทันทีด้วยมือ (Manual Run)
+    - cron: '0 * * * *' # รันดึงข้อมูลทั้ง 3 เอกสารอัตโนมัติทุกๆ 1 ชั่วโมง
+  workflow_dispatch: # ปุ่มกดสั่งรันอัปเดตทันทีด้วยมือ (Manual Run)
 
 jobs:
   sync:
@@ -17,24 +17,30 @@ jobs:
         with:
           python-version: '3.x'
 
-      - name: Fetch Data from Google Sheet
+      - name: Fetch 3 Google Docs
         run: |
           python -c "
           import urllib.request
-          # ใส่ลิงก์ Publish to Web (CSV) ของคุณในบรรทัดล่างนี้
-          url = 'https://docs.google.com/spreadsheets/d/e/YOUR_LINK_HERE/pub?output=csv'
-          try:
-              urllib.request.urlretrieve(url, 'data.csv')
-              print('ดึงข้อมูลสำเร็จเรียบร้อย!')
-          except Exception as e:
-              print('เกิดข้อผิดพลาด:', e)
+          
+          # ลิงก์ เผยแพร่ไปยังเว็บ (Publish to web) ของเอกสารทั้ง 3 ไฟล์
+          docs = {
+              'doc_news.html': 'ใส่อิสระ_LINK_PUBLISH_ของเอกสารอัปเดตข่าวสาร',
+              'doc_portfolio.html': 'ใส่อิสระ_LINK_PUBLISH_ของเอกสารสรุปสถานะพอร์ต',
+              'doc_report.html': 'ใส่อิสระ_LINK_PUBLISH_ของเอกสารรายงานวิเคราะห์'
+          }
+          
+          for filename, url in docs.items():
+              try:
+                  urllib.request.urlretrieve(url, filename)
+                  print(f'ดาวน์โหลด {filename} สำเร็จ!')
+              except Exception as e:
+                  print(f'เกิดข้อผิดพลาดกับ {filename}:', e)
           "
 
-      - name: Commit and Push Updated Data to GitHub
+      - name: Commit and Push to GitHub Pages
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
           git add .
-          git commit -m "Auto-update investment data from Google Sheet" || exit 0
+          git commit -m "Auto-sync 3 Google Docs to Dashboard slots" || exit 0
           git push
-
