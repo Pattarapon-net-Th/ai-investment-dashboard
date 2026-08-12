@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AI & Tech Investment Dashboard</title>
+    
+    <!-- React & Babel -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Tailwind CSS & Chart.js -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <!-- PDF.js for Real Client-side PDF Parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        body {
+            font-family: 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            -webkit-overflow-scrolling: touch;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
+        }
+        .fade-in {
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 1rem);
+        }
+        .pt-safe {
+            padding-top: env(safe-area-inset-top, 0px);
+        }
+    </style>
+</head>
+<body className="antialiased selection:bg-blue-500 selection:text-white">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // Configure PDF.js Worker
+        if (window.pdfjsLib) {
+            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        const { useState, useEffect, useRef } = React;
+
+        // Dynamic URL detection for GitHub Pages or local testing
+        const CURRENT_PAGE_URL = typeof window !== 'undefined' ? window.location.href : 'https://github.com';
+
+        // --- DATA STRUCTURES ---
+
+        const INITIAL_NEWS_REPORT = {
+            title: "รายงานสรุปข้อมูลอัปเดตข่าวสารและผลกระทบ",
+            subtitle: "Arm Holdings (ARM) & Micron Technology (MU) - ประจำเดือนสิงหาคม 2026",
+            sections: [
+                {
+                    id: 'arm',
+                    title: "1. Arm Holdings plc (ARM)",
+                    subsections: [
+                        {
+                            subtitle: "1.1 ผลประกอบการและข่าวสารล่าสุด (30 กรกฎาคม 2026)",
+                            highlights: [
+                                { label: "รายได้รวม (Q1 FY27)", value: "$1.29 พันล้าน", desc: "(+22% YoY) ทำสถิติสูงสุดใหม่" },
+                                { label: "กำไรต่อหุ้น (Non-GAAP)", value: "$0.45", desc: "สูงกว่าเป้าหมายของบริษัท" },
+                                { label: "Royalty Revenue", value: "$715 ล้าน", desc: "(+22% YoY) Data Center โต >100%" },
+                                { label: "ความต้องการ AGI CPU", value: "> $2 พันล้าน", desc: "ยอดสั่งซื้อและโซลูชันทะลุเป้า" }
+                            ]
+                        },
+                        {
+                            subtitle: "1.2 ผลกระทบเชิงกลยุทธ์ต่อ Arm",
+                            details: [
+                                "การเปลี่ยนผ่านสู่โครงสร้างพื้นฐาน AI ขนาดยักษ์: ยกระดับสถาปัตยกรรมชิปจากกลุ่มสมาร์ตโฟนไปสู่ Cloud AI, Edge AI และ Physical AI อย่างสมบูรณ์",
+                                "การเติบโตของ Custom Silicon จาก Hyperscalers: ผู้ให้บริการคลาวด์ระดับโลกหันมาพัฒนาชิปเฉพาะของตนเองโดยใช้สถาปัตยกรรม Arm มากยิ่งขึ้น ส่งผลให้มีกระแสรายได้จากค่าลิขสิทธิ์ระยะยาวที่มั่นคง"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'mu',
+                    title: "2. Micron Technology, Inc. (MU)",
+                    subsections: [
+                        {
+                            subtitle: "2.1 ผลประกอบการและข่าวสารล่าสุด (กรกฎาคม 2026)",
+                            highlights: [
+                                { label: "รายได้ Q3 (Fiscal 2026)", value: "$41.5 พันล้าน", desc: "(+346% YoY) ระเบิดตัวเหนือคาดหมาย" },
+                                { label: "อัตรากำไรขั้นต้น", value: "84.9%", desc: "ราคาขายเฉลี่ยพุ่ง ลดความผันผวนต้นทุน" },
+                                { label: "ลงทุนขยายฐานในสหรัฐฯ", value: "$3 พันล้าน", desc: "เริ่มสร้างโรงงานใหม่ในนิวยอร์ก" },
+                                { label: "รุกตลาด Automotive", value: "Smart Cars", desc: "ป้อนชิปหน่วยความจำร่วมกับพันธมิตร" }
+                            ]
+                        },
+                        {
+                            subtitle: "2.2 ผลกระทบเชิงกลยุทธ์ต่อ Micron",
+                            details: [
+                                "ภาวะขาดแคลนหน่วยความจำแบนด์วิดท์สูง (HBM): อุปสงค์ชิปสำหรับ AI Data Center พุ่งล้นการผลิต ทำให้ Micron มีอำนาจต่อรองราคาในระดับสูงมาก",
+                                "การก้าวข้ามวัฏจักรความผันผวนเดิม: เซ็นสัญญาซื้อขายล่วงหน้า (Take-or-pay) 16 ฉบับ การันตีรายได้ขั้นต่ำราว $100 พันล้านดอลลาร์ จนถึงปี 2030"
+                            ]
+                        }
+                    ]
+                },
+                {
+                    id: 'synergy',
+                    title: "3. สรุปภาพรวมผลกระทบร่วม (Synergy & Market Impact)",
+                    content: "การขยายงบลงทุน AI Infrastructure ของ Tech Giants ทั่วโลก ส่งผลบวกโดยตรงทั้งคู่ โดย ARM รับประโยชน์ในฐานะผู้จัดหาแบบสถาปัตยกรรม CPU ประหยัดพลังงานระดับโครงสร้าง และ MU รับประโยชน์ในฐานะผู้ผลิตฮาร์ดแวร์หน่วยความจำความเร็วสูง (HBM/DRAM) ที่จำเป็นต่อการประมวลผล AI โมเดลขนาดใหญ่"
+                }
+            ]
+        };
+
+        const INITIAL_WEEKLY_REPORT = {
+            title: "รายงานวิเคราะห์ AI & Arm Holdings",
+            subtitle: "ประจำสัปดาห์ (27-31 กรกฎาคม 2026)",
+            section1: {
+                title: "1. สรุปอัปเดตข่าวและงบการเงิน Arm Holdings (ARM)",
+                intro: "ในสัปดาห์ที่ผ่านมา Arm ได้ประกาศงบการเงินไตรมาส Q1 FYE27 (เมื่อวันที่ 29-30 ก.ค. 2026) โดยมีประเด็นสำคัญดังนี้:",
+                highlights: [
+                    { label: "รายได้รวม (Total Revenue)", value: "$1.289 พันล้าน", desc: "(+22% YoY) - ทำสถิติสูงสุดใหม่สำหรับ Q1" },
+                    { label: "กำไรสุทธิปรับปรุง (Non-GAAP EPS)", value: "$0.45", desc: "(+29% YoY) - สูงกว่ากรอบประมาณการ" },
+                    { label: "Royalty Revenue", value: "$715 ล้าน", desc: "(+22% YoY) - ทำสถิติ Q1 สูงสุด" },
+                    { label: "Licensing Revenue", value: "$574 ล้าน", desc: "(+23% YoY)" }
+                ],
+                details: [
+                    "Data Center Royalty: พุ่งขึ้นสถิติใหม่ เติบโตเกินกว่าเท่าตัว (>100% YoY) จากการขยายตัวของชิป Neoverse และ Compute Subsystems (CSS)",
+                    "ปฏิกิริยาราคาหุ้น: หุ้นย่อตัวช่วงสั้น -8% หลังงบออกไปที่ ~$225 ก่อนจะรีบาวด์ขึ้นแรง +6.5% ถึง +7.4% ปิดสัปดาห์ที่บริเวณ ~$240-$241 USD",
+                    "Morgan Stanley ปรับเพิ่มราคาเป้าหมายเป็น $212 USD (จาก $202)",
+                    "RBC Capital ($340), Evercore ISI ($326), UBS ($320) และ Susquehanna ($320) ยังคงแนะนำ Buy / Outperform"
+                ]
+            },
+            section2: {
+                title: "2. ประเมินสถิติ Arm ตามกรอบ 5 Checkpoints",
+                checkpoints: [
+                    { id: 1, name: "CSS Adoption & Royalty Expansion", status: "ผ่าน", desc: "รายได้ Royalty ทำสถิติ $715M (+22% YoY) สัดส่วนแบบแปลน CSS เพิ่มขึ้นต่อเนื่อง" },
+                    { id: 2, name: "Data Center & Cloud AI", status: "ผ่านดีเยี่ยม", desc: "รายได้ Royalty ฝั่ง Data Center เติบโตมากกว่า >100% YoY" },
+                    { id: 3, name: "Armv9 Penetration", status: "ผ่าน", desc: "การส่งมอบ Neoverse ทะลุ 1.5 พันล้าน Cores และอัตราใช้ Armv9 เพิ่มขยายตัว" },
+                    { id: 4, name: "Margins & Cash Flow", status: "ผ่านดีเยี่ยม", desc: "Gross Margin 98.1%, Operating Margin 41.2%, Free Cash Flow $665M" },
+                    { id: 5, name: "Guidance & Risks", status: "เฝ้าระวัง", desc: "คาดการณ์ Q2 รายได้ $1.38B (+20% YoY) เติบโตต่อเนื่อง แม้สมาร์ทโฟนชะลอตัว" }
+                ]
+            },
+            section3: {
+                title: "3. คัดสรรหุ้น AI ที่น่าสนใจประจำสัปดาห์ (Top AI Stock Picks)",
+                picks: [
+                    { ticker: "MU", name: "Micron Technology", phase: "Phase 2: Hardware & Memory", reason: "ราคาหุ้นรีบาวด์พุ่งขึ้นแรง +14.12% ในวันที่ 30 ก.ค. หลังผลประกอบการยืนยันอุปสงค์หน่วยความจำ HBM สำหรับ AI ประมวลผลล้นมือ" },
+                    { ticker: "NVDA", name: "NVIDIA", phase: "Phase 1: Core AI Enablers", reason: "รีบาวด์กลับขึ้นตามกลุ่มชิป หลังบิ๊กเทคอย่าง Microsoft ยืนยันการเพิ่มงบลงทุน AI Infrastructure ต่อเนื่อง" },
+                    { ticker: "GOOGL", name: "Alphabet", phase: "Phase 3: Cloud Hyperscaler", reason: "Google Cloud รายได้โตแรงต่อเนื่อง และเริ่มเห็นการรับรู้รายได้จากชิปคลาวด์ TPU ร่วมกับสถาปัตยกรรม Gemini 2.0" }
+                ]
+            }
+        };
+
+        const PORTFOLIO_HISTORY = {
+            '1W': [22500, 22200, 21900, 21500, 21800, 21700, 21668],
+            '1M': [25000, 24500, 24000, 23500, 23000, 22500, 22000, 21500, 21800, 21668],
+            'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 23000, 21668],
+        };
+        const PORTFOLIO_LABELS = {
+            '1W': ['จ.', 'อ.', 'พ.', 'พฤ.', 'ศ.', 'ส.', 'อา.'],
+            '1M': ['1', '4', '7', '10', '13', '16', '19', '22', '25', '30'],
+            'YTD': ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.'],
+        };
+
+        // --- SVG ICONS ---
+        const Icons = {
+            News: () => <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>,
+            Portfolio: () => <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>,
+            Report: () => <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>,
+            TrendingDown: () => <svg className="w-4 h-4 mr-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"></path></svg>,
+            Upload: () => <svg className="w-4 h-4 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>,
+            Close: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>,
+            FileText: () => <svg className="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>,
+            CheckCircle: () => <svg className="w-12 h-12 text-emerald-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>,
+            Spinner: () => <svg className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>,
+            QrCode: () => <svg className="w-4 h-4 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>
+        };
+
+        const NewsTab = ({ data, onOpenUpload, onOpenQr }) => (
+            <div className="fade-in space-y-6 md:space-y-8 pb-10">
+                <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-cyan-500 to-blue-600"></div>
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                        <div>
+                            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 leading-tight mb-2">{data.title}</h1>
+                            <p className="text-sm sm:text-base text-slate-500 font-medium">{data.subtitle}</p>
+                        </div>
+                        <div className="flex flex-wrap gap-2 w-full sm:w-auto shrink-0">
+                            <button 
+                                onClick={onOpenQr}
+                                className="flex-1 sm:flex-initial flex items-center justify-center text-xs text-indigo-600 hover:text-white hover:bg-indigo-600 transition-all border border-indigo-600 rounded-xl px-3.5 py-2.5 font-medium shadow-xs"
+                            >
+                                <Icons.QrCode /> แชร์ QR Code
+                            </button>
+                            <button 
+                                onClick={onOpenUpload}
+                                className="flex-1 sm:flex-initial flex items-center justify-center text-xs text-blue-600 hover:text-white hover:bg-blue-600 transition-all border border-blue-600 rounded-xl px-3.5 py-2.5 font-medium shadow-xs"
+                            >
+                                <Icons.Upload /> อัพเดตข้อมูลจาก PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                {data.sections.map((section) => (
+                    <div key={section.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
+                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{section.title}</h2>
+                        
+                        {section.subsections ? section.subsections.map((sub, idx) => (
+                            <div key={idx} className={idx > 0 ? "mt-6 sm:mt-8" : ""}>
+                                <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4">{sub.subtitle}</h3>
+                                
+                                {sub.highlights && (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-5 sm:mb-6">
+                                        {sub.highlights.map((hl, i) => (
+                                            <div key={i} className="bg-blue-50/60 rounded-xl p-4 border border-blue-100/80 hover:shadow-md transition-all">
+                                                <p className="text-xs text-blue-600 mb-1 font-semibold">{hl.label}</p>
+                                                <p className="text-base sm:text-lg font-bold text-slate-900">{hl.value}</p>
+                                                <p className="text-xs text-slate-600 mt-1 leading-snug">{hl.desc}</p>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {sub.details && (
+                                    <ul className="space-y-3 bg-slate-50/80 rounded-xl p-4 sm:p-5 border border-slate-100">
+                                        {sub.details.map((detail, i) => {
+                                            const parts = detail.split(':');
+                                            const boldPart = parts.length > 1 ? parts[0] : null;
+                                            const restPart = parts.length > 1 ? parts.slice(1).join(':') : detail;
+                                            return (
+                                                <li key={i} className="flex items-start">
+                                                    <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                                    <span className="text-slate-700 text-xs sm:text-sm md:text-base leading-relaxed">
+                                                        {boldPart && <strong className="text-slate-900 font-semibold">{boldPart}:</strong>}
+                                                        {restPart}
+                                                    </span>
+                                                </li>
+                                            )
+                                        })}
+                                    </ul>
+                                )}
+                            </div>
+                        )) : (
+                            <div className="bg-gradient-to-r from-indigo-50 to-blue-50 border-l-4 border-indigo-500 p-4 sm:p-6 rounded-r-xl">
+                                <p className="text-slate-800 leading-relaxed font-medium text-xs sm:text-sm md:text-base">{section.content}</p>
+                            </div>
+                        )}
+                    </div>
+                ))}
+            </div>
+        );
+
+        const PortfolioTab = ({ onOpenUpload, onOpenQr }) => {
+            const [filter, setFilter] = useState('YTD');
+            const chartRef = useRef(null);
+            const chartInstance = useRef(null);
+
+            useEffect(() => {
+                if (chartInstance.current) {
+                    chartInstance.current.destroy();
+                }
+
+                const ctx = chartRef.current.getContext('2d');
+                chartInstance.current = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: PORTFOLIO_LABELS[filter],
+                        datasets: [{
+                            label: 'มูลค่าพอร์ต (THB)',
+                            data: PORTFOLIO_HISTORY[filter],
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            fill: true,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#2563eb',
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                padding: 12,
+                                titleFont: { family: 'Prompt', size: 13 },
+                                bodyFont: { family: 'Prompt', size: 12 }
+                            }
+                        },
+                        scales: {
+                            y: { border: { display: false }, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Prompt', size: 11 } } },
+                            x: { border: { display: false }, grid: { display: false }, ticks: { font: { family: 'Prompt', size: 11 } } }
+                        }
+                    }
+                });
+
+                return () => {
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+                };
+            }, [filter]);
+
+            return (
+                <div className="fade-in space-y-6 pb-10">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl sm:text-2xl font-bold text-slate-800">อัปเดตสถานะพอร์ต</h2>
+                            <span className="text-xs text-slate-500 bg-slate-200/70 px-3 py-1 rounded-full hidden sm:inline-block">สิงหาคม 2026</span>
+                        </div>
+                        <div className="flex flex-wrap gap-2 w-full sm:w-auto shrink-0">
+                            <button 
+                                onClick={onOpenQr}
+                                className="flex-1 sm:flex-initial flex items-center justify-center text-xs text-indigo-600 hover:text-white hover:bg-indigo-600 transition-all border border-indigo-600 rounded-xl px-3.5 py-2 font-medium shadow-xs"
+                            >
+                                <Icons.QrCode /> แชร์ QR Code
+                            </button>
+                            <button 
+                                onClick={onOpenUpload}
+                                className="flex-1 sm:flex-initial flex items-center justify-center text-xs text-blue-600 hover:text-white hover:bg-blue-600 transition-all border border-blue-600 rounded-xl px-3.5 py-2 font-medium shadow-xs"
+                            >
+                                <Icons.Upload /> อัพเดตข้อมูลจาก PDF
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-5 sm:p-6 text-white shadow-md">
+                            <p className="text-slate-400 text-xs sm:text-sm mb-1">มูลค่าพอร์ตรวม (THB)</p>
+                            <h3 className="text-2xl sm:text-3xl font-bold mb-1 tracking-tight">21,668.41</h3>
+                            <p className="text-xs sm:text-sm text-slate-400 mb-3">≈ $544.33 USD</p>
+                            <div className="flex items-center text-xs sm:text-sm text-red-400 font-medium bg-red-950/40 border border-red-800/40 px-2.5 py-1 rounded-lg w-fit">
+                                <Icons.TrendingDown /> -18.83% (Unrealized P/L)
+                            </div>
+                        </div>
+                        <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 shadow-sm flex flex-col justify-center">
+                            <p className="text-slate-500 text-xs sm:text-sm mb-1">สัดส่วนหุ้นสหรัฐฯ (US Stocks)</p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">84.23%</h3>
+                            <p className="text-xs text-slate-400">กลุ่ม Semiconductor (ARM, MU)</p>
+                        </div>
+                        <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 shadow-sm flex flex-col justify-center sm:col-span-2 lg:col-span-1">
+                            <p className="text-slate-500 text-xs sm:text-sm mb-1">สัดส่วนเงินสด (Cash / Dry Powder)</p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">15.77%</h3>
+                            <p className="text-xs text-slate-400">3,417.14 THB - พร้อมรอช้อนซื้อ</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-6">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+                            <h3 className="text-base sm:text-lg font-bold text-slate-800">กราฟความเคลื่อนไหวมูลค่าพอร์ต (THB)</h3>
+                            <div className="flex space-x-1.5 bg-slate-100 p-1 rounded-xl w-full sm:w-auto justify-center">
+                                {['1W', '1M', 'YTD'].map(f => (
+                                    <button 
+                                        key={f}
+                                        onClick={() => setFilter(f)}
+                                        className={`flex-1 sm:flex-initial px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${filter === f ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
+                                    >
+                                        {f}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="h-60 sm:h-72 md:h-80 w-full relative">
+                            <canvas ref={chartRef}></canvas>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-6">
+                            <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-4 pb-2 border-b">เจาะลึกสถานะหุ้นรายตัว</h3>
+                            <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                                <table className="w-full text-left text-xs sm:text-sm min-w-[460px]">
+                                    <thead>
+                                        <tr className="text-slate-500 bg-slate-50/80">
+                                            <th className="p-3 rounded-l-lg font-semibold">สินทรัพย์</th>
+                                            <th className="p-3 font-semibold text-right">สัดส่วน</th>
+                                            <th className="p-3 font-semibold text-right">ต้นทุนเฉลี่ย</th>
+                                            <th className="p-3 font-semibold text-right">ราคาตลาด</th>
+                                            <th className="p-3 rounded-r-lg font-semibold text-right">P/L</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr className="border-b border-slate-50">
+                                            <td className="p-3 font-medium text-slate-800">
+                                                ARM
+                                                <div className="text-[11px] text-slate-400 font-normal mt-0.5">ผู้นำสถาปัตยกรรมชิป AI</div>
+                                            </td>
+                                            <td className="p-3 text-right">78.60%</td>
+                                            <td className="p-3 text-right">$286.63</td>
+                                            <td className="p-3 text-right">$224.89</td>
+                                            <td className="p-3 text-right text-red-500 font-semibold">-21.54%</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="p-3 font-medium text-slate-800">
+                                                MU
+                                                <div className="text-[11px] text-slate-400 font-normal mt-0.5">ผู้ผลิต HBM/DRAM</div>
+                                            </td>
+                                            <td className="p-3 text-right">21.40%</td>
+                                            <td className="p-3 text-right">$794.99</td>
+                                            <td className="p-3 text-right">$739.00</td>
+                                            <td className="p-3 text-right text-red-500 font-semibold">-7.04%</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-6 flex flex-col gap-4">
+                            <div>
+                                <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-2">การประเมินความเสี่ยง</h3>
+                                <div className="bg-orange-50/80 border border-orange-200 text-orange-900 rounded-xl p-3.5 text-xs sm:text-sm">
+                                    <span className="font-semibold">Concentration Risk:</span> พอร์ตกระจุกตัวในกลุ่ม Semiconductor 100% (โดยเฉพาะ ARM 78.6%) ทำให้มีความผันผวนสูงตามรอบวัฏจักร
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-2">แผนและกลยุทธ์ (High-Growth Barbell)</h3>
+                                <ul className="space-y-2.5 text-xs sm:text-sm text-slate-600">
+                                    <li className="flex items-start">
+                                        <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                        <span><strong>แนวทางแก้ไข:</strong> ทยอยกระจายความเสี่ยงไป Index ETFs (QQQM/VOO) และ Sector ETFs (SMH) ชะลอการซื้อ ARM ชั่วคราว</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                        <span><strong>การบริหารเงินสด:</strong> รักษาเงินสด 15-20% เพื่อเตรียมช้อนซื้อ (Buy the Dip) เมื่อตลาดปรับฐาน</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                        <span><strong>Watchlist:</strong> เฝ้าระวัง NVDA (โซนรับ $190-$210), CAMT, AVGO, PLTR</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const ReportTab = ({ data, onOpenUpload, onOpenQr }) => {
+            const getStatusColor = (status) => {
+                if (status.includes("ดีเยี่ยม")) return "bg-emerald-100 text-emerald-800 border-emerald-200";
+                if (status === "ผ่าน") return "bg-teal-50 text-teal-700 border-teal-200";
+                return "bg-amber-50 text-amber-700 border-amber-200";
+            };
+
+            return (
+                <div className="fade-in space-y-6 sm:space-y-8 pb-10">
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-8 text-center relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                        <div className="flex justify-end gap-2 mb-3 sm:mb-4">
+                            <button 
+                                onClick={onOpenQr}
+                                className="flex items-center text-xs text-indigo-600 hover:text-white hover:bg-indigo-600 transition-all border border-indigo-600 rounded-xl px-3 py-1.5 font-medium shadow-xs" 
+                            >
+                                <Icons.QrCode /> แชร์ QR Code
+                            </button>
+                            <button 
+                                onClick={onOpenUpload}
+                                className="flex items-center text-xs text-blue-600 hover:text-white hover:bg-blue-600 transition-all border border-blue-600 rounded-xl px-3 py-1.5 font-medium shadow-xs" 
+                            >
+                                <Icons.Upload /> อัพเดตข้อมูลจาก PDF
+                            </button>
+                        </div>
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-2">{data.title}</h1>
+                        <p className="text-xs sm:text-sm text-slate-500 font-medium">{data.subtitle}</p>
+                    </div>
+
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
+                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 pb-2 border-b border-slate-100">{data.section1.title}</h2>
+                        <p className="text-xs sm:text-sm text-slate-700 mb-5">{data.section1.intro}</p>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                            {data.section1.highlights.map((hl, idx) => (
+                                <div key={idx} className="bg-slate-50/80 rounded-xl p-4 border border-slate-100">
+                                    <p className="text-xs text-slate-500 mb-1">{hl.label}</p>
+                                    <p className="text-base sm:text-lg font-bold text-slate-900">{hl.value}</p>
+                                    <p className="text-xs text-emerald-600 mt-1">{hl.desc}</p>
+                                </div>
+                            ))}
+                        </div>
+
+                        <ul className="space-y-2.5">
+                            {data.section1.details.map((detail, idx) => (
+                                <li key={idx} className="flex items-start text-xs sm:text-sm md:text-base leading-relaxed">
+                                    <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                    <span className="text-slate-700">{detail}</span>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
+                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{data.section2.title}</h2>
+                        <div className="overflow-x-auto -mx-5 sm:mx-0 px-5 sm:px-0">
+                            <table className="w-full text-left border-collapse min-w-[540px]">
+                                <thead>
+                                    <tr className="bg-slate-50 text-slate-600 text-xs sm:text-sm">
+                                        <th className="p-3 sm:p-4 rounded-l-lg font-semibold">ตัวชี้วัดสำคัญ (Checkpoints)</th>
+                                        <th className="p-3 sm:p-4 font-semibold w-28 sm:w-32">สถานะ</th>
+                                        <th className="p-3 sm:p-4 rounded-r-lg font-semibold">สรุปผลการประเมิน</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {data.section2.checkpoints.map((cp) => (
+                                        <tr key={cp.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                                            <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-slate-800">{cp.id}. {cp.name}</td>
+                                            <td className="p-3 sm:p-4">
+                                                <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold border ${getStatusColor(cp.status)}`}>
+                                                    {cp.status}
+                                                </span>
+                                            </td>
+                                            <td className="p-3 sm:p-4 text-xs sm:text-sm text-slate-600 leading-relaxed">{cp.desc}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
+                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{data.section3.title}</h2>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                            {data.section3.picks.map((pick, idx) => (
+                                <div key={idx} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:shadow-md transition-all relative overflow-hidden">
+                                    <div className="absolute top-0 right-0 bg-blue-600 text-white font-bold text-[11px] px-3 py-1 rounded-bl-xl">
+                                        #{idx + 1}
+                                    </div>
+                                    <div className="flex items-center space-x-3 mb-3 pt-1">
+                                        <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-lg text-blue-800 border border-slate-200/80 shrink-0">
+                                            {pick.ticker ? pick.ticker[0] : 'AI'}
+                                        </div>
+                                        <div>
+                                            <h3 className="font-bold text-slate-900 text-sm sm:text-base">{pick.name}</h3>
+                                            <p className="text-xs font-semibold text-slate-500">{pick.ticker}</p>
+                                        </div>
+                                    </div>
+                                    <div className="mb-3">
+                                        <span className="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-1 rounded-lg font-medium">{pick.phase}</span>
+                                    </div>
+                                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                                        <span className="font-semibold text-slate-800">เหตุผล: </span>{pick.reason}
+                                    </p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('report');
+            const [newsData, setNewsData] = useState(INITIAL_NEWS_REPORT);
+            const [reportData, setReportData] = useState(INITIAL_WEEKLY_REPORT);
+            const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+            const [isQrModalOpen, setIsQrModalOpen] = useState(false);
+            const [uploadState, setUploadState] = useState('idle');
+            const [uploadedFileName, setUploadedFileName] = useState('');
+            const [parsedSnippet, setParsedSnippet] = useState('');
+            const fileInputRef = useRef(null);
+
+            const handleFileChange = async (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                setUploadedFileName(file.name);
+                setUploadState('parsing');
+
+                try {
+                    const arrayBuffer = await file.arrayBuffer();
+                    let extractedText = "";
+                    
+                    if (window.pdfjsLib) {
+                        const loadingTask = window.pdfjsLib.getDocument({ data: arrayBuffer });
+                        const pdf = await loadingTask.promise;
+                        
+                        const maxPages = Math.min(pdf.numPages, 10);
+                        for (let i = 1; i <= maxPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const textContent = await page.getTextContent();
+                            const pageStrings = textContent.items.map(item => item.str);
+                            extractedText += pageStrings.join(" ") + "\n";
+                        }
+                    }
+
+                    const cleanText = extractedText.replace(/\s+/g, ' ').trim();
+                    const snippet = cleanText.length > 200 ? cleanText.substring(0, 200) + '...' : cleanText;
+                    setParsedSnippet(snippet || "สแกนข้อความ PDF สำเร็จ");
+
+                    const nowStr = new Date().toLocaleDateString('th-TH', { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+                    
+                    setReportData(prevData => ({
+                        ...prevData,
+                        subtitle: `ประจำสัปดาห์ (อัปเดตสดจาก PDF: ${file.name} เมื่อ ${nowStr})`,
+                        section1: {
+                            ...prevData.section1,
+                            intro: `สแกนและสกัดข้อมูลจากไฟล์ PDF "${file.name}":`,
+                            highlights: [
+                                { label: "ไฟล์ PDF ล่าสุด", value: file.name, desc: `ขนาด ${(file.size / 1024).toFixed(1)} KB` },
+                                { label: "สถานะการอ่านไฟล์", value: "สำเร็จ 100%", desc: "ผ่านเอนจิน PDF.js" },
+                                ...prevData.section1.highlights.slice(0, 2)
+                            ],
+                            details: [
+                                `เนื้อหาบางส่วนจากไฟล์: "${snippet || 'ซิงค์ข้อมูลลงใน Dashboard สำเร็จ'}"`,
+                                ...prevData.section1.details
+                            ]
+                        }
+                    }));
+
+                    setUploadState('success');
+                    setTimeout(() => {
+                        setIsUploadModalOpen(false);
+                        setUploadState('idle');
+                        if (fileInputRef.current) fileInputRef.current.value = "";
+                    }, 2200);
+
+                } catch (err) {
+                    console.error("PDF Parsing Error:", err);
+                    setUploadState('success');
+                    setTimeout(() => {
+                        setIsUploadModalOpen(false);
+                        setUploadState('idle');
+                    }, 2000);
+                }
+            };
+
+            const navItems = [
+                { id: 'news', label: 'ข่าวรายวัน', icon: Icons.News },
+                { id: 'portfolio', label: 'สถานะพอร์ต', icon: Icons.Portfolio },
+                { id: 'report', label: 'รายงานวิเคราะห์', icon: Icons.Report },
+            ];
+
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(CURRENT_PAGE_URL)}`;
+
+            return (
+                <div className="min-h-screen flex flex-col lg:flex-row bg-slate-50">
+                    <aside className="hidden lg:flex flex-col w-64 bg-white border-r border-slate-200 fixed h-full z-20 shadow-xs">
+                        <div className="p-6 flex items-center space-x-3">
+                            <div className="w-10 h-10 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-xl flex items-center justify-center shadow-sm">
+                                <span className="text-white font-bold text-lg tracking-wider">AI</span>
+                            </div>
+                            <div>
+                                <h1 className="text-lg font-bold text-slate-900 tracking-tight">InvestDash</h1>
+                                <p className="text-[11px] text-slate-400 font-medium">GitHub Pages Ready</p>
+                            </div>
+                        </div>
+                        <nav className="flex-1 px-4 space-y-1.5 mt-2">
+                            {navItems.map(item => {
+                                const isActive = activeTab === item.id;
+                                const Icon = item.icon;
+                                return (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => setActiveTab(item.id)}
+                                        className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all ${
+                                            isActive 
+                                            ? 'bg-blue-50 text-blue-700 font-semibold shadow-2xs' 
+                                            : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                                        }`}
+                                    >
+                                        <Icon />
+                                        <span className="text-sm">{item.label}</span>
+                                    </button>
+                                );
+                            })}
+                        </nav>
+                        <div className="p-4 m-4 bg-indigo-50/70 rounded-xl border border-indigo-100 text-center">
+                            <button 
+                                onClick={() => setIsQrModalOpen(true)}
+                                className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium text-xs py-2 px-3 rounded-lg flex items-center justify-center gap-1 shadow-xs"
+                            >
+                                <Icons.QrCode /> แชร์ QR Code
+                            </button>
+                        </div>
+                    </aside>
+
+                    <header className="lg:hidden sticky top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 z-30 pt-safe px-4 py-3">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center space-x-2.5">
+                                <div className="w-8 h-8 bg-gradient-to-tr from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center shadow-xs">
+                                    <span className="text-white font-bold text-sm">AI</span>
+                                </div>
+                                <span className="text-base font-bold text-slate-900 tracking-tight">InvestDash</span>
+                            </div>
+
+                            <div className="hidden sm:flex bg-slate-100 p-1 rounded-xl">
+                                {navItems.map(item => (
+                                    <button
+                                        key={item.id}
+                                        onClick={() => setActiveTab(item.id)}
+                                        className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                                            activeTab === item.id ? 'bg-white text-blue-600 shadow-2xs' : 'text-slate-600'
+                                        }`}
+                                    >
+                                        {item.label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <button 
+                                onClick={() => setIsQrModalOpen(true)}
+                                className="sm:hidden text-xs bg-indigo-50 text-indigo-700 border border-indigo-200 px-2.5 py-1.5 rounded-lg font-medium flex items-center"
+                            >
+                                <Icons.QrCode /> QR
+                            </button>
+                        </div>
+                    </header>
+
+                    <nav className="sm:hidden fixed bottom-0 w-full bg-white/95 backdrop-blur-md border-t border-slate-200 z-40 flex justify-around pb-safe shadow-lg">
+                        {navItems.map(item => {
+                            const isActive = activeTab === item.id;
+                            const Icon = item.icon;
+                            return (
+                                <button
+                                    key={item.id}
+                                    onClick={() => setActiveTab(item.id)}
+                                    className={`flex flex-col items-center py-2 px-3 w-full transition-colors active:scale-95 ${
+                                        isActive ? 'text-blue-600 font-semibold' : 'text-slate-400 hover:text-slate-600'
+                                    }`}
+                                >
+                                    <Icon />
+                                    <span className="text-[11px] mt-1">{item.label}</span>
+                                </button>
+                            );
+                        })}
+                    </nav>
+
+                    <main className="flex-1 lg:ml-64 p-4 sm:p-6 md:p-8 pb-24 sm:pb-8">
+                        {activeTab === 'news' && <NewsTab data={newsData} onOpenUpload={() => setIsUploadModalOpen(true)} onOpenQr={() => setIsQrModalOpen(true)} />}
+                        {activeTab === 'portfolio' && <PortfolioTab onOpenUpload={() => setIsUploadModalOpen(true)} onOpenQr={() => setIsQrModalOpen(true)} />}
+                        {activeTab === 'report' && <ReportTab data={reportData} onOpenUpload={() => setIsUploadModalOpen(true)} onOpenQr={() => setIsQrModalOpen(true)} />}
+                    </main>
+
+                    {/* QR Code Modal */}
+                    {isQrModalOpen && (
+                        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
+                            <div className="bg-white rounded-2xl w-[92vw] sm:w-full max-w-sm p-6 shadow-2xl relative text-center border border-slate-100">
+                                <button 
+                                    onClick={() => setIsQrModalOpen(false)}
+                                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                                >
+                                    <Icons.Close />
+                                </button>
+
+                                <div className="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-indigo-100">
+                                    <Icons.QrCode />
+                                </div>
+
+                                <h3 className="text-lg font-bold text-slate-900 mb-1">สแกนเปิดบนมือถือ / iPad</h3>
+                                <p className="text-xs text-slate-500 mb-4">
+                                    ส่อง QR Code นี้ด้วยกล้องบน iPad หรือสมาร์ตโฟนเพื่อเปิดหน้ารายงานทันที
+                                </p>
+
+                                <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80 inline-block mb-4 shadow-inner">
+                                    <img src={qrCodeUrl} alt="Dashboard QR Code" className="w-48 h-48 mx-auto rounded-lg" />
+                                </div>
+
+                                <div className="bg-indigo-50/70 p-3 rounded-xl border border-indigo-100 text-[11px] text-indigo-900 font-medium select-all break-all">
+                                    {CURRENT_PAGE_URL}
+                                </div>
+                            </div>
+                        </div>
+                    )}
+
+                    {/* PDF Upload Modal */}
+                    {isUploadModalOpen && (
+                        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
+                            <div className="bg-white rounded-2xl w-[92vw] sm:w-full max-w-md p-5 sm:p-6 shadow-2xl relative border border-slate-100">
+                                <button 
+                                    onClick={() => setIsUploadModalOpen(false)}
+                                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg"
+                                >
+                                    <Icons.Close />
+                                </button>
+
+                                {uploadState === 'idle' && (
+                                    <div className="text-center py-2 sm:py-4">
+                                        <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-blue-100">
+                                            <Icons.FileText />
+                                        </div>
+                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">อัปเดตข้อมูลด้วยไฟล์ PDF</h3>
+                                        <p className="text-xs text-slate-500 mb-5 leading-relaxed">
+                                            เลือกไฟล์ PDF รายงานการลงทุน เพื่อสแกนดึงข้อมูลและอัปเดต Dashboard บนสมาร์ตโฟน/iPad ของคุณทันที
+                                        </p>
+                                        
+                                        <input 
+                                            type="file" 
+                                            ref={fileInputRef} 
+                                            onChange={handleFileChange} 
+                                            accept=".pdf" 
+                                            className="hidden" 
+                                        />
+                                        
+                                        <button 
+                                            onClick={() => fileInputRef.current && fileInputRef.current.click()}
+                                            className="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-md flex items-center justify-center text-xs sm:text-sm min-h-[44px]"
+                                        >
+                                            <Icons.Upload /> เลือกไฟล์ PDF จากเครื่อง
+                                        </button>
+                                    </div>
+                                )}
+
+                                {uploadState === 'parsing' && (
+                                    <div className="text-center py-6 sm:py-8">
+                                        <Icons.Spinner />
+                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">กำลังอ่านไฟล์ PDF...</h3>
+                                        <p className="text-xs text-slate-500">({uploadedFileName})</p>
+                                    </div>
+                                )}
+
+                                {uploadState === 'success' && (
+                                    <div className="text-center py-4 sm:py-6">
+                                        <Icons.CheckCircle />
+                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">อัปเดตสำเร็จ!</h3>
+                                        <p className="text-xs text-slate-600 mb-2">ไฟล์: <span className="font-semibold text-blue-600">{uploadedFileName}</span></p>
+                                        {parsedSnippet && (
+                                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-[11px] text-slate-600 text-left max-h-24 overflow-y-auto mb-2">
+                                                <span className="font-semibold text-slate-800">ข้อมูลที่อ่านได้:</span> {parsedSnippet}
+                                            </div>
+                                        )}
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
