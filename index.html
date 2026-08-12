@@ -463,8 +463,10 @@
                     chartInstance.current.destroy();
                 }
 
+                const chartValues = currentSlot.historyFilterData[filter] || currentSlot.historyFilterData['YTD'] || [20000, 21000, 22000];
+
                 const calculateSmartChartScales = (values) => {
-                    if (!values || values.length === 0) return { min: 0, max: 1000, stepSize: 200 };
+                    if (!values || !Array.isArray(values) || values.length === 0) return { min: 0, max: 1000, stepSize: 200 };
                     
                     const minVal = Math.min(...values);
                     const maxVal = Math.max(...values);
@@ -500,11 +502,12 @@
 
                 const scaleConfig = calculateSmartChartScales(chartValues);
 
+                if (!chartRef.current) return;
                 const ctx = chartRef.current.getContext('2d');
                 chartInstance.current = new Chart(ctx, {
                     type: 'line',
                     data: {
-                        labels: PORTFOLIO_LABELS[filter],
+                        labels: PORTFOLIO_LABELS[filter] || PORTFOLIO_LABELS['YTD'],
                         datasets: [{
                             label: 'มูลค่าพอร์ต (THB)',
                             data: chartValues,
@@ -531,7 +534,7 @@
                                 titleFont: { family: 'Prompt', size: 13 },
                                 bodyFont: { family: 'Prompt', size: 12 },
                                 callbacks: {
-                                    label: (context) => ` มูลค่าพอร์ต: ${Number(context.raw).toLocaleString()} THB`
+                                    label: (context) => ` มูลค่าพอร์ต: ${Number(context.raw || 0).toLocaleString()} THB`
                                 }
                             }
                         },
