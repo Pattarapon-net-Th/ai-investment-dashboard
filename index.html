@@ -71,261 +71,318 @@
         const { useState, useEffect, useRef } = React;
 
         const CURRENT_PAGE_URL = typeof window !== 'undefined' ? window.location.href : 'https://github.com';
+        const MAX_SLOTS_PER_CATEGORY = 5; // ล็อกสูงสุด 5 Slots ต่อ 1 หมวดหัวข้อหลัก
 
         // =========================================================================
-        // --- DYNAMIC SLOT ARCHITECTURE (ระบบช่องเสียบชุดข้อมูล ดันชุดเก่าลงไปเรื่อยๆ) ---
-        // Slot 0 = หน้าแสดงผลหลักปัจจุบัน (ถูกเสียบด้วยข้อมูลอัปเดตล่าสุด)
-        // Slot 1, 2, ... = ชุดข้อมูลเก่าที่ถูกดันลงไปสะสมตามลำดับเวลา
+        // --- 5 INDEPENDENT SLOTS PER CATEGORY (5 SLOTS อิสระแยก 3 หมวด) ---
         // =========================================================================
 
-        const INITIAL_DATASET_SLOTS = [
-            // --- Slot 0: ชุดข้อมูลอัปเดตล่าสุด (ปัจจุบัน) ---
+        // --- 1. SLOTS สำหรับหมวด "ข่าวรายวัน" (สูงสุด 5 Slots) ---
+        const INITIAL_NEWS_SLOTS = [
             {
-                slotId: "slot-0",
+                slotId: "news-0",
                 dateLabel: "12 สิงหาคม 2026",
-                isCurrentSlot: true,
-                news: {
-                    title: "รายงานสรุปข้อมูลอัปเดตข่าวสารและผลกระทบประจำสัปดาห์",
-                    subtitle: "Arm Holdings (ARM) & Micron Technology (MU) - ประจำสัปดาห์ที่ 12 สิงหาคม 2026",
-                    sections: [
-                        {
-                            id: 'arm',
-                            title: "1. Arm Holdings plc (ARM)",
-                            subsections: [
-                                {
-                                    subtitle: "1.1 ผลประกอบการและข่าวสารล่าสุด (สัปดาห์ปัจจุบัน)",
-                                    highlights: [
-                                        { label: "รายได้รวม (Q1 FY27)", value: "$1.29 พันล้าน", desc: "(+22% YoY) ทำสถิติสูงสุดใหม่" },
-                                        { label: "กำไรต่อหุ้น (Non-GAAP)", value: "$0.45", desc: "สูงกว่าเป้าหมายของบริษัท" },
-                                        { label: "Royalty Revenue", value: "$715 ล้าน", desc: "(+22% YoY) Data Center โต >100%" },
-                                        { label: "ความต้องการ AGI CPU", value: "> $2 พันล้าน", desc: "ยอดสั่งซื้อและโซลูชันทะลุเป้า" }
-                                    ]
-                                },
-                                {
-                                    subtitle: "1.2 ผลกระทบเชิงกลยุทธ์ต่อ Arm",
-                                    details: [
-                                        "การเปลี่ยนผ่านสู่โครงสร้างพื้นฐาน AI ขนาดยักษ์: ยกระดับสถาปัตยกรรมชิปจากกลุ่มสมาร์ตโฟนไปสู่ Cloud AI, Edge AI และ Physical AI อย่างสมบูรณ์",
-                                        "การเติบโตของ Custom Silicon จาก Hyperscalers: ผู้ให้บริการคลาวด์ระดับโลกหันมาพัฒนาชิปเฉพาะของตนเองโดยใช้สถาปัตยกรรม Arm มากยิ่งขึ้น"
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            id: 'mu',
-                            title: "2. Micron Technology, Inc. (MU)",
-                            subsections: [
-                                {
-                                    subtitle: "2.1 ผลประกอบการและข่าวสารล่าสุด",
-                                    highlights: [
-                                        { label: "รายได้ Q3 (Fiscal 2026)", value: "$41.5 พันล้าน", desc: "(+346% YoY) ระเบิดตัวเหนือคาดหมาย" },
-                                        { label: "อัตรากำไรขั้นต้น", value: "84.9%", desc: "ราคาขายเฉลี่ยพุ่ง ลดความผันผวนต้นทุน" },
-                                        { label: "ลงทุนขยายฐานในสหรัฐฯ", value: "$3 พันล้าน", desc: "เริ่มสร้างโรงงานใหม่ในนิวยอร์ก" },
-                                        { label: "รุกตลาด Automotive", value: "Smart Cars", desc: "ป้อนชิปหน่วยความจำร่วมกับพันธมิตร" }
-                                    ]
-                                },
-                                {
-                                    subtitle: "2.2 ผลกระทบเชิงกลยุทธ์ต่อ Micron",
-                                    details: [
-                                        "ภาวะขาดแคลนหน่วยความจำแบนด์วิดท์สูง (HBM): อุปสงค์ชิปสำหรับ AI Data Center พุ่งล้นการผลิต ทำให้ Micron มีอำนาจต่อรองราคาในระดับสูงมาก",
-                                        "การก้าวข้ามวัฏจักรความผันผวนเดิม: เซ็นสัญญาซื้อขายล่วงหน้า (Take-or-pay) 16 ฉบับ การันตีรายได้ขั้นต่ำราว $100 พันล้านดอลลาร์"
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                },
-                report: {
-                    title: "รายงานวิเคราะห์ AI & Arm Holdings",
-                    subtitle: "ประจำสัปดาห์ (5 - 12 สิงหาคม 2026)",
-                    section1: {
-                        title: "1. สรุปอัปเดตข่าวและงบการเงิน Arm Holdings (ARM)",
-                        intro: "อัปเดตงบการเงินไตรมาส Q1 FYE27 และการวิเคราะห์รายสัปดาห์ล่าสุด:",
-                        highlights: [
-                            { label: "รายได้รวม (Total Revenue)", value: "$1.289 พันล้าน", desc: "(+22% YoY) - ทำสถิติสูงสุดใหม่สำหรับ Q1" },
-                            { label: "กำไรสุทธิปรับปรุง (Non-GAAP EPS)", value: "$0.45", desc: "(+29% YoY) - สูงกว่ากรอบประมาณการ" },
-                            { label: "Royalty Revenue", value: "$715 ล้าน", desc: "(+22% YoY) - ทำสถิติ Q1 สูงสุด" },
-                            { label: "Licensing Revenue", value: "$574 ล้าน", desc: "(+23% YoY)" }
-                        ],
-                        details: [
-                            "Data Center Royalty: พุ่งขึ้นสถิติใหม่ เติบโตเกินกว่าเท่าตัว (>100% YoY) จากชิป Neoverse",
-                            "ปฏิกิริยาราคาหุ้น: หุ้นรีบาวด์ขึ้นแรง +6.5% ถึง +7.4% ปิดสัปดาห์ที่บริเวณ ~$240-$241 USD",
-                            "Morgan Stanley ปรับเพิ่มราคาเป้าหมายเป็น $212 USD (จาก $202)",
-                            "RBC Capital ($340), Evercore ISI ($326), UBS ($320) ยังคงแนะนำ Buy / Outperform"
+                title: "รายงานสรุปข้อมูลอัปเดตข่าวสารและผลกระทบประจำสัปดาห์",
+                subtitle: "Arm Holdings (ARM) & Micron Technology (MU) - ประจำสัปดาห์ที่ 12 สิงหาคม 2026",
+                sections: [
+                    {
+                        id: 'arm',
+                        title: "1. Arm Holdings plc (ARM)",
+                        subsections: [
+                            {
+                                subtitle: "1.1 ผลประกอบการและข่าวสารล่าสุด",
+                                highlights: [
+                                    { label: "รายได้รวม (Q1 FY27)", value: "$1.29 พันล้าน", desc: "(+22% YoY) ทำสถิติสูงสุดใหม่" },
+                                    { label: "กำไรต่อหุ้น (Non-GAAP)", value: "$0.45", desc: "สูงกว่าเป้าหมายของบริษัท" },
+                                    { label: "Royalty Revenue", value: "$715 ล้าน", desc: "(+22% YoY) Data Center โต >100%" },
+                                    { label: "ความต้องการ AGI CPU", value: "> $2 พันล้าน", desc: "ยอดสั่งซื้อและโซลูชันทะลุเป้า" }
+                                ]
+                            },
+                            {
+                                subtitle: "1.2 ผลกระทบเชิงกลยุทธ์ต่อ Arm",
+                                details: [
+                                    "การเปลี่ยนผ่านสู่โครงสร้างพื้นฐาน AI ขนาดยักษ์: ยกระดับสถาปัตยกรรมชิปจากกลุ่มสมาร์ตโฟนไปสู่ Cloud AI, Edge AI และ Physical AI อย่างสมบูรณ์",
+                                    "การเติบโตของ Custom Silicon จาก Hyperscalers: ผู้ให้บริการคลาวด์ระดับโลกหันมาพัฒนาชิปเฉพาะของตนเองโดยใช้สถาปัตยกรรม Arm มากยิ่งขึ้น"
+                                ]
+                            }
                         ]
                     },
-                    section2: {
-                        title: "2. ประเมินสถิติ Arm ตามกรอบ 5 Checkpoints",
-                        checkpoints: [
-                            { id: 1, name: "CSS Adoption & Royalty Expansion", status: "ผ่าน", desc: "รายได้ Royalty ทำสถิติ $715M (+22% YoY)" },
-                            { id: 2, name: "Data Center & Cloud AI", status: "ผ่านดีเยี่ยม", desc: "รายได้ Royalty ฝั่ง Data Center เติบโตมากกว่า >100% YoY" },
-                            { id: 3, name: "Armv9 Penetration", status: "ผ่าน", desc: "การส่งมอบ Neoverse ทะลุ 1.5 พันล้าน Cores" },
-                            { id: 4, name: "Margins & Cash Flow", status: "ผ่านดีเยี่ยม", desc: "Gross Margin 98.1%, Free Cash Flow $665M" },
-                            { id: 5, name: "Guidance & Risks", status: "เฝ้าระวัง", desc: "คาดการณ์ Q2 รายได้ $1.38B (+20% YoY) เติบโตต่อเนื่อง" }
-                        ]
-                    },
-                    section3: {
-                        title: "3. คัดสรรหุ้น AI ที่น่าสนใจประจำสัปดาห์ (Top AI Stock Picks)",
-                        picks: [
-                            { ticker: "MU", name: "Micron Technology", phase: "Phase 2: Hardware & Memory", reason: "ราคาหุ้นรีบาวด์พุ่งขึ้นแรง +14.12% ยืนยันอุปสงค์หน่วยความจำ HBM สำหรับ AI" },
-                            { ticker: "NVDA", name: "NVIDIA", phase: "Phase 1: Core AI Enablers", reason: "รีบาวด์กลับขึ้นตามกลุ่มชิป หลัง Microsoft ยืนยันเพิ่มงบ AI Infrastructure" },
-                            { ticker: "GOOGL", name: "Alphabet", phase: "Phase 3: Cloud Hyperscaler", reason: "Google Cloud รายได้โตแรงต่อเนื่อง Valuation P/E เหมาะสม (~16-17 เท่า)" }
+                    {
+                        id: 'mu',
+                        title: "2. Micron Technology, Inc. (MU)",
+                        subsections: [
+                            {
+                                subtitle: "2.1 ผลประกอบการและข่าวสารล่าสุด",
+                                highlights: [
+                                    { label: "รายได้ Q3 (Fiscal 2026)", value: "$41.5 พันล้าน", desc: "(+346% YoY) ระเบิดตัวเหนือคาดหมาย" },
+                                    { label: "อัตรากำไรขั้นต้น", value: "84.9%", desc: "ราคาขายเฉลี่ยพุ่ง ลดความผันผวนต้นทุน" }
+                                ]
+                            }
                         ]
                     }
-                },
-                portfolio: {
-                    totalThb: "21,668.41",
-                    totalUsd: "$544.33 USD",
-                    unrealizedPl: "-18.83%",
-                    usStocksShare: "84.23%",
-                    cashShare: "15.77%",
-                    cashThb: "3,417.14 THB",
-                    historyFilterData: {
-                        '1W': [22500, 22200, 21900, 21500, 21800, 21700, 21668],
-                        '1M': [25000, 24500, 24000, 23500, 23000, 22500, 22000, 21500, 21800, 21668],
-                        'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 23000, 21668],
-                    },
-                    holdings: [
-                        { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "78.60%", avgCost: "$286.63", price: "$224.89", pl: "-21.54%" },
-                        { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "21.40%", avgCost: "$794.99", price: "$739.00", pl: "-7.04%" }
-                    ]
-                }
+                ]
             },
-
-            // --- Slot 1: ชุดข้อมูลเก่าชุดก่อนหน้า (ถูกดันลงไปจากชุดปัจจุบัน) ---
             {
-                slotId: "slot-1",
+                slotId: "news-1",
                 dateLabel: "31 กรกฎาคม 2026",
-                isCurrentSlot: false,
-                news: {
-                    title: "รายงานสรุปข้อมูลอัปเดตข่าวสารประจำปลายเดือนกรกฎาคม",
-                    subtitle: "สรุปผลประกอบการไตรมาส Q1 FY27 ของ Arm และพาร์ตเนอร์ HBM3e ของ Micron",
-                    sections: [
-                        {
-                            id: 'arm-old',
-                            title: "1. Arm Holdings plc (ARM) - ข้อมูลเก่าก่อนหน้า",
-                            subsections: [
-                                {
-                                    subtitle: "1.1 ผลประกอบการ Q1 FY27",
-                                    highlights: [
-                                        { label: "รายได้รวม Q1", value: "$1.28 พันล้าน", desc: "ชนะคาดการณ์ Wall Street" },
-                                        { label: "Royalty Data Center", value: "$320 ล้าน", desc: "+110% YoY" }
-                                    ]
-                                }
-                            ]
-                        }
-                    ]
-                },
-                report: {
-                    title: "รายงานวิเคราะห์ AI & Arm Holdings (ฉบับก่อนหน้า)",
-                    subtitle: "ประจำสัปดาห์ (27 - 31 กรกฎาคม 2026)",
-                    section1: {
-                        title: "1. สรุปผลการดำเนินงาน Arm ไตรมาส Q1",
-                        intro: "ข้อมูลรายงานฉบับเก่าช่วงปลายเดือนกรกฎาคม:",
-                        highlights: [
-                            { label: "รายได้รวม", value: "$1.28B", desc: "ทำสถิติ Q1" },
-                            { label: "EPS", value: "$0.45", desc: "สูงกว่าเป้า" }
-                        ],
-                        details: [
-                            "Armv9 Adoption ขยายตัวต่อเนื่องในกลุ่ม AI Hyperscalers",
-                            "นักวิเคราะห์ประเมินราคาเป้าหมายคอนเซนซัสที่ $212 USD"
-                        ]
-                    },
-                    section2: {
-                        title: "2. ประเมิน 5 Checkpoints (ชุดเก่า)",
-                        checkpoints: [
-                            { id: 1, name: "CSS Adoption", status: "ผ่าน", desc: "เพิ่มขึ้นต่อเนื่อง" },
-                            { id: 2, name: "Data Center", status: "ผ่านดีเยี่ยม", desc: "โตเกิน 100%" },
-                            { id: 3, name: "Armv9 Penetration", status: "ผ่าน", desc: "ขยายตัวต่อเนื่อง" },
-                            { id: 4, name: "Margins", status: "ผ่านดีเยี่ยม", desc: "Gross Margin 98%" },
-                            { id: 5, name: "Guidance", status: "ผ่าน", desc: "กรอบประมาณการขยายตัว" }
-                        ]
-                    },
-                    section3: {
-                        title: "3. หุ้น AI แนะนำ (ชุดก่อนหน้า)",
-                        picks: [
-                            { ticker: "ARM", name: "Arm Holdings plc", phase: "Architecture Leader", reason: "ผู้นำสถาปัตยกรรมชิป AI" },
-                            { ticker: "MU", name: "Micron Technology", phase: "HBM Enabler", reason: "ผู้นำ HBM3e Memory" }
+                title: "รายงานสรุปข่าวสารประจำปลายเดือนกรกฎาคม",
+                subtitle: "งบ Q1 Arm และการประกาศพันธมิตร HBM ของ Micron",
+                sections: [
+                    {
+                        id: 'arm-old',
+                        title: "1. Arm Holdings plc (ARM) - ข่าวประจำเดือนกรกฎาคม",
+                        subsections: [
+                            {
+                                subtitle: "1.1 ประกาศงบ Q1",
+                                highlights: [{ label: "รายได้รวม", value: "$1.28B", desc: "ชนะคาดการณ์ Wall St." }]
+                            }
                         ]
                     }
+                ]
+            },
+            {
+                slotId: "news-2",
+                dateLabel: "15 กรกฎาคม 2026",
+                title: "รายงานพรีวิวข่าวสารกลางปี 2026",
+                subtitle: "ความต้องการชิป AI Data Center ทะลุเป้าหมาย",
+                sections: [{ id: 'mid', title: "1. ข่าวสารกลางปี", content: "อุปสงค์ชิปประมวลผล AI เติบโตแข็งแกร่ง" }]
+            },
+            {
+                slotId: "news-3",
+                dateLabel: "30 มิถุนายน 2026",
+                title: "สรุปข่าวสารประจำปลายเดือนมิถุนายน",
+                subtitle: "การเปิดตัวสถาปัตยกรรม Armv9 รุ่นใหม่",
+                sections: [{ id: 'june', title: "1. Armv9 Adoption", content: "อัตราการใช้งาน Armv9 เพิ่มขึ้นเป็น 45%" }]
+            },
+            {
+                slotId: "news-4",
+                dateLabel: "15 มิถุนายน 2026",
+                title: "สรุปข่าวสารประจำกลางเดือนมิถุนายน",
+                subtitle: "การลงทุนขยายฐานผลิตของ Micron ในสหรัฐฯ",
+                sections: [{ id: 'june-mid', title: "1. Micron Expansion", content: "เริ่มก่อสร้างโรงงานผลิต HBM แห่งใหม่" }]
+            }
+        ];
+
+        // --- 2. SLOTS สำหรับหมวด "สถานะพอร์ต" (สูงสุด 5 Slots) ---
+        const INITIAL_PORTFOLIO_SLOTS = [
+            {
+                slotId: "port-0",
+                dateLabel: "12 สิงหาคม 2026",
+                totalThb: "21,668.41",
+                totalUsd: "$544.33 USD",
+                unrealizedPl: "-18.83%",
+                usStocksShare: "84.23%",
+                cashShare: "15.77%",
+                cashThb: "3,417.14 THB",
+                historyFilterData: {
+                    '1W': [22500, 22200, 21900, 21500, 21800, 21700, 21668],
+                    '1M': [25000, 24500, 24000, 23500, 23000, 22500, 22000, 21500, 21800, 21668],
+                    'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 23000, 21668],
                 },
-                portfolio: {
-                    totalThb: "23,150.00",
-                    totalUsd: "$580.20 USD",
-                    unrealizedPl: "-12.50%",
-                    usStocksShare: "81.00%",
-                    cashShare: "19.00%",
-                    cashThb: "4,398.50 THB",
-                    historyFilterData: {
-                        '1W': [23500, 23400, 23100, 22900, 23200, 23150, 23150],
-                        '1M': [25500, 25000, 24500, 24000, 23500, 23000, 23150, 23150],
-                        'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 23150],
-                    },
-                    holdings: [
-                        { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "75.00%", avgCost: "$286.63", price: "$240.50", pl: "-16.09%" },
-                        { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "25.00%", avgCost: "$794.99", price: "$755.00", pl: "-5.03%" }
+                holdings: [
+                    { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "78.60%", avgCost: "$286.63", price: "$224.89", pl: "-21.54%" },
+                    { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "21.40%", avgCost: "$794.99", price: "$739.00", pl: "-7.04%" }
+                ]
+            },
+            {
+                slotId: "port-1",
+                dateLabel: "31 กรกฎาคม 2026",
+                totalThb: "23,150.00",
+                totalUsd: "$580.20 USD",
+                unrealizedPl: "-12.50%",
+                usStocksShare: "81.00%",
+                cashShare: "19.00%",
+                cashThb: "4,398.50 THB",
+                historyFilterData: {
+                    '1W': [23500, 23400, 23100, 22900, 23200, 23150, 23150],
+                    '1M': [25500, 25000, 24500, 24000, 23500, 23000, 23150, 23150],
+                    'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 23150],
+                },
+                holdings: [
+                    { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "75.00%", avgCost: "$286.63", price: "$240.50", pl: "-16.09%" },
+                    { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "25.00%", avgCost: "$794.99", price: "$755.00", pl: "-5.03%" }
+                ]
+            },
+            {
+                slotId: "port-2",
+                dateLabel: "15 กรกฎาคม 2026",
+                totalThb: "24,500.00",
+                totalUsd: "$612.50 USD",
+                unrealizedPl: "-7.40%",
+                usStocksShare: "80.00%",
+                cashShare: "20.00%",
+                cashThb: "4,900.00 THB",
+                historyFilterData: {
+                    '1W': [24800, 24600, 24500, 24500, 24500, 24500, 24500],
+                    '1M': [25500, 25000, 24800, 24500, 24500, 24500, 24500],
+                    'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 24500],
+                },
+                holdings: [
+                    { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "75.00%", avgCost: "$286.63", price: "$255.00", pl: "-11.03%" },
+                    { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "25.00%", avgCost: "$794.99", price: "$770.00", pl: "-3.14%" }
+                ]
+            },
+            {
+                slotId: "port-3",
+                dateLabel: "30 มิถุนายน 2026",
+                totalThb: "25,200.00",
+                totalUsd: "$630.00 USD",
+                unrealizedPl: "-4.80%",
+                usStocksShare: "78.00%",
+                cashShare: "22.00%",
+                cashThb: "5,544.00 THB",
+                historyFilterData: { '1W': [25200], '1M': [25200], 'YTD': [25200] },
+                holdings: [
+                    { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "70.00%", avgCost: "$286.63", price: "$260.00", pl: "-9.29%" },
+                    { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "30.00%", avgCost: "$794.99", price: "$780.00", pl: "-1.88%" }
+                ]
+            },
+            {
+                slotId: "port-4",
+                dateLabel: "15 มิถุนายน 2026",
+                totalThb: "26,000.00",
+                totalUsd: "$650.00 USD",
+                unrealizedPl: "-1.50%",
+                usStocksShare: "75.00%",
+                cashShare: "25.00%",
+                cashThb: "6,500.00 THB",
+                historyFilterData: { '1W': [26000], '1M': [26000], 'YTD': [26000] },
+                holdings: [
+                    { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "68.00%", avgCost: "$286.63", price: "$275.00", pl: "-4.05%" },
+                    { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "32.00%", avgCost: "$794.99", price: "$790.00", pl: "-0.62%" }
+                ]
+            }
+        ];
+
+        // --- 3. SLOTS สำหรับหมวด "รายงานวิเคราะห์" (สูงสุด 5 Slots) ---
+        const INITIAL_REPORT_SLOTS = [
+            {
+                slotId: "report-0",
+                dateLabel: "12 สิงหาคม 2026",
+                title: "รายงานวิเคราะห์ AI & Arm Holdings",
+                subtitle: "ประจำสัปดาห์ (5 - 12 สิงหาคม 2026)",
+                section1: {
+                    title: "1. สรุปอัปเดตข่าวและงบการเงิน Arm Holdings (ARM)",
+                    intro: "อัปเดตงบการเงินไตรมาส Q1 FYE27 และการวิเคราะห์รายสัปดาห์ล่าสุด:",
+                    highlights: [
+                        { label: "รายได้รวม (Total Revenue)", value: "$1.289 พันล้าน", desc: "(+22% YoY) - ทำสถิติสูงสุดใหม่สำหรับ Q1" },
+                        { label: "กำไรสุทธิปรับปรุง (Non-GAAP EPS)", value: "$0.45", desc: "(+29% YoY) - สูงกว่ากรอบประมาณการ" },
+                        { label: "Royalty Revenue", value: "$715 ล้าน", desc: "(+22% YoY) - ทำสถิติ Q1 สูงสุด" },
+                        { label: "Licensing Revenue", value: "$574 ล้าน", desc: "(+23% YoY)" }
+                    ],
+                    details: [
+                        "Data Center Royalty: พุ่งขึ้นสถิติใหม่ เติบโตเกินกว่าเท่าตัว (>100% YoY) จากชิป Neoverse",
+                        "ปฏิกิริยาราคาหุ้น: หุ้นรีบาวด์ขึ้นแรง +6.5% ถึง +7.4% ปิดสัปดาห์ที่บริเวณ ~$240-$241 USD",
+                        "Morgan Stanley ปรับเพิ่มราคาเป้าหมายเป็น $212 USD (จาก $202)",
+                        "RBC Capital ($340), Evercore ISI ($326), UBS ($320) ยังคงแนะนำ Buy / Outperform"
+                    ]
+                },
+                section2: {
+                    title: "2. ประเมินสถิติ Arm ตามกรอบ 5 Checkpoints",
+                    checkpoints: [
+                        { id: 1, name: "CSS Adoption & Royalty Expansion", status: "ผ่าน", desc: "รายได้ Royalty ทำสถิติ $715M (+22% YoY)" },
+                        { id: 2, name: "Data Center & Cloud AI", status: "ผ่านดีเยี่ยม", desc: "รายได้ Royalty ฝั่ง Data Center เติบโตมากกว่า >100% YoY" },
+                        { id: 3, name: "Armv9 Penetration", status: "ผ่าน", desc: "การส่งมอบ Neoverse ทะลุ 1.5 พันล้าน Cores" },
+                        { id: 4, name: "Margins & Cash Flow", status: "ผ่านดีเยี่ยม", desc: "Gross Margin 98.1%, Free Cash Flow $665M" },
+                        { id: 5, name: "Guidance & Risks", status: "เฝ้าระวัง", desc: "คาดการณ์ Q2 รายได้ $1.38B (+20% YoY) เติบโตต่อเนื่อง" }
+                    ]
+                },
+                section3: {
+                    title: "3. คัดสรรหุ้น AI ที่น่าสนใจประจำสัปดาห์ (Top AI Stock Picks)",
+                    picks: [
+                        { ticker: "MU", name: "Micron Technology", phase: "Phase 2: Hardware & Memory", reason: "ราคาหุ้นรีบาวด์พุ่งขึ้นแรง +14.12% ยืนยันอุปสงค์หน่วยความจำ HBM สำหรับ AI" },
+                        { ticker: "NVDA", name: "NVIDIA", phase: "Phase 1: Core AI Enablers", reason: "รีบาวด์กลับขึ้นตามกลุ่มชิป หลัง Microsoft ยืนยันเพิ่มงบ AI Infrastructure" },
+                        { ticker: "GOOGL", name: "Alphabet", phase: "Phase 3: Cloud Hyperscaler", reason: "Google Cloud รายได้โตแรงต่อเนื่อง Valuation P/E เหมาะสม (~16-17 เท่า)" }
                     ]
                 }
             },
-
-            // --- Slot 2: ชุดข้อมูลเก่าถัดลงไปอีก ---
             {
-                slotId: "slot-2",
+                slotId: "report-1",
+                dateLabel: "31 กรกฎาคม 2026",
+                title: "รายงานวิเคราะห์ AI & Arm Holdings (ฉบับก่อนหน้า)",
+                subtitle: "ประจำสัปดาห์ (27 - 31 กรกฎาคม 2026)",
+                section1: {
+                    title: "1. สรุปผลการดำเนินงาน Arm ไตรมาส Q1",
+                    intro: "ข้อมูลรายงานฉบับเก่าช่วงปลายเดือนกรกฎาคม:",
+                    highlights: [
+                        { label: "รายได้รวม", value: "$1.28B", desc: "ทำสถิติ Q1" },
+                        { label: "EPS", value: "$0.45", desc: "สูงกว่าเป้า" }
+                    ],
+                    details: ["Armv9 Adoption ขยายตัวต่อเนื่องในกลุ่ม AI Hyperscalers"]
+                },
+                section2: {
+                    title: "2. ประเมิน 5 Checkpoints (ชุดเก่า)",
+                    checkpoints: [
+                        { id: 1, name: "CSS Adoption", status: "ผ่าน", desc: "เพิ่มขึ้นต่อเนื่อง" },
+                        { id: 2, name: "Data Center", status: "ผ่านดีเยี่ยม", desc: "โตเกิน 100%" },
+                        { id: 3, name: "Armv9 Penetration", status: "ผ่าน", desc: "ขยายตัวต่อเนื่อง" },
+                        { id: 4, name: "Margins", status: "ผ่านดีเยี่ยม", desc: "Gross Margin 98%" },
+                        { id: 5, name: "Guidance", status: "ผ่าน", desc: "กรอบประมาณการขยายตัว" }
+                    ]
+                },
+                section3: {
+                    title: "3. หุ้น AI แนะนำ",
+                    picks: [{ ticker: "ARM", name: "Arm Holdings plc", phase: "Architecture", reason: "ผู้นำสถาปัตยกรรมชิป AI" }]
+                }
+            },
+            {
+                slotId: "report-2",
                 dateLabel: "15 กรกฎาคม 2026",
-                isCurrentSlot: false,
-                news: {
-                    title: "รายงานสรุปแนวโน้มงบการเงินไตรมาสกลางปี",
-                    subtitle: "วิเคราะห์และประมาณการก่อนประกาศงบการเงินกลางปี 2026",
-                    sections: [
-                        {
-                            id: 'preview',
-                            title: "1. พรีวิวงบการเงินกลางปี",
-                            content: "คาดการณ์ประมาณการรายได้ Arm และ Micron เติบโตแข็งแกร่งจากรอบวัฏจักร AI Data Center"
-                        }
-                    ]
+                title: "รายงานวิเคราะห์ประมาณการก่อนประกาศงบ",
+                subtitle: "ประจำสัปดาห์ (10 - 15 กรกฎาคม 2026)",
+                section1: {
+                    title: "1. ประมาณการรายได้",
+                    intro: "บทวิเคราะห์สัปดาห์กลางเดือนกรกฎาคม:",
+                    highlights: [{ label: "คาดการณ์ ARM", value: "$1.25B", desc: "โต 20%" }],
+                    details: ["ประเมินความต้องการชิป AI ขยายตัวทั่วโลก"]
                 },
-                report: {
-                    title: "รายงานวิเคราะห์ประมาณการก่อนประกาศงบ",
-                    subtitle: "ประจำสัปดาห์ (10 - 15 กรกฎาคม 2026)",
-                    section1: {
-                        title: "1. ประมาณการรายได้",
-                        intro: "บทวิเคราะห์สัปดาห์กลางเดือนกรกฎาคม:",
-                        highlights: [
-                            { label: "คาดการณ์ ARM", value: "$1.25B", desc: "โต 20%" },
-                            { label: "คาดการณ์ MU", value: "$38.0B", desc: "HBM3e หนุน" }
-                        ],
-                        details: ["ประเมินความต้องการชิป AI ขยายตัวทั่วโลก"]
-                    },
-                    section2: {
-                        title: "2. ประเมิน 5 Checkpoints (พรีวิว)",
-                        checkpoints: [
-                            { id: 1, name: "CSS Adoption", status: "ผ่าน", desc: "ตามเป้าหมาย" },
-                            { id: 2, name: "Data Center", status: "ผ่านดีเยี่ยม", desc: "อุปสงค์สูงมาก" },
-                            { id: 3, name: "Armv9 Penetration", status: "ผ่าน", desc: "ตามคาด" },
-                            { id: 4, name: "Margins", status: "ผ่าน", desc: "รักษาระดับสูง" },
-                            { id: 5, name: "Guidance", status: "ผ่าน", desc: "แนวโน้มเชิงบวก" }
-                        ]
-                    },
-                    section3: {
-                        title: "3. หุ้น AI แนะนำ",
-                        picks: [{ ticker: "ARM", name: "Arm Holdings", phase: "Architecture", reason: "แนวโน้มงบแข็งแกร่ง" }]
-                    }
+                section2: {
+                    title: "2. ประเมิน Checkpoints",
+                    checkpoints: [{ id: 1, name: "CSS Adoption", status: "ผ่าน", desc: "ตามเป้าหมาย" }]
                 },
-                portfolio: {
-                    totalThb: "24,500.00",
-                    totalUsd: "$612.50 USD",
-                    unrealizedPl: "-7.40%",
-                    usStocksShare: "80.00%",
-                    cashShare: "20.00%",
-                    cashThb: "4,900.00 THB",
-                    historyFilterData: {
-                        '1W': [24800, 24600, 24500, 24500, 24500, 24500, 24500],
-                        '1M': [25500, 25000, 24800, 24500, 24500, 24500, 24500],
-                        'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 24500],
-                    },
-                    holdings: [
-                        { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "75.00%", avgCost: "$286.63", price: "$255.00", pl: "-11.03%" },
-                        { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "25.00%", avgCost: "$794.99", price: "$770.00", pl: "-3.14%" }
-                    ]
+                section3: {
+                    title: "3. หุ้น AI แนะนำ",
+                    picks: [{ ticker: "ARM", name: "Arm Holdings", phase: "Architecture", reason: "แนวโน้มงบแข็งแกร่ง" }]
+                }
+            },
+            {
+                slotId: "report-3",
+                dateLabel: "30 มิถุนายน 2026",
+                title: "รายงานวิเคราะห์รอบปลายเดือนมิถุนายน",
+                subtitle: "วิเคราะห์ผลกระทบอัตราดอกเบี้ย Fed ต่อหุ้นกลุ่ม Semiconductor",
+                section1: {
+                    title: "1. ผลกระทบมหภาค",
+                    intro: "วิเคราะห์ภาพรวมเศรษฐกิจ:",
+                    highlights: [{ label: "Fed Interest Rate", value: "5.25%", desc: "คงอัตราดอกเบี้ย" }],
+                    details: ["หุ้นกลุ่มชิปประมวลผล AI ยังคงได้รับแรงหนุนจากงบลงทุนคลาวด์"]
+                },
+                section2: {
+                    title: "2. Checkpoints",
+                    checkpoints: [{ id: 1, name: "Macro Factors", status: "ผ่าน", desc: "ทรงตัว" }]
+                },
+                section3: {
+                    title: "3. หุ้นแนะนำ",
+                    picks: [{ ticker: "NVDA", name: "NVIDIA", phase: "Hardware", reason: "อุปสงค์ GPU แข็งแกร่ง" }]
+                }
+            },
+            {
+                slotId: "report-4",
+                dateLabel: "15 มิถุนายน 2026",
+                title: "รายงานวิเคราะห์รอบกลางเดือนมิถุนายน",
+                subtitle: "การประเมิน Valuation และราคาเป้าหมาย Arm Holdings",
+                section1: {
+                    title: "1. การประเมินมูลค่า",
+                    intro: "สรุปการประเมินราคาเป้าหมาย:",
+                    highlights: [{ label: "Target Price Consensus", value: "$210 USD", desc: "กรอบบน $340" }],
+                    details: ["โบรกเกอร์หลักคงคำแนะนำซื้อ (Buy)"]
+                },
+                section2: {
+                    title: "2. Checkpoints",
+                    checkpoints: [{ id: 1, name: "Valuation", status: "ผ่าน", desc: "เหมาะสม" }]
+                },
+                section3: {
+                    title: "3. หุ้นแนะนำ",
+                    picks: [{ ticker: "ARM", name: "Arm Holdings", phase: "Architecture", reason: "พื้นฐานแข็งแกร่ง" }]
                 }
             }
         ];
@@ -364,8 +421,8 @@
             </div>
         );
 
-        // --- COLLAPSIBLE HISTORY DRAWER / POPUP (ป๊อปอัปพับเก็บได้สำหรับสลับชุดข้อมูล) ---
-        const HistoryDrawerPopup = ({ slots, activeSlotIndex, setActiveSlotIndex, isOpen, setIsOpen }) => {
+        // --- COLLAPSIBLE HISTORY DRAWER / POPUP FOR CATEGORY SLOTS ---
+        const HistoryDrawerPopup = ({ slots, activeSlotIndex, setActiveSlotIndex, isOpen, setIsOpen, categoryTitle }) => {
             if (!isOpen) return null;
 
             return (
@@ -378,8 +435,8 @@
                                     <Icons.SlotIcon />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-slate-900 text-base">คลังชุดข้อมูล (Dynamic Slots)</h3>
-                                    <p className="text-xs text-slate-500">เลือกชุดข้อมูลย้อนหลังมาเสียบแสดงผล</p>
+                                    <h3 className="font-bold text-slate-900 text-base">คลัง 5 Slots ({categoryTitle})</h3>
+                                    <p className="text-xs text-slate-500">เลือกประวัติ 5 ชุดย้อนหลังของหมวดนี้</p>
                                 </div>
                             </div>
                             <button 
@@ -392,8 +449,9 @@
 
                         {/* Slots Stack List */}
                         <div className="flex-1 overflow-y-auto p-4 space-y-3">
-                            <div className="bg-blue-50/70 border border-blue-100 rounded-xl p-3 text-xs text-blue-800 font-medium">
-                                💡 <strong>ระบบดันชุดข้อมูล:</strong> ข้อมูลอัปเดตใหม่สุดจะอยู่ด้านบนสุด (Slot 0) และจะดันชุดข้อมูลก่อนหน้าลงไปเป็นชุดย้อนหลังตามลำดับ
+                            <div className="bg-blue-50/70 border border-blue-100 rounded-xl p-3 text-xs text-blue-800 font-medium flex items-center justify-between">
+                                <span>🔒 <strong>จำกัดสูงสุด 5 Slots อิสระ:</strong> ข้อมูลใหม่จะดันชุดเก่าตกไปอัตโนมัติ</span>
+                                <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-md shrink-0 ml-1">5 Slots Max</span>
                             </div>
 
                             {slots.map((slot, index) => {
@@ -402,7 +460,7 @@
 
                                 return (
                                     <div 
-                                        key={slot.slotId}
+                                        key={slot.slotId || index}
                                         onClick={() => {
                                             setActiveSlotIndex(index);
                                             setIsOpen(false);
@@ -420,22 +478,22 @@
                                                     ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
                                                     : 'bg-slate-100 text-slate-600'
                                                 }`}>
-                                                    {isCurrent ? '🌟 ชุดอัปเดตล่าสุด' : `📜 ชุดย้อนหลัง #${index}`}
+                                                    {isCurrent ? '🌟 Slot 0 (ล่าสุด)' : `📜 Slot #${index}`}
                                                 </span>
                                             </div>
                                             <span className="text-xs font-semibold text-slate-500">📅 {slot.dateLabel}</span>
                                         </div>
 
                                         <h4 className="text-sm font-bold text-slate-900 mb-1 leading-snug">
-                                            {slot.report ? slot.report.title : "ชุดข้อมูลสถิติและการลงทุน"}
+                                            {slot.title || (slot.totalThb ? `พอร์ตรวม ${slot.totalThb} THB` : `ชุดข้อมูล #${index + 1}`)}
                                         </h4>
                                         <p className="text-xs text-slate-500 line-clamp-2">
-                                            {slot.report ? slot.report.subtitle : slot.news.title}
+                                            {slot.subtitle || (slot.unrealizedPl ? `Unrealized P/L: ${slot.unrealizedPl}` : 'ข้อมูลสรุปรายการ')}
                                         </p>
 
                                         {isSelected && (
                                             <div className="mt-3 pt-2 border-t border-blue-200/60 flex items-center justify-between text-xs text-blue-700 font-semibold">
-                                                <span>✓ กำลังถูกเสียบแสดงผลบนหน้าหลัก</span>
+                                                <span>✓ กำลังถูกเสียบแสดงผลในหมวดนี้</span>
                                                 <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-md">Active</span>
                                             </div>
                                         )}
@@ -448,36 +506,34 @@
             );
         };
 
-        const NewsTab = ({ slotData, onOpenUpload, onOpenQr, onOpenHistoryDrawer, slotsCount, activeSlotIndex }) => {
-            if (!slotData || !slotData.news) return <AwaitingUpdateState title="อยู่ระหว่างรอข้อมูลข่าวสาร" />;
+        const NewsTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenUpload, onOpenQr, onOpenHistoryDrawer }) => {
+            const currentSlot = slots[activeSlotIndex] || slots[0];
 
-            const { news } = slotData;
+            if (!currentSlot) return <AwaitingUpdateState title="อยู่ระหว่างรอข้อมูลข่าวสาร" />;
 
             return (
                 <div className="fade-in space-y-6 md:space-y-8 pb-10">
-                    {/* Header Card (Main Slot Display) */}
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8 relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-cyan-500 to-blue-600"></div>
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                             <div>
                                 <div className="flex items-center gap-2 mb-2 flex-wrap">
-                                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 leading-tight">{news.title}</h1>
+                                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 leading-tight">{currentSlot.title}</h1>
                                     {activeSlotIndex === 0 ? (
-                                        <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-200 shrink-0">ข้อมูลล่าสุด</span>
+                                        <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-200 shrink-0">ข่าวล่าสุด (Slot 0)</span>
                                     ) : (
-                                        <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-200 shrink-0">ชุดย้อนหลัง ({slotData.dateLabel})</span>
+                                        <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-200 shrink-0">ข่าวย้อนหลัง Slot #{activeSlotIndex} ({currentSlot.dateLabel})</span>
                                     )}
                                 </div>
-                                <p className="text-sm sm:text-base text-slate-500 font-medium">{news.subtitle}</p>
+                                <p className="text-sm sm:text-base text-slate-500 font-medium">{currentSlot.subtitle}</p>
                             </div>
                             
                             <div className="flex flex-wrap gap-2 w-full sm:w-auto shrink-0">
-                                {/* Sleek Collapsible Drawer Button */}
                                 <button 
                                     onClick={onOpenHistoryDrawer}
                                     className="flex items-center justify-center text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-300 rounded-xl px-3.5 py-2 font-semibold shadow-xs"
                                 >
-                                    <Icons.HistoryDrawer /> คลังข้อมูลย้อนหลัง ({slotsCount})
+                                    <Icons.HistoryDrawer /> คลังข่าว ({slots.length}/5 Slots)
                                 </button>
                                 <button 
                                     onClick={onOpenQr}
@@ -495,8 +551,7 @@
                         </div>
                     </div>
 
-                    {/* Main Sections */}
-                    {news.sections && news.sections.map((section) => (
+                    {currentSlot.sections && currentSlot.sections.map((section) => (
                         <div key={section.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
                             <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{section.title}</h2>
                             
@@ -546,21 +601,21 @@
             );
         };
 
-        const PortfolioTab = ({ slotData, onOpenUpload, onOpenQr, onOpenHistoryDrawer, slotsCount, activeSlotIndex }) => {
+        const PortfolioTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenUpload, onOpenQr, onOpenHistoryDrawer }) => {
             const [filter, setFilter] = useState('YTD');
             const chartRef = useRef(null);
             const chartInstance = useRef(null);
 
-            if (!slotData || !slotData.portfolio) return <AwaitingUpdateState title="อยู่ระหว่างรอข้อมูลพอร์ต" />;
+            const currentSlot = slots[activeSlotIndex] || slots[0];
 
-            const { portfolio } = slotData;
+            if (!currentSlot) return <AwaitingUpdateState title="อยู่ระหว่างรอข้อมูลพอร์ต" />;
 
             useEffect(() => {
                 if (chartInstance.current) {
                     chartInstance.current.destroy();
                 }
 
-                const chartValues = portfolio.historyFilterData[filter] || portfolio.historyFilterData['YTD'];
+                const chartValues = currentSlot.historyFilterData[filter] || currentSlot.historyFilterData['YTD'];
 
                 const ctx = chartRef.current.getContext('2d');
                 chartInstance.current = new Chart(ctx, {
@@ -606,7 +661,7 @@
                         chartInstance.current.destroy();
                     }
                 };
-            }, [filter, portfolio]);
+            }, [filter, currentSlot]);
 
             return (
                 <div className="fade-in space-y-6 pb-10">
@@ -614,9 +669,9 @@
                         <div className="flex items-center gap-3">
                             <h2 className="text-xl sm:text-2xl font-bold text-slate-800">อัปเดตสถานะพอร์ต</h2>
                             {activeSlotIndex === 0 ? (
-                                <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-200">ข้อมูลปัจจุบัน</span>
+                                <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-200">พอร์ตปัจจุบัน (Slot 0)</span>
                             ) : (
-                                <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-200">ชุดย้อนหลัง ({slotData.dateLabel})</span>
+                                <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-200">พอร์ตย้อนหลัง Slot #{activeSlotIndex} ({currentSlot.dateLabel})</span>
                             )}
                         </div>
                         
@@ -625,7 +680,7 @@
                                 onClick={onOpenHistoryDrawer}
                                 className="flex items-center justify-center text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-300 rounded-xl px-3.5 py-2 font-semibold shadow-xs"
                             >
-                                <Icons.HistoryDrawer /> คลังข้อมูลย้อนหลัง ({slotsCount})
+                                <Icons.HistoryDrawer /> คลังพอร์ต ({slots.length}/5 Slots)
                             </button>
                             <button 
                                 onClick={onOpenQr}
@@ -645,21 +700,21 @@
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-5 sm:p-6 text-white shadow-md">
                             <p className="text-slate-400 text-xs sm:text-sm mb-1">มูลค่าพอร์ตรวม (THB)</p>
-                            <h3 className="text-2xl sm:text-3xl font-bold mb-1 tracking-tight">{portfolio.totalThb}</h3>
-                            <p className="text-xs sm:text-sm text-slate-400 mb-3">≈ {portfolio.totalUsd}</p>
+                            <h3 className="text-2xl sm:text-3xl font-bold mb-1 tracking-tight">{currentSlot.totalThb}</h3>
+                            <p className="text-xs sm:text-sm text-slate-400 mb-3">≈ {currentSlot.totalUsd}</p>
                             <div className="flex items-center text-xs sm:text-sm text-red-400 font-medium bg-red-950/40 border border-red-800/40 px-2.5 py-1 rounded-lg w-fit">
-                                <Icons.TrendingDown /> {portfolio.unrealizedPl} (Unrealized P/L)
+                                <Icons.TrendingDown /> {currentSlot.unrealizedPl} (Unrealized P/L)
                             </div>
                         </div>
                         <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 shadow-sm flex flex-col justify-center">
                             <p className="text-slate-500 text-xs sm:text-sm mb-1">สัดส่วนหุ้นสหรัฐฯ (US Stocks)</p>
-                            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">{portfolio.usStocksShare}</h3>
+                            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">{currentSlot.usStocksShare}</h3>
                             <p className="text-xs text-slate-400">กลุ่ม Semiconductor (ARM, MU)</p>
                         </div>
                         <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 shadow-sm flex flex-col justify-center sm:col-span-2 lg:col-span-1">
                             <p className="text-slate-500 text-xs sm:text-sm mb-1">สัดส่วนเงินสด (Cash / Dry Powder)</p>
-                            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">{portfolio.cashShare}</h3>
-                            <p className="text-xs text-slate-400">{portfolio.cashThb} - พร้อมรอช้อนซื้อ</p>
+                            <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">{currentSlot.cashShare}</h3>
+                            <p className="text-xs text-slate-400">{currentSlot.cashThb} - พร้อมรอช้อนซื้อ</p>
                         </div>
                     </div>
 
@@ -698,7 +753,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {portfolio.holdings.map((h, i) => (
+                                        {currentSlot.holdings.map((h, i) => (
                                             <tr key={i} className="border-b border-slate-50">
                                                 <td className="p-3 font-medium text-slate-800">
                                                     {h.ticker}
@@ -746,16 +801,16 @@
             );
         };
 
-        const ReportTab = ({ slotData, onOpenUpload, onOpenQr, onOpenHistoryDrawer, slotsCount, activeSlotIndex }) => {
+        const ReportTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenUpload, onOpenQr, onOpenHistoryDrawer }) => {
             const getStatusColor = (status) => {
                 if (status.includes("ดีเยี่ยม")) return "bg-emerald-100 text-emerald-800 border-emerald-200";
                 if (status === "ผ่าน") return "bg-teal-50 text-teal-700 border-teal-200";
                 return "bg-amber-50 text-amber-700 border-amber-200";
             };
 
-            if (!slotData || !slotData.report) return <AwaitingUpdateState title="อยู่ระหว่างรอรายงานวิเคราะห์" />;
+            const currentSlot = slots[activeSlotIndex] || slots[0];
 
-            const { report } = slotData;
+            if (!currentSlot) return <AwaitingUpdateState title="อยู่ระหว่างรอรายงานวิเคราะห์" />;
 
             return (
                 <div className="fade-in space-y-6 sm:space-y-8 pb-10">
@@ -766,7 +821,7 @@
                                 onClick={onOpenHistoryDrawer}
                                 className="flex items-center text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-300 rounded-xl px-3 py-1.5 font-semibold shadow-xs"
                             >
-                                <Icons.HistoryDrawer /> คลังข้อมูลย้อนหลัง ({slotsCount})
+                                <Icons.HistoryDrawer /> คลังรายงาน ({slots.length}/5 Slots)
                             </button>
                             <div className="flex gap-2">
                                 <button 
@@ -786,24 +841,24 @@
                         
                         {activeSlotIndex === 0 ? (
                             <div className="inline-block bg-emerald-50 text-emerald-800 text-xs px-3 py-1 rounded-full font-bold border border-emerald-200 mb-2">
-                                🌟 รายงานชุดปัจจุบัน (ข้อมูลอัปเดตล่าสุด)
+                                🌟 รายงานชุดปัจจุบัน (Slot 0 ล่าสุด)
                             </div>
                         ) : (
                             <div className="inline-block bg-amber-50 text-amber-800 text-xs px-3 py-1 rounded-full font-bold border border-amber-200 mb-2">
-                                📜 รายงานชุดย้อนหลังประจำวันที่ {slotData.dateLabel}
+                                📜 รายงานย้อนหลัง Slot #{activeSlotIndex} ({currentSlot.dateLabel})
                             </div>
                         )}
 
-                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-2">{report.title}</h1>
-                        <p className="text-xs sm:text-sm text-slate-500 font-medium">{report.subtitle}</p>
+                        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-2">{currentSlot.title}</h1>
+                        <p className="text-xs sm:text-sm text-slate-500 font-medium">{currentSlot.subtitle}</p>
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
-                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 pb-2 border-b border-slate-100">{report.section1.title}</h2>
-                        <p className="text-xs sm:text-sm text-slate-700 mb-5">{report.section1.intro}</p>
+                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 pb-2 border-b border-slate-100">{currentSlot.section1.title}</h2>
+                        <p className="text-xs sm:text-sm text-slate-700 mb-5">{currentSlot.section1.intro}</p>
                         
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-                            {report.section1.highlights.map((hl, idx) => (
+                            {currentSlot.section1.highlights.map((hl, idx) => (
                                 <div key={idx} className="bg-slate-50/80 rounded-xl p-4 border border-slate-100">
                                     <p className="text-xs text-slate-500 mb-1">{hl.label}</p>
                                     <p className="text-base sm:text-lg font-bold text-slate-900">{hl.value}</p>
@@ -813,7 +868,7 @@
                         </div>
 
                         <ul className="space-y-2.5">
-                            {report.section1.details.map((detail, idx) => (
+                            {currentSlot.section1.details.map((detail, idx) => (
                                 <li key={idx} className="flex items-start text-xs sm:text-sm md:text-base leading-relaxed">
                                     <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
                                     <span className="text-slate-700">{detail}</span>
@@ -823,7 +878,7 @@
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
-                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{report.section2.title}</h2>
+                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{currentSlot.section2.title}</h2>
                         <div className="overflow-x-auto -mx-5 sm:mx-0 px-5 sm:px-0">
                             <table className="w-full text-left border-collapse min-w-[540px]">
                                 <thead>
@@ -834,7 +889,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {report.section2.checkpoints.map((cp) => (
+                                    {currentSlot.section2.checkpoints.map((cp) => (
                                         <tr key={cp.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
                                             <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-slate-800">{cp.id}. {cp.name}</td>
                                             <td className="p-3 sm:p-4">
@@ -851,9 +906,9 @@
                     </div>
 
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
-                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{report.section3.title}</h2>
+                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{currentSlot.section3.title}</h2>
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-                            {report.section3.picks.map((pick, idx) => (
+                            {currentSlot.section3.picks.map((pick, idx) => (
                                 <div key={idx} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:shadow-md transition-all relative overflow-hidden">
                                     <div className="absolute top-0 right-0 bg-blue-600 text-white font-bold text-[11px] px-3 py-1 rounded-bl-xl">
                                         #{idx + 1}
@@ -884,9 +939,15 @@
         const App = () => {
             const [activeTab, setActiveTab] = useState('report');
             
-            // Dynamic Slot Stack Architecture
-            const [datasetSlots, setDatasetSlots] = useState(INITIAL_DATASET_SLOTS);
-            const [activeSlotIndex, setActiveSlotIndex] = useState(0);
+            // --- 5 INDEPENDENT SLOTS PER CATEGORY STATE ---
+            const [newsSlots, setNewsSlots] = useState(INITIAL_NEWS_SLOTS);
+            const [newsActiveIndex, setNewsActiveIndex] = useState(0);
+
+            const [portfolioSlots, setPortfolioSlots] = useState(INITIAL_PORTFOLIO_SLOTS);
+            const [portfolioActiveIndex, setPortfolioActiveIndex] = useState(0);
+
+            const [reportSlots, setReportSlots] = useState(INITIAL_REPORT_SLOTS);
+            const [reportActiveIndex, setReportActiveIndex] = useState(0);
 
             const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false);
             const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
@@ -895,8 +956,6 @@
             const [uploadedFileName, setUploadedFileName] = useState('');
             const [parsedSnippet, setParsedSnippet] = useState('');
             const fileInputRef = useRef(null);
-
-            const currentActiveSlot = datasetSlots[activeSlotIndex] || datasetSlots[0];
 
             // Simple PDF parsing preview
             const handleFileChange = async (e) => {
@@ -952,6 +1011,34 @@
 
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(CURRENT_PAGE_URL)}`;
 
+            // Dynamic drawer props based on active tab
+            const getActiveDrawerProps = () => {
+                if (activeTab === 'news') {
+                    return {
+                        slots: newsSlots,
+                        activeSlotIndex: newsActiveIndex,
+                        setActiveSlotIndex: setNewsActiveIndex,
+                        categoryTitle: "ข่าวรายวัน"
+                    };
+                }
+                if (activeTab === 'portfolio') {
+                    return {
+                        slots: portfolioSlots,
+                        activeSlotIndex: portfolioActiveIndex,
+                        setActiveSlotIndex: setPortfolioActiveIndex,
+                        categoryTitle: "สถานะพอร์ต"
+                    };
+                }
+                return {
+                    slots: reportSlots,
+                    activeSlotIndex: reportActiveIndex,
+                    setActiveSlotIndex: setReportActiveIndex,
+                    categoryTitle: "รายงานวิเคราะห์"
+                };
+            };
+
+            const drawerProps = getActiveDrawerProps();
+
             return (
                 <div className="min-h-screen flex flex-col lg:flex-row bg-slate-50">
                     {/* Sidebar Desktop */}
@@ -962,7 +1049,7 @@
                             </div>
                             <div>
                                 <h1 className="text-lg font-bold text-slate-900 tracking-tight">InvestDash</h1>
-                                <p className="text-[11px] text-slate-400 font-medium">Slot Architecture Ready</p>
+                                <p className="text-[11px] text-slate-400 font-medium">5 Slots x 3 Topics</p>
                             </div>
                         </div>
                         <nav className="flex-1 px-4 space-y-1.5 mt-2">
@@ -987,13 +1074,13 @@
                         </nav>
 
                         <div className="p-4 mx-4 mb-2 bg-slate-50 rounded-xl border border-slate-200 text-left">
-                            <span className="text-[11px] font-semibold text-slate-500 block mb-1">🔌 ช่องเสียบข้อมูลปัจจุบัน:</span>
+                            <span className="text-[11px] font-semibold text-slate-500 block mb-1">🔌 สลับ 5 Slots ย้อนหลัง:</span>
                             <button 
                                 onClick={() => setIsHistoryDrawerOpen(true)}
                                 className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs font-bold text-indigo-700 hover:bg-indigo-50 flex items-center justify-between transition-all"
                             >
-                                <span>{currentActiveSlot.dateLabel}</span>
-                                <span className="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md">เปลี่ยนชุด</span>
+                                <span>{drawerProps.slots[drawerProps.activeSlotIndex]?.dateLabel}</span>
+                                <span className="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md">เปิดคลัง 5 Slots</span>
                             </button>
                         </div>
 
@@ -1064,43 +1151,44 @@
                     <main className="flex-1 lg:ml-64 p-4 sm:p-6 md:p-8 pb-24 sm:pb-8">
                         {activeTab === 'news' && (
                             <NewsTab 
-                                slotData={currentActiveSlot}
+                                slots={newsSlots}
+                                activeSlotIndex={newsActiveIndex}
+                                setActiveSlotIndex={setNewsActiveIndex}
                                 onOpenUpload={() => setIsUploadModalOpen(true)} 
                                 onOpenQr={() => setIsQrModalOpen(true)} 
                                 onOpenHistoryDrawer={() => setIsHistoryDrawerOpen(true)}
-                                slotsCount={datasetSlots.length}
-                                activeSlotIndex={activeSlotIndex}
                             />
                         )}
                         {activeTab === 'portfolio' && (
                             <PortfolioTab 
-                                slotData={currentActiveSlot}
+                                slots={portfolioSlots}
+                                activeSlotIndex={portfolioActiveIndex}
+                                setActiveSlotIndex={setPortfolioActiveIndex}
                                 onOpenUpload={() => setIsUploadModalOpen(true)} 
                                 onOpenQr={() => setIsQrModalOpen(true)} 
                                 onOpenHistoryDrawer={() => setIsHistoryDrawerOpen(true)}
-                                slotsCount={datasetSlots.length}
-                                activeSlotIndex={activeSlotIndex}
                             />
                         )}
                         {activeTab === 'report' && (
                             <ReportTab 
-                                slotData={currentActiveSlot}
+                                slots={reportSlots}
+                                activeSlotIndex={reportActiveIndex}
+                                setActiveSlotIndex={setReportActiveIndex}
                                 onOpenUpload={() => setIsUploadModalOpen(true)} 
                                 onOpenQr={() => setIsQrModalOpen(true)} 
                                 onOpenHistoryDrawer={() => setIsHistoryDrawerOpen(true)}
-                                slotsCount={datasetSlots.length}
-                                activeSlotIndex={activeSlotIndex}
                             />
                         )}
                     </main>
 
-                    {/* Collapsible History Drawer / Popover */}
+                    {/* Collapsible History Drawer / Popover for Category Slots */}
                     <HistoryDrawerPopup 
-                        slots={datasetSlots}
-                        activeSlotIndex={activeSlotIndex}
-                        setActiveSlotIndex={setActiveSlotIndex}
+                        slots={drawerProps.slots}
+                        activeSlotIndex={drawerProps.activeSlotIndex}
+                        setActiveSlotIndex={drawerProps.setActiveSlotIndex}
                         isOpen={isHistoryDrawerOpen}
                         setIsOpen={setIsHistoryDrawerOpen}
+                        categoryTitle={drawerProps.categoryTitle}
                     />
 
                     {/* QR Code Modal */}
