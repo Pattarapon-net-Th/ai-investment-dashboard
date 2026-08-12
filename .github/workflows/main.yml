@@ -1,15 +1,15 @@
-name: ซิงค์และตรวจสอบข้อมูล Google Docs ไปยังแดชบอร์ด
+name: ซิงค์ ประมวลผล และสร้าง Slot ข้อมูลอัตโนมัติ
 
 on:
   schedule:
-    - cron: '*/30 * * * *' # ⏰ ทำงานอัตโนมัติทุกๆ 30 นาที
+    - cron: '*/30 * * * *' # ⏰ รันประมวลผลอัตโนมัติทุกๆ 30 นาที
   workflow_dispatch: # ปุ่มกดสั่งรันด้วยตัวเองได้ตลอดเวลา
 
 permissions:
   contents: write
 
 jobs:
-  sync-and-verify:
+  sync-transform-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -23,49 +23,77 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests beautifulsoup4
 
-      - name: Sync and Audit Data Integrity
+      - name: Fetch and Transform Google Docs to Dynamic Slots JSON
         run: |
           python -c "
-          import requests, hashlib, os
+          import requests, json, os, re
+          from bs4 import BeautifulSoup
 
-          # ใช้ช่องทาง mobilebasic ปลดล็อกคอขวด 404/401 100%
           urls = {
-              'ข่าวรายวัน (News)': ('doc_news.html', 'https://docs.google.com/document/d/1WKpJ23Rat0qBIF5flz11xRkR7s26x2W5fiBhc6lz7Ww/mobilebasic'),
-              'สถานะพอร์ต (Portfolio)': ('doc_portfolio.html', 'https://docs.google.com/document/d/1Dbrad52p9vrD5JYNqdzphmaHT58bx33p4KV8wbKUg2E/mobilebasic'),
-              'รายงานวิเคราะห์ (Report)': ('doc_report.html', 'https://docs.google.com/document/d/12z-gUI6mbkJodbjBdLAiPoOBbHS3ooJ8hyf1J0yTC7k/mobilebasic')
+              'news': ('doc_news.html', 'news_slots.json', 'https://docs.google.com/document/d/1WKpJ23Rat0qBIF5flz11xRkR7s26x2W5fiBhc6lz7Ww/mobilebasic'),
+              'portfolio': ('doc_portfolio.html', 'portfolio_slots.json', 'https://docs.google.com/document/d/1Dbrad52p9vrD5JYNqdzphmaHT58bx33p4KV8wbKUg2E/mobilebasic'),
+              'report': ('doc_report.html', 'report_slots.json', 'https://docs.google.com/document/d/12z-gUI6mbkJodbjBdLAiPoOBbHS3ooJ8hyf1J0yTC7k/mobilebasic')
           }
 
           headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
           summary_rows = []
 
-          for category, (filename, url) in urls.items():
+          def extract_date(text):
+              match = re.search(r'(\d{1,2}\s+[^\s\d]+\s+\d{4})', text)
+              if match:
+                  return match.group(1)
+              return '12 สิงหาคม 2026'
+
+          for cat, (html_file, json_file, url) in urls.items():
               try:
                   res = requests.get(url, headers=headers, timeout=15)
-                  if res.status_code == 200 and len(res.text.strip()) > 0:
-                      new_content = res.text
-                      new_hash = hashlib.md5(new_content.encode('utf-8')).hexdigest()
+                  if res.status_code == 200:
+                      html_content = res.text
+                      with open(html_file, 'w', encoding='utf-8') as f:
+                          f.write(html_content)
 
-                      old_hash = ''
-                      if os.path.exists(filename):
-                          with open(filename, 'r', encoding='utf-8') as f:
-                              old_hash = hashlib.md5(f.read().encode('utf-8')).hexdigest()
+                      soup = BeautifulSoup(html_content, 'html.parser')
+                      text_content = soup.get_text(separator=' ')
+                      date_label = extract_date(text_content)
 
-                      with open(filename, 'w', encoding='utf-8') as f:
-                          f.write(new_content)
+                      # โหลดประวัติ Slots เดิมที่มีอยู่
+                      existing_slots = []
+                      if os.path.exists(json_file):
+                          try:
+                              with open(json_file, 'r', encoding='utf-8') as f:
+                                  existing_slots = json.load(f)
+                          except:
+                              existing_slots = []
 
-                      status = '🟢 ตรงกัน 100% (พบข้อมูลอัปเดตใหม่)' if new_hash != old_hash else '✅ ตรงกัน 100% (ข้อมูลเป็นปัจจุบัน)'
-                      size_kb = f'{len(new_content) / 1024:.1f} KB'
-                      summary_rows.append(f'| {category} | {status} | {size_kb} | HTTP 200 OK |')
+                      # ตรวจสอบและอัปเดต Slot ล่าสุด
+                      slot_id = f'{cat}-{date_label}'
+                      new_slot = {
+                          'slotId': slot_id,
+                          'dateLabel': date_label,
+                          'title': f'รายงานสรุปข้อมูลอัปเดต{cat.capitalize()}',
+                          'subtitle': f'ข้อมูลอัปเดตล่าสุดประจำวันที่ {date_label}',
+                          'rawContent': text_content[:500]
+                      }
+
+                      # ป้องกันการบันทึก Slot ซ้ำวัน และจำกัดสูงสุด 5 Slots (Auto-Pruning)
+                      filtered_slots = [s for s in existing_slots if s.get('dateLabel') != date_label]
+                      updated_slots = [new_slot] + filtered_slots
+                      updated_slots = updated_slots[:5]
+
+                      with open(json_file, 'w', encoding='utf-8') as f:
+                          json.dump(updated_slots, f, ensure_ascii=False, indent=2)
+
+                      summary_rows.append(f'| {cat} | 🟢 สร้าง Slot สำเร็จ ({date_label}) | {len(updated_slots)} Slots | HTTP 200 OK |')
                   else:
-                      summary_rows.append(f'| {category} | ❌ ผิดพลาด | - | HTTP {res.status_code} |')
+                      summary_rows.append(f'| {cat} | ❌ อ่านข้อมูลล้มเหลว | - | HTTP {res.status_code} |')
               except Exception as e:
-                  summary_rows.append(f'| {category} | ❌ เชื่อมต่อล้มเหลว | - | {str(e)} |')
+                  summary_rows.append(f'| {cat} | ❌ Error: {str(e)} | - | - |')
 
-          summary_md = '''## 📊 รายงานผลการตรวจสอบและซิงค์ข้อมูล (Data Audit Report)
+          summary_md = '''## 📊 รายงานการสร้าง Dynamic Slots อัตโนมัติ
 
-          | หมวดหมู่หัวข้อหลัก | สถานะความตรงกัน (Source vs Destination) | ขนาดข้อมูล | การตอบรับจาก Google Docs |
+          | หมวดหมู่ | สถานะการสร้าง Slot | จำนวน Slots ในคลัง | การตอบรับ Google Docs |
           | :--- | :--- | :--- | :--- |
           ''' + '\n'.join(summary_rows)
 
@@ -73,9 +101,9 @@ jobs:
               f.write(summary_md)
           "
 
-      - name: Commit and Push changes
+      - name: Commit and Push Updated Slots JSON
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add doc_news.html doc_portfolio.html doc_report.html || true
-          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: Sync & Audit 3 Google Docs content" && git push)
+          git add doc_*.html *_slots.json || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: Generate & Sync Dynamic Slots JSON" && git push)
