@@ -3,53 +3,53 @@
     "slotId": "report-12 สิงหาคม 2026",
     "dateLabel": "12 สิงหาคม 2026",
     "title": "รายงานวิเคราะห์ AI & Arm Holdings",
-    "subtitle": "รายงานสรุปเชิงลึก: โครงสร้างยุทธศาสตร์ พันธมิตร และทิศทางในอนาคต (12 สิงหาคม 2026)",
+    "subtitle": "ประจำสัปดาห์ (12 สิงหาคม 2026)",
     "section1": {
-      "title": "1. ความสัมพันธ์ทางยุทธศาสตร์ระหว่าง NVIDIA และ Arm (NVIDIA & Arm Strategic Synergy)",
-      "intro": "วิเคราะห์เชิงลึกความร่วมมือและเทคโนโลยีสำคัญระหว่าง NVIDIA และ Arm:",
+      "title": "1. สรุปอัปเดตข่าวและงบการเงิน Arm Holdings (ARM)",
+      "intro": "อัปเดตงบการเงินไตรมาส Q1 FYE27 และการวิเคราะห์รายสัปดาห์ล่าสุด:",
       "highlights": [
         {
-          "label": "สัญญาสถาปัตยกรรม",
-          "value": "20 ปี",
-          "desc": "NVIDIA ถือสิทธิ์ Arm Architectural License ระยะยาว"
+          "label": "รายได้รวม (Total Revenue)",
+          "value": ".289 พันล้าน",
+          "desc": "(+22% YoY) ทำสถิติสูงสุดใหม่สำหรับ Q1"
         },
         {
-          "label": "Vera Rubin NVL72",
-          "value": "88 Cores",
-          "desc": "176 Threads Custom Olympus Cores บน Armv9.2-A"
+          "label": "กำไรสุทธิปรับปรุง (Non-GAAP EPS)",
+          "value": "/home/runner/work/_temp/d5526cb4-c2e4-4b1f-aca0-62b609018479.sh.45",
+          "desc": "(+29% YoY) สูงกว่ากรอบเป้าหมาย"
         },
         {
-          "label": "แบนด์วิดท์ NVLink-C2C",
-          "value": "1.8 TB/s",
-          "desc": "เชื่อมต่อ CPU-GPU ความเร็วสูง 1,800 GB/s"
+          "label": "Royalty Revenue",
+          "value": "15 ล้าน",
+          "desc": "(+22% YoY) ทำสถิติ Q1 สูงสุด"
         },
         {
-          "label": "ชิป NVIDIA RTX Spark",
-          "value": "TSMC 3nm",
-          "desc": "20-core Arm CPU + Blackwell GPU สำหรับ AI PC"
+          "label": "Licensing Revenue",
+          "value": "74 ล้าน",
+          "desc": "(+23% YoY) เติบโตแข็งแกร่ง"
         }
       ],
       "details": [
-        "สัญญาสถาปัตยกรรม 20 ปี: หลังดีลซื้อกิจการ 0B ถูกระงับในปี 2022 NVIDIA ถือสิทธิ์ Arm Architectural License 20 ปีเพื่อออกแบบ CPU ระดับสูงของตนเอง",
-        "วิวัฒนาการชิปเซิร์ฟเวอร์ AI: จาก Grace CPU (72 คอร์) สู่ Vera CPU (88 คอร์ / 176 เธรด Custom Olympus Cores) พร้อม SOCAMM LPDDR5X 1.5 TB",
-        "การขยายสู่ AI PC: ชิป NVIDIA RTX Spark ร่วมมือกับ MediaTek และ Microsoft รวม 20-core Arm CPU กับ Blackwell GPU พร้อม Unified Memory 128 GB",
-        "การสร้างระบบปิดผ่าน NVLink-C2C: แบนด์วิดท์ 1.8 TB/s (1,800 GB/s) ปลดล็อกคอขวด PCIe และจำกัดเฉพาะพันธมิตร Arm"
+        "Data Center Royalty: พุ่งขึ้นสถิติใหม่ เติบโตเกินกว่าเท่าตัว (>100% YoY) จากชิป Neoverse ใน Hyperscalers",
+        "ปฏิกิริยาราคาหุ้น: หุ้นรีบาวด์ขึ้นแรง +6.5% ถึง +7.4% ปิดสัปดาห์ที่บริเวณ ~40-41 USD",
+        "NVIDIA & Arm Synergy: ชิป Grace & Vera CPU เชื่อมต่อผ่าน NVLink-C2C แบนด์วิดท์ 1.8 TB/s ปลดล็อกคอขวดระบบ AI",
+        "เป้าหมาย Valuation: แผน Value Creation Plan มุ่งสู่ Market Cap - Trillion ภายในปี 2029-2031"
       ]
     },
     "section2": {
-      "title": "2. โมเดลธุรกิจ ตัวขับเคลื่อนมูลค่า และการบริหารจัดการความเสี่ยง",
+      "title": "2. ประเมินสถิติ Arm ตามกรอบ 5 Checkpoints",
       "checkpoints": [
         {
           "id": 1,
-          "name": "Compute Subsystems (CSS)",
-          "status": "ผ่านดีเยี่ยม",
-          "desc": "ลดระยะเวลาออกแบบ 12-18 เดือน ดัน Royalty Rate สู่ 5%-10%+ ต่อชิป"
+          "name": "CSS Adoption & Royalty Expansion",
+          "status": "ผ่าน",
+          "desc": "รายได้ Royalty ทำสถิติ 15M (+22% YoY) ค่าสิทธิ์ขยับสู่ 5%-10% ต่อชิป"
         },
         {
           "id": 2,
-          "name": "Arm AGI CPU (TSMC 3nm)",
+          "name": "Data Center & Cloud AI",
           "status": "ผ่านดีเยี่ยม",
-          "desc": "ชิปสำเร็จรูป 136 คอร์ร่วมกับ Meta & OpenAI ยอดคำสั่งซื้อ >,000M"
+          "desc": "รายได้ Royalty ฝั่ง Data Center เติบโตมากกว่า >100% YoY"
         },
         {
           "id": 3,
@@ -59,47 +59,40 @@
         },
         {
           "id": 4,
-          "name": "Asset-Light Strategy",
+          "name": "Margins & Cash Flow",
           "status": "ผ่านดีเยี่ยม",
-          "desc": "ไม่สร้าง Fab เอง รักษา Gross Margin 97%-98% เลี่ยง CapEx 5B-0B"
+          "desc": "Gross Margin 95%-98%, โมเดล Asset-Light ไม่มีภาระสร้าง Fab"
         },
         {
           "id": 5,
-          "name": "Risk Checkpoints",
+          "name": "Guidance & Risks",
           "status": "เฝ้าระวัง",
-          "desc": "การขยายตัวของ RISC-V, ข้อพิพาท Qualcomm vs. Arm, และโครงสร้างหุ้น SoftBank"
+          "desc": "ติดตามการแข่งขันจาก RISC-V และคดีความ Qualcomm vs. Arm"
         }
       ]
     },
     "section3": {
-      "title": "3. ระบบนิเวศพันธมิตรในปัจจุบันและแนวโน้มอนาคต (Top Ecosystem Frontiers)",
+      "title": "3. คัดสรรหุ้น AI ที่น่าสนใจประจำสัปดาห์ (Top AI Stock Picks)",
       "picks": [
-        {
-          "ticker": "ARM",
-          "name": "Arm Holdings",
-          "phase": "Architecture & Ecosystem",
-          "reason": "เครือข่ายนักพัฒนากว่า 22 ล้านคนทั่วโลก ชุมชน Arm Total Design พันธมิตรกว่า 30 ราย"
-        },
         {
           "ticker": "MU",
           "name": "Micron Technology",
-          "phase": "Memory & Physical AI",
-          "reason": "ผู้นำ HBM/DRAM และ SOCAMM LPDDR5X สนับสนุนแพลตฟอร์ม AI และหุ่นยนต์"
+          "phase": "Phase 2: Hardware & Memory",
+          "reason": "ราคาหุ้นรีบาวด์พุ่งขึ้นแรง ได้รับประโยชน์สูงสุดจากอุปสงค์ HBM และ DRAM ขาดแคลน"
         },
         {
           "ticker": "NVDA",
           "name": "NVIDIA",
-          "phase": "Compute & Physical AI",
-          "reason": "DRIVE Thor 14-core Neoverse-V3AE ในยานยนต์ไร้คนขับ และหุ่นยนต์ Atlas"
+          "phase": "Phase 1: Core AI Enablers",
+          "reason": "ผู้นำระบบ AI เต็มรูปแบบ Grace/Vera Rubin สถาปัตยกรรม Blackwell ขยายตัวต่อเนื่อง"
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet",
+          "phase": "Phase 3: Cloud Hyperscaler",
+          "reason": "Google Axion N4A ชิป Arm ประสิทธิภาพสูง Cloud โตแรง Valuation P/E น่าดึงดูด"
         }
       ]
     }
-  },
-  {
-    "slotId": "report-00 ล้านดอลลาร์ถูกระงับในปี 2022",
-    "dateLabel": "00 ล้านดอลลาร์ถูกระงับในปี 2022",
-    "title": "รายงานสรุปข้อมูลอัปเดตReport",
-    "subtitle": "ข้อมูลอัปเดตล่าสุดประจำวันที่ 00 ล้านดอลลาร์ถูกระงับในปี 2022",
-    "rawContent": "รายงานวิเคราะห์ AI & Arm Holdings ประจำสัปดาห์  [อัปเดตล่าสุด: 12/08/2026] รายงานสรุปเชิงลึก: โครงสร้างยุทธศาสตร์ พันธมิตร และทิศทางในอนาคตของ Arm Holdings 1. ความสัมพันธ์ทางยุทธศาสตร์ระหว่าง NVIDIA และ Arm (NVIDIA & Arm Strategic Synergy) สัญญาสถาปัตยกรรม 20 ปี : หลังดีลซื้อกิจการ $40,000 ล้านดอลลาร์ถูกระงับในปี 2022 NVIDIA เปลี่ยนมาถือสิทธิ์  Arm Architectural License 20 ปี  ออกแบบคอร์ CPU ประสิทธิภาพสูงของตนเอง วิวัฒนาการชิปเซิร์ฟเวอร์ AI : จาก  Grace CPU  (72 คอร์ Neoverse V2) สู่  Vera CPU "
   }
 ]
