@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>AI & Tech Investment Dashboard</title>
     
     <!-- React & Babel -->
@@ -642,7 +645,7 @@
 
         const ReportTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenQr, onOpenHistoryDrawer }) => {
             const getStatusColor = (status) => {
-                if (status.includes("ดีเยี่ยม")) return "bg-emerald-100 text-emerald-800 border-emerald-200";
+                if (status && status.includes("ดีเยี่ยม")) return "bg-emerald-100 text-emerald-800 border-emerald-200";
                 if (status === "ผ่าน") return "bg-teal-50 text-teal-700 border-teal-200";
                 return "bg-amber-50 text-amber-700 border-amber-200";
             };
