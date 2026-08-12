@@ -14,9 +14,6 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     
-    <!-- PDF.js for Real Client-side PDF Parsing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-    
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
@@ -64,26 +61,75 @@
     <div id="root"></div>
 
     <script type="text/babel">
-        if (window.pdfjsLib) {
-            window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-        }
-
         const { useState, useEffect, useRef } = React;
 
-        const CURRENT_PAGE_URL = typeof window !== 'undefined' ? window.location.href : 'https://github.com';
-        const MAX_SLOTS_PER_CATEGORY = 5; // ล็อกสูงสุด 5 Slots ต่อ 1 หมวดหัวข้อหลัก
+        // ลิงก์หลักสำหรับสร้าง QR Code สแกนเปิดบน iPad / สมาร์ตโฟน
+        const GITHUB_PAGES_LIVE_URL = 'https://pattarapon-net-th.github.io/ai-investment-dashboard/';
+        const CURRENT_PAGE_URL = (typeof window !== 'undefined' && window.location.protocol.startsWith('http')) 
+            ? window.location.href 
+            : GITHUB_PAGES_LIVE_URL;
+
+        const MAX_HISTORY_PER_CATEGORY = 5;
 
         // =========================================================================
-        // --- 5 INDEPENDENT SLOTS PER CATEGORY (5 SLOTS อิสระแยก 3 หมวด) ---
+        // --- DYNAMIC DATE PARSER & AUTOMATIC CHRONOLOGICAL SORTING SYSTEM ---
+        // =========================================================================
+        const parseDateToTimestamp = (dateStr) => {
+            if (!dateStr) return 0;
+            
+            const isoMatch = dateStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+            if (isoMatch) {
+                return new Date(parseInt(isoMatch[1]), parseInt(isoMatch[2]) - 1, parseInt(isoMatch[3])).getTime();
+            }
+
+            const thaiMonths = {
+                'มกราคม': 0, 'ม.ค.': 0,
+                'กุมภาพันธ์': 1, 'ก.พ.': 1,
+                'มีนาคม': 2, 'มี.ค.': 2,
+                'เมษายน': 3, 'เม.ย.': 3,
+                'พฤษภาคม': 4, 'พ.ค.': 4,
+                'มิถุนายน': 5, 'มิ.ย.': 5,
+                'กรกฎาคม': 6, 'ก.ค.': 6,
+                'สิงหาคม': 7, 'ส.ค.': 7,
+                'กันยายน': 8, 'ก.ย.': 8,
+                'ตุลาคม': 9, 'ต.ค.': 9,
+                'พฤศจิกายน': 10, 'พ.ย.': 10,
+                'ธันวาคม': 11, 'ธ.ค.': 11
+            };
+
+            const thaiMatch = dateStr.match(/(\d{1,2})\s+([^\s\d]+)\s+(\d{4})/);
+            if (thaiMatch) {
+                const day = parseInt(thaiMatch[1]);
+                const monthName = thaiMatch[2];
+                let year = parseInt(thaiMatch[3]);
+                if (year > 2400) year -= 543;
+                const month = thaiMonths[monthName] !== undefined ? thaiMonths[monthName] : 0;
+                return new Date(year, month, day).getTime();
+            }
+
+            const fallbackDate = Date.parse(dateStr);
+            return isNaN(fallbackDate) ? 0 : fallbackDate;
+        };
+
+        const sortSlotsByDate = (slots) => {
+            if (!slots || !Array.isArray(slots)) return [];
+            return [...slots].sort((a, b) => {
+                const timeA = parseDateToTimestamp(a.dateLabel || a.date);
+                const timeB = parseDateToTimestamp(b.dateLabel || b.date);
+                return timeB - timeA;
+            });
+        };
+
+        // =========================================================================
+        // --- INITIAL DATASETS ---
         // =========================================================================
 
-        // --- 1. SLOTS สำหรับหมวด "ข่าวรายวัน" (สูงสุด 5 Slots) ---
         const INITIAL_NEWS_SLOTS = [
             {
                 slotId: "news-0",
                 dateLabel: "12 สิงหาคม 2026",
-                title: "รายงานสรุปข้อมูลอัปเดตข่าวสารและผลกระทบประจำสัปดาห์",
-                subtitle: "Arm Holdings (ARM) & Micron Technology (MU) - ประจำสัปดาห์ที่ 12 สิงหาคม 2026",
+                title: "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+                subtitle: "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 12 สิงหาคม 2026",
                 sections: [
                     {
                         id: 'arm',
@@ -121,49 +167,9 @@
                         ]
                     }
                 ]
-            },
-            {
-                slotId: "news-1",
-                dateLabel: "31 กรกฎาคม 2026",
-                title: "รายงานสรุปข่าวสารประจำปลายเดือนกรกฎาคม",
-                subtitle: "งบ Q1 Arm และการประกาศพันธมิตร HBM ของ Micron",
-                sections: [
-                    {
-                        id: 'arm-old',
-                        title: "1. Arm Holdings plc (ARM) - ข่าวประจำเดือนกรกฎาคม",
-                        subsections: [
-                            {
-                                subtitle: "1.1 ประกาศงบ Q1",
-                                highlights: [{ label: "รายได้รวม", value: "$1.28B", desc: "ชนะคาดการณ์ Wall St." }]
-                            }
-                        ]
-                    }
-                ]
-            },
-            {
-                slotId: "news-2",
-                dateLabel: "15 กรกฎาคม 2026",
-                title: "รายงานพรีวิวข่าวสารกลางปี 2026",
-                subtitle: "ความต้องการชิป AI Data Center ทะลุเป้าหมาย",
-                sections: [{ id: 'mid', title: "1. ข่าวสารกลางปี", content: "อุปสงค์ชิปประมวลผล AI เติบโตแข็งแกร่ง" }]
-            },
-            {
-                slotId: "news-3",
-                dateLabel: "30 มิถุนายน 2026",
-                title: "สรุปข่าวสารประจำปลายเดือนมิถุนายน",
-                subtitle: "การเปิดตัวสถาปัตยกรรม Armv9 รุ่นใหม่",
-                sections: [{ id: 'june', title: "1. Armv9 Adoption", content: "อัตราการใช้งาน Armv9 เพิ่มขึ้นเป็น 45%" }]
-            },
-            {
-                slotId: "news-4",
-                dateLabel: "15 มิถุนายน 2026",
-                title: "สรุปข่าวสารประจำกลางเดือนมิถุนายน",
-                subtitle: "การลงทุนขยายฐานผลิตของ Micron ในสหรัฐฯ",
-                sections: [{ id: 'june-mid', title: "1. Micron Expansion", content: "เริ่มก่อสร้างโรงงานผลิต HBM แห่งใหม่" }]
             }
         ];
 
-        // --- 2. SLOTS สำหรับหมวด "สถานะพอร์ต" (สูงสุด 5 Slots) ---
         const INITIAL_PORTFOLIO_SLOTS = [
             {
                 slotId: "port-0",
@@ -183,78 +189,9 @@
                     { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "78.60%", avgCost: "$286.63", price: "$224.89", pl: "-21.54%" },
                     { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "21.40%", avgCost: "$794.99", price: "$739.00", pl: "-7.04%" }
                 ]
-            },
-            {
-                slotId: "port-1",
-                dateLabel: "31 กรกฎาคม 2026",
-                totalThb: "23,150.00",
-                totalUsd: "$580.20 USD",
-                unrealizedPl: "-12.50%",
-                usStocksShare: "81.00%",
-                cashShare: "19.00%",
-                cashThb: "4,398.50 THB",
-                historyFilterData: {
-                    '1W': [23500, 23400, 23100, 22900, 23200, 23150, 23150],
-                    '1M': [25500, 25000, 24500, 24000, 23500, 23000, 23150, 23150],
-                    'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 23150],
-                },
-                holdings: [
-                    { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "75.00%", avgCost: "$286.63", price: "$240.50", pl: "-16.09%" },
-                    { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "25.00%", avgCost: "$794.99", price: "$755.00", pl: "-5.03%" }
-                ]
-            },
-            {
-                slotId: "port-2",
-                dateLabel: "15 กรกฎาคม 2026",
-                totalThb: "24,500.00",
-                totalUsd: "$612.50 USD",
-                unrealizedPl: "-7.40%",
-                usStocksShare: "80.00%",
-                cashShare: "20.00%",
-                cashThb: "4,900.00 THB",
-                historyFilterData: {
-                    '1W': [24800, 24600, 24500, 24500, 24500, 24500, 24500],
-                    '1M': [25500, 25000, 24800, 24500, 24500, 24500, 24500],
-                    'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 24500],
-                },
-                holdings: [
-                    { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "75.00%", avgCost: "$286.63", price: "$255.00", pl: "-11.03%" },
-                    { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "25.00%", avgCost: "$794.99", price: "$770.00", pl: "-3.14%" }
-                ]
-            },
-            {
-                slotId: "port-3",
-                dateLabel: "30 มิถุนายน 2026",
-                totalThb: "25,200.00",
-                totalUsd: "$630.00 USD",
-                unrealizedPl: "-4.80%",
-                usStocksShare: "78.00%",
-                cashShare: "22.00%",
-                cashThb: "5,544.00 THB",
-                historyFilterData: { '1W': [25200], '1M': [25200], 'YTD': [25200] },
-                holdings: [
-                    { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "70.00%", avgCost: "$286.63", price: "$260.00", pl: "-9.29%" },
-                    { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "30.00%", avgCost: "$794.99", price: "$780.00", pl: "-1.88%" }
-                ]
-            },
-            {
-                slotId: "port-4",
-                dateLabel: "15 มิถุนายน 2026",
-                totalThb: "26,000.00",
-                totalUsd: "$650.00 USD",
-                unrealizedPl: "-1.50%",
-                usStocksShare: "75.00%",
-                cashShare: "25.00%",
-                cashThb: "6,500.00 THB",
-                historyFilterData: { '1W': [26000], '1M': [26000], 'YTD': [26000] },
-                holdings: [
-                    { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "68.00%", avgCost: "$286.63", price: "$275.00", pl: "-4.05%" },
-                    { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "32.00%", avgCost: "$794.99", price: "$790.00", pl: "-0.62%" }
-                ]
             }
         ];
 
-        // --- 3. SLOTS สำหรับหมวด "รายงานวิเคราะห์" (สูงสุด 5 Slots) ---
         const INITIAL_REPORT_SLOTS = [
             {
                 slotId: "report-0",
@@ -295,95 +232,6 @@
                         { ticker: "GOOGL", name: "Alphabet", phase: "Phase 3: Cloud Hyperscaler", reason: "Google Cloud รายได้โตแรงต่อเนื่อง Valuation P/E เหมาะสม (~16-17 เท่า)" }
                     ]
                 }
-            },
-            {
-                slotId: "report-1",
-                dateLabel: "31 กรกฎาคม 2026",
-                title: "รายงานวิเคราะห์ AI & Arm Holdings (ฉบับก่อนหน้า)",
-                subtitle: "ประจำสัปดาห์ (27 - 31 กรกฎาคม 2026)",
-                section1: {
-                    title: "1. สรุปผลการดำเนินงาน Arm ไตรมาส Q1",
-                    intro: "ข้อมูลรายงานฉบับเก่าช่วงปลายเดือนกรกฎาคม:",
-                    highlights: [
-                        { label: "รายได้รวม", value: "$1.28B", desc: "ทำสถิติ Q1" },
-                        { label: "EPS", value: "$0.45", desc: "สูงกว่าเป้า" }
-                    ],
-                    details: ["Armv9 Adoption ขยายตัวต่อเนื่องในกลุ่ม AI Hyperscalers"]
-                },
-                section2: {
-                    title: "2. ประเมิน 5 Checkpoints (ชุดเก่า)",
-                    checkpoints: [
-                        { id: 1, name: "CSS Adoption", status: "ผ่าน", desc: "เพิ่มขึ้นต่อเนื่อง" },
-                        { id: 2, name: "Data Center", status: "ผ่านดีเยี่ยม", desc: "โตเกิน 100%" },
-                        { id: 3, name: "Armv9 Penetration", status: "ผ่าน", desc: "ขยายตัวต่อเนื่อง" },
-                        { id: 4, name: "Margins", status: "ผ่านดีเยี่ยม", desc: "Gross Margin 98%" },
-                        { id: 5, name: "Guidance", status: "ผ่าน", desc: "กรอบประมาณการขยายตัว" }
-                    ]
-                },
-                section3: {
-                    title: "3. หุ้น AI แนะนำ",
-                    picks: [{ ticker: "ARM", name: "Arm Holdings plc", phase: "Architecture", reason: "ผู้นำสถาปัตยกรรมชิป AI" }]
-                }
-            },
-            {
-                slotId: "report-2",
-                dateLabel: "15 กรกฎาคม 2026",
-                title: "รายงานวิเคราะห์ประมาณการก่อนประกาศงบ",
-                subtitle: "ประจำสัปดาห์ (10 - 15 กรกฎาคม 2026)",
-                section1: {
-                    title: "1. ประมาณการรายได้",
-                    intro: "บทวิเคราะห์สัปดาห์กลางเดือนกรกฎาคม:",
-                    highlights: [{ label: "คาดการณ์ ARM", value: "$1.25B", desc: "โต 20%" }],
-                    details: ["ประเมินความต้องการชิป AI ขยายตัวทั่วโลก"]
-                },
-                section2: {
-                    title: "2. ประเมิน Checkpoints",
-                    checkpoints: [{ id: 1, name: "CSS Adoption", status: "ผ่าน", desc: "ตามเป้าหมาย" }]
-                },
-                section3: {
-                    title: "3. หุ้น AI แนะนำ",
-                    picks: [{ ticker: "ARM", name: "Arm Holdings", phase: "Architecture", reason: "แนวโน้มงบแข็งแกร่ง" }]
-                }
-            },
-            {
-                slotId: "report-3",
-                dateLabel: "30 มิถุนายน 2026",
-                title: "รายงานวิเคราะห์รอบปลายเดือนมิถุนายน",
-                subtitle: "วิเคราะห์ผลกระทบอัตราดอกเบี้ย Fed ต่อหุ้นกลุ่ม Semiconductor",
-                section1: {
-                    title: "1. ผลกระทบมหภาค",
-                    intro: "วิเคราะห์ภาพรวมเศรษฐกิจ:",
-                    highlights: [{ label: "Fed Interest Rate", value: "5.25%", desc: "คงอัตราดอกเบี้ย" }],
-                    details: ["หุ้นกลุ่มชิปประมวลผล AI ยังคงได้รับแรงหนุนจากงบลงทุนคลาวด์"]
-                },
-                section2: {
-                    title: "2. Checkpoints",
-                    checkpoints: [{ id: 1, name: "Macro Factors", status: "ผ่าน", desc: "ทรงตัว" }]
-                },
-                section3: {
-                    title: "3. หุ้นแนะนำ",
-                    picks: [{ ticker: "NVDA", name: "NVIDIA", phase: "Hardware", reason: "อุปสงค์ GPU แข็งแกร่ง" }]
-                }
-            },
-            {
-                slotId: "report-4",
-                dateLabel: "15 มิถุนายน 2026",
-                title: "รายงานวิเคราะห์รอบกลางเดือนมิถุนายน",
-                subtitle: "การประเมิน Valuation และราคาเป้าหมาย Arm Holdings",
-                section1: {
-                    title: "1. การประเมินมูลค่า",
-                    intro: "สรุปการประเมินราคาเป้าหมาย:",
-                    highlights: [{ label: "Target Price Consensus", value: "$210 USD", desc: "กรอบบน $340" }],
-                    details: ["โบรกเกอร์หลักคงคำแนะนำซื้อ (Buy)"]
-                },
-                section2: {
-                    title: "2. Checkpoints",
-                    checkpoints: [{ id: 1, name: "Valuation", status: "ผ่าน", desc: "เหมาะสม" }]
-                },
-                section3: {
-                    title: "3. หุ้นแนะนำ",
-                    picks: [{ ticker: "ARM", name: "Arm Holdings", phase: "Architecture", reason: "พื้นฐานแข็งแกร่ง" }]
-                }
             }
         ];
 
@@ -399,11 +247,7 @@
             Portfolio: () => <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>,
             Report: () => <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>,
             TrendingDown: () => <svg className="w-4 h-4 mr-1 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 17h8m0 0v-8m0 8l-8-8-4 4-6-6"></path></svg>,
-            Upload: () => <svg className="w-4 h-4 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>,
             Close: () => <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>,
-            FileText: () => <svg className="w-10 h-10 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>,
-            CheckCircle: () => <svg className="w-12 h-12 text-emerald-500 mx-auto mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>,
-            Spinner: () => <svg className="animate-spin h-8 w-8 text-blue-600 mx-auto mb-3" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>,
             QrCode: () => <svg className="w-4 h-4 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"></path></svg>,
             Clock: () => <svg className="w-4 h-4 text-slate-500 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>,
             HistoryDrawer: () => <svg className="w-4 h-4 mr-1.5 text-indigo-600 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>,
@@ -411,7 +255,7 @@
         };
 
         // --- EMPTY / AWAITING UPDATE STATE COMPONENT ---
-        const AwaitingUpdateState = ({ title = "อยู่ระหว่างรอการอัปเดตข้อมูล", subtitle = "ยังไม่มีข้อมูลสำหรับช่องนี้ ข้อมูลใหม่จะถูกนำมาเสียบแทนหน้าหลักเมื่อมีรายงานฉบับใหม่" }) => (
+        const AwaitingUpdateState = ({ title = "อยู่ระหว่างรอการอัปเดตข้อมูลย้อนหลัง", subtitle = "ยังไม่มีรายงานย้อนหลังในหมวดนี้ ข้อมูลจะถูกจัดเก็บสะสมให้อัตโนมัติเมื่อมีการอัปเดตในรอบถัดไป" }) => (
             <div className="bg-white rounded-2xl border border-slate-200 p-8 sm:p-12 text-center my-6 shadow-xs">
                 <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-amber-100">
                     <Icons.Clock />
@@ -421,9 +265,11 @@
             </div>
         );
 
-        // --- COLLAPSIBLE HISTORY DRAWER / POPUP FOR CATEGORY SLOTS ---
+        // --- COLLAPSIBLE HISTORY DRAWER / POPUP FOR CATEGORY ARCHIVES ---
         const HistoryDrawerPopup = ({ slots, activeSlotIndex, setActiveSlotIndex, isOpen, setIsOpen, categoryTitle }) => {
             if (!isOpen) return null;
+
+            const sortedSlots = sortSlotsByDate(slots);
 
             return (
                 <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex justify-end fade-in">
@@ -435,8 +281,8 @@
                                     <Icons.SlotIcon />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold text-slate-900 text-base">คลัง 5 Slots ({categoryTitle})</h3>
-                                    <p className="text-xs text-slate-500">เลือกประวัติ 5 ชุดย้อนหลังของหมวดนี้</p>
+                                    <h3 className="font-bold text-slate-900 text-base">คลังประวัติ{categoryTitle}</h3>
+                                    <p className="text-xs text-slate-500">เรียงลำดับจากฉบับล่าสุดไปเก่าอัตโนมัติ</p>
                                 </div>
                             </div>
                             <button 
@@ -450,66 +296,83 @@
                         {/* Slots Stack List */}
                         <div className="flex-1 overflow-y-auto p-4 space-y-3">
                             <div className="bg-blue-50/70 border border-blue-100 rounded-xl p-3 text-xs text-blue-800 font-medium flex items-center justify-between">
-                                <span>🔒 <strong>จำกัดสูงสุด 5 Slots อิสระ:</strong> ข้อมูลใหม่จะดันชุดเก่าตกไปอัตโนมัติ</span>
-                                <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-md shrink-0 ml-1">5 Slots Max</span>
+                                <span>📅 <strong>จัดเรียงตามเวลา:</strong> ระบบอ่านวันเดือนปีและเรียงฉบับล่าสุดให้อัตโนมัติ</span>
+                                <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-md shrink-0 ml-1">Auto Sort</span>
                             </div>
 
-                            {slots.map((slot, index) => {
-                                const isSelected = activeSlotIndex === index;
-                                const isCurrent = index === 0;
+                            {sortedSlots.length > 0 ? (
+                                sortedSlots.map((slot, index) => {
+                                    const isSelected = activeSlotIndex === index;
+                                    const isCurrent = index === 0;
 
-                                return (
-                                    <div 
-                                        key={slot.slotId || index}
-                                        onClick={() => {
-                                            setActiveSlotIndex(index);
-                                            setIsOpen(false);
-                                        }}
-                                        className={`p-4 rounded-xl border transition-all cursor-pointer relative overflow-hidden ${
-                                            isSelected 
-                                            ? 'bg-blue-50/80 border-blue-500 shadow-md ring-2 ring-blue-500/20' 
-                                            : 'bg-white border-slate-200 hover:border-blue-300 hover:shadow-xs'
-                                        }`}
-                                    >
-                                        <div className="flex justify-between items-start mb-1.5">
-                                            <div className="flex items-center gap-1.5">
-                                                <span className={`text-[11px] font-bold px-2 py-0.5 rounded-md ${
-                                                    isCurrent 
-                                                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
-                                                    : 'bg-slate-100 text-slate-600'
-                                                }`}>
-                                                    {isCurrent ? '🌟 Slot 0 (ล่าสุด)' : `📜 Slot #${index}`}
-                                                </span>
+                                    return (
+                                        <div 
+                                            key={slot.slotId || index}
+                                            onClick={() => {
+                                                setActiveSlotIndex(index);
+                                                setIsOpen(false);
+                                            }}
+                                            className={`p-4 rounded-xl border transition-all cursor-pointer relative overflow-hidden ${
+                                                isSelected 
+                                                ? 'bg-blue-50/80 border-blue-500 shadow-md ring-2 ring-blue-500/20' 
+                                                : 'bg-white border-slate-200 hover:border-blue-300 hover:shadow-xs'
+                                            }`}
+                                        >
+                                            <div className="flex justify-between items-start mb-1.5">
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-md ${
+                                                        isCurrent 
+                                                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
+                                                        : 'bg-slate-100 text-slate-600'
+                                                    }`}>
+                                                        {isCurrent ? '🌟 ฉบับล่าสุด' : `📜 ฉบับย้อนหลัง`}
+                                                    </span>
+                                                </div>
+                                                <span className="text-xs font-semibold text-slate-500">📅 {slot.dateLabel}</span>
                                             </div>
-                                            <span className="text-xs font-semibold text-slate-500">📅 {slot.dateLabel}</span>
+
+                                            <h4 className="text-sm font-bold text-slate-900 mb-1 leading-snug">
+                                                {slot.title || (slot.totalThb ? `พอร์ตรวม ${slot.totalThb} THB` : `รายงานฉบับวันที่ ${slot.dateLabel}`)}
+                                            </h4>
+                                            <p className="text-xs text-slate-500 line-clamp-2">
+                                                {slot.subtitle || (slot.unrealizedPl ? `Unrealized P/L: ${slot.unrealizedPl}` : 'ข้อมูลสรุปรายการ')}
+                                            </p>
+
+                                            {isSelected && (
+                                                <div className="mt-3 pt-2 border-t border-blue-200/60 flex items-center justify-between text-xs text-blue-700 font-semibold">
+                                                    <span>✓ กำลังแสดงผลอยู่ขณะนี้</span>
+                                                    <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-md">กำลังเปิดอ่าน</span>
+                                                </div>
+                                            )}
                                         </div>
-
-                                        <h4 className="text-sm font-bold text-slate-900 mb-1 leading-snug">
-                                            {slot.title || (slot.totalThb ? `พอร์ตรวม ${slot.totalThb} THB` : `ชุดข้อมูล #${index + 1}`)}
-                                        </h4>
-                                        <p className="text-xs text-slate-500 line-clamp-2">
-                                            {slot.subtitle || (slot.unrealizedPl ? `Unrealized P/L: ${slot.unrealizedPl}` : 'ข้อมูลสรุปรายการ')}
-                                        </p>
-
-                                        {isSelected && (
-                                            <div className="mt-3 pt-2 border-t border-blue-200/60 flex items-center justify-between text-xs text-blue-700 font-semibold">
-                                                <span>✓ กำลังถูกเสียบแสดงผลในหมวดนี้</span>
-                                                <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-md">Active</span>
-                                            </div>
-                                        )}
-                                    </div>
-                                );
-                            })}
+                                    );
+                                })
+                            ) : (
+                                <AwaitingUpdateState />
+                            )}
                         </div>
                     </div>
                 </div>
             );
         };
 
-        const NewsTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenUpload, onOpenQr, onOpenHistoryDrawer }) => {
-            const currentSlot = slots[activeSlotIndex] || slots[0];
+        const NewsTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenQr, onOpenHistoryDrawer }) => {
+            const sortedSlots = sortSlotsByDate(slots);
+            const currentSlot = sortedSlots[activeSlotIndex] || sortedSlots[0];
 
-            if (!currentSlot) return <AwaitingUpdateState title="อยู่ระหว่างรอข้อมูลข่าวสาร" />;
+            if (!currentSlot || activeSlotIndex >= sortedSlots.length) {
+                return (
+                    <div className="fade-in space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h1 className="text-2xl font-bold text-slate-900">ข่าวรายวัน</h1>
+                            <button onClick={onOpenHistoryDrawer} className="text-xs bg-slate-100 border px-3 py-2 rounded-xl font-semibold">
+                                <Icons.HistoryDrawer /> คลังข่าวสารย้อนหลัง ({sortedSlots.length} ฉบับ)
+                            </button>
+                        </div>
+                        <AwaitingUpdateState title="ยังไม่มีรายงานข่าวสารสำหรับช่วงเวลานี้" subtitle="ข้อมูลใหม่จะถูกนำมาแสดงผลบนหน้าหลักเมื่อมีรายงานข่าวฉบับใหม่จาก Workflow" />
+                    </div>
+                );
+            }
 
             return (
                 <div className="fade-in space-y-6 md:space-y-8 pb-10">
@@ -520,9 +383,9 @@
                                 <div className="flex items-center gap-2 mb-2 flex-wrap">
                                     <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 leading-tight">{currentSlot.title}</h1>
                                     {activeSlotIndex === 0 ? (
-                                        <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-200 shrink-0">ข่าวล่าสุด (Slot 0)</span>
+                                        <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-200 shrink-0">ข่าวสารล่าสุด</span>
                                     ) : (
-                                        <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-200 shrink-0">ข่าวย้อนหลัง Slot #{activeSlotIndex} ({currentSlot.dateLabel})</span>
+                                        <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-200 shrink-0">ข่าวย้อนหลังประจำวันที่ {currentSlot.dateLabel}</span>
                                     )}
                                 </div>
                                 <p className="text-sm sm:text-base text-slate-500 font-medium">{currentSlot.subtitle}</p>
@@ -533,19 +396,13 @@
                                     onClick={onOpenHistoryDrawer}
                                     className="flex items-center justify-center text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-300 rounded-xl px-3.5 py-2 font-semibold shadow-xs"
                                 >
-                                    <Icons.HistoryDrawer /> คลังข่าว ({slots.length}/5 Slots)
+                                    <Icons.HistoryDrawer /> คลังข่าวสารย้อนหลัง ({sortedSlots.length} ฉบับ)
                                 </button>
                                 <button 
                                     onClick={onOpenQr}
                                     className="flex items-center justify-center text-xs text-indigo-600 hover:text-white hover:bg-indigo-600 transition-all border border-indigo-600 rounded-xl px-3 py-2 font-medium shadow-xs"
                                 >
                                     <Icons.QrCode /> แชร์ QR
-                                </button>
-                                <button 
-                                    onClick={onOpenUpload}
-                                    className="flex items-center justify-center text-xs text-blue-600 hover:text-white hover:bg-blue-600 transition-all border border-blue-600 rounded-xl px-3 py-2 font-medium shadow-xs"
-                                >
-                                    <Icons.Upload /> อัพเดต PDF
                                 </button>
                             </div>
                         </div>
@@ -601,16 +458,31 @@
             );
         };
 
-        const PortfolioTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenUpload, onOpenQr, onOpenHistoryDrawer }) => {
+        const PortfolioTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenQr, onOpenHistoryDrawer }) => {
             const [filter, setFilter] = useState('YTD');
             const chartRef = useRef(null);
             const chartInstance = useRef(null);
 
-            const currentSlot = slots[activeSlotIndex] || slots[0];
+            const sortedSlots = sortSlotsByDate(slots);
+            const currentSlot = sortedSlots[activeSlotIndex] || sortedSlots[0];
 
-            if (!currentSlot) return <AwaitingUpdateState title="อยู่ระหว่างรอข้อมูลพอร์ต" />;
+            if (!currentSlot || activeSlotIndex >= sortedSlots.length) {
+                return (
+                    <div className="fade-in space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h2 className="text-2xl font-bold text-slate-800">สถานะพอร์ต</h2>
+                            <button onClick={onOpenHistoryDrawer} className="text-xs bg-slate-100 border px-3 py-2 rounded-xl font-semibold">
+                                <Icons.HistoryDrawer /> คลังพอร์ตย้อนหลัง ({sortedSlots.length} ฉบับ)
+                            </button>
+                        </div>
+                        <AwaitingUpdateState title="ยังไม่มีรายงานสถานะพอร์ตสำหรับช่วงเวลานี้" subtitle="ข้อมูลใหม่จะถูกนำมาแสดงผลบนหน้าหลักเมื่อมีรายงานพอร์ตฉบับใหม่จาก Workflow" />
+                    </div>
+                );
+            }
 
             useEffect(() => {
+                if (!currentSlot || !currentSlot.historyFilterData) return;
+
                 if (chartInstance.current) {
                     chartInstance.current.destroy();
                 }
@@ -669,9 +541,9 @@
                         <div className="flex items-center gap-3">
                             <h2 className="text-xl sm:text-2xl font-bold text-slate-800">อัปเดตสถานะพอร์ต</h2>
                             {activeSlotIndex === 0 ? (
-                                <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-200">พอร์ตปัจจุบัน (Slot 0)</span>
+                                <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-200">พอร์ตปัจจุบัน (อัปเดตล่าสุด)</span>
                             ) : (
-                                <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-200">พอร์ตย้อนหลัง Slot #{activeSlotIndex} ({currentSlot.dateLabel})</span>
+                                <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-200">พอร์ตรอบย้อนหลัง ({currentSlot.dateLabel})</span>
                             )}
                         </div>
                         
@@ -680,19 +552,13 @@
                                 onClick={onOpenHistoryDrawer}
                                 className="flex items-center justify-center text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-300 rounded-xl px-3.5 py-2 font-semibold shadow-xs"
                             >
-                                <Icons.HistoryDrawer /> คลังพอร์ต ({slots.length}/5 Slots)
+                                <Icons.HistoryDrawer /> คลังพอร์ตย้อนหลัง ({sortedSlots.length} ฉบับ)
                             </button>
                             <button 
                                 onClick={onOpenQr}
                                 className="flex items-center justify-center text-xs text-indigo-600 hover:text-white hover:bg-indigo-600 transition-all border border-indigo-600 rounded-xl px-3.5 py-2 font-medium shadow-xs"
                             >
                                 <Icons.QrCode /> แชร์ QR
-                            </button>
-                            <button 
-                                onClick={onOpenUpload}
-                                className="flex items-center justify-center text-xs text-blue-600 hover:text-white hover:bg-blue-600 transition-all border border-blue-600 rounded-xl px-3.5 py-2 font-medium shadow-xs"
-                            >
-                                <Icons.Upload /> อัพเดต PDF
                             </button>
                         </div>
                     </div>
@@ -801,16 +667,29 @@
             );
         };
 
-        const ReportTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenUpload, onOpenQr, onOpenHistoryDrawer }) => {
+        const ReportTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenQr, onOpenHistoryDrawer }) => {
             const getStatusColor = (status) => {
                 if (status.includes("ดีเยี่ยม")) return "bg-emerald-100 text-emerald-800 border-emerald-200";
                 if (status === "ผ่าน") return "bg-teal-50 text-teal-700 border-teal-200";
                 return "bg-amber-50 text-amber-700 border-amber-200";
             };
 
-            const currentSlot = slots[activeSlotIndex] || slots[0];
+            const sortedSlots = sortSlotsByDate(slots);
+            const currentSlot = sortedSlots[activeSlotIndex] || sortedSlots[0];
 
-            if (!currentSlot) return <AwaitingUpdateState title="อยู่ระหว่างรอรายงานวิเคราะห์" />;
+            if (!currentSlot || activeSlotIndex >= sortedSlots.length) {
+                return (
+                    <div className="fade-in space-y-6">
+                        <div className="flex justify-between items-center">
+                            <h1 className="text-2xl font-bold text-slate-900">รายงานวิเคราะห์</h1>
+                            <button onClick={onOpenHistoryDrawer} className="text-xs bg-slate-100 border px-3 py-2 rounded-xl font-semibold">
+                                <Icons.HistoryDrawer /> คลังรายงานย้อนหลัง ({sortedSlots.length} ฉบับ)
+                            </button>
+                        </div>
+                        <AwaitingUpdateState title="ยังไม่มีรายงานวิเคราะห์สำหรับช่วงเวลานี้" subtitle="ข้อมูลใหม่จะถูกนำมาแสดงผลบนหน้าหลักเมื่อมีรายงานฉบับใหม่จาก Workflow" />
+                    </div>
+                );
+            }
 
             return (
                 <div className="fade-in space-y-6 sm:space-y-8 pb-10">
@@ -821,7 +700,7 @@
                                 onClick={onOpenHistoryDrawer}
                                 className="flex items-center text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-300 rounded-xl px-3 py-1.5 font-semibold shadow-xs"
                             >
-                                <Icons.HistoryDrawer /> คลังรายงาน ({slots.length}/5 Slots)
+                                <Icons.HistoryDrawer /> คลังรายงานย้อนหลัง ({sortedSlots.length} ฉบับ)
                             </button>
                             <div className="flex gap-2">
                                 <button 
@@ -830,22 +709,16 @@
                                 >
                                     <Icons.QrCode /> แชร์ QR
                                 </button>
-                                <button 
-                                    onClick={onOpenUpload}
-                                    className="flex items-center text-xs text-blue-600 hover:text-white hover:bg-blue-600 transition-all border border-blue-600 rounded-xl px-3 py-1.5 font-medium shadow-xs" 
-                                >
-                                    <Icons.Upload /> อัพเดต PDF
-                                </button>
                             </div>
                         </div>
                         
                         {activeSlotIndex === 0 ? (
                             <div className="inline-block bg-emerald-50 text-emerald-800 text-xs px-3 py-1 rounded-full font-bold border border-emerald-200 mb-2">
-                                🌟 รายงานชุดปัจจุบัน (Slot 0 ล่าสุด)
+                                🌟 รายงานฉบับปัจจุบัน (อัปเดตล่าสุด)
                             </div>
                         ) : (
                             <div className="inline-block bg-amber-50 text-amber-800 text-xs px-3 py-1 rounded-full font-bold border border-amber-200 mb-2">
-                                📜 รายงานย้อนหลัง Slot #{activeSlotIndex} ({currentSlot.dateLabel})
+                                📜 รายงานย้อนหลังประจำวันที่ {currentSlot.dateLabel}
                             </div>
                         )}
 
@@ -853,85 +726,95 @@
                         <p className="text-xs sm:text-sm text-slate-500 font-medium">{currentSlot.subtitle}</p>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
-                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 pb-2 border-b border-slate-100">{currentSlot.section1.title}</h2>
-                        <p className="text-xs sm:text-sm text-slate-700 mb-5">{currentSlot.section1.intro}</p>
-                        
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
-                            {currentSlot.section1.highlights.map((hl, idx) => (
-                                <div key={idx} className="bg-slate-50/80 rounded-xl p-4 border border-slate-100">
-                                    <p className="text-xs text-slate-500 mb-1">{hl.label}</p>
-                                    <p className="text-base sm:text-lg font-bold text-slate-900">{hl.value}</p>
-                                    <p className="text-xs text-emerald-600 mt-1">{hl.desc}</p>
-                                </div>
-                            ))}
-                        </div>
-
-                        <ul className="space-y-2.5">
-                            {currentSlot.section1.details.map((detail, idx) => (
-                                <li key={idx} className="flex items-start text-xs sm:text-sm md:text-base leading-relaxed">
-                                    <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
-                                    <span className="text-slate-700">{detail}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
-                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{currentSlot.section2.title}</h2>
-                        <div className="overflow-x-auto -mx-5 sm:mx-0 px-5 sm:px-0">
-                            <table className="w-full text-left border-collapse min-w-[540px]">
-                                <thead>
-                                    <tr className="bg-slate-50 text-slate-600 text-xs sm:text-sm">
-                                        <th className="p-3 sm:p-4 rounded-l-lg font-semibold">ตัวชี้วัดสำคัญ (Checkpoints)</th>
-                                        <th className="p-3 sm:p-4 font-semibold w-28 sm:w-32">สถานะ</th>
-                                        <th className="p-3 sm:p-4 rounded-r-lg font-semibold">สรุปผลการประเมิน</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {currentSlot.section2.checkpoints.map((cp) => (
-                                        <tr key={cp.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
-                                            <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-slate-800">{cp.id}. {cp.name}</td>
-                                            <td className="p-3 sm:p-4">
-                                                <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold border ${getStatusColor(cp.status)}`}>
-                                                    {cp.status}
-                                                </span>
-                                            </td>
-                                            <td className="p-3 sm:p-4 text-xs sm:text-sm text-slate-600 leading-relaxed">{cp.desc}</td>
-                                        </tr>
+                    {currentSlot.section1 && (
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
+                            <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 pb-2 border-b border-slate-100">{currentSlot.section1.title}</h2>
+                            <p className="text-xs sm:text-sm text-slate-700 mb-5">{currentSlot.section1.intro}</p>
+                            
+                            {currentSlot.section1.highlights && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                                    {currentSlot.section1.highlights.map((hl, idx) => (
+                                        <div key={idx} className="bg-slate-50/80 rounded-xl p-4 border border-slate-100">
+                                            <p className="text-xs text-slate-500 mb-1">{hl.label}</p>
+                                            <p className="text-base sm:text-lg font-bold text-slate-900">{hl.value}</p>
+                                            <p className="text-xs text-emerald-600 mt-1">{hl.desc}</p>
+                                        </div>
                                     ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
-                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{currentSlot.section3.title}</h2>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
-                            {currentSlot.section3.picks.map((pick, idx) => (
-                                <div key={idx} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:shadow-md transition-all relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 bg-blue-600 text-white font-bold text-[11px] px-3 py-1 rounded-bl-xl">
-                                        #{idx + 1}
-                                    </div>
-                                    <div className="flex items-center space-x-3 mb-3 pt-1">
-                                        <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-lg text-blue-800 border border-slate-200/80 shrink-0">
-                                            {pick.ticker ? pick.ticker[0] : 'AI'}
-                                        </div>
-                                        <div>
-                                            <h3 className="font-bold text-slate-900 text-sm sm:text-base">{pick.name}</h3>
-                                            <p className="text-xs font-semibold text-slate-500">{pick.ticker}</p>
-                                        </div>
-                                    </div>
-                                    <div className="mb-3">
-                                        <span className="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-1 rounded-lg font-medium">{pick.phase}</span>
-                                    </div>
-                                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
-                                        <span className="font-semibold text-slate-800">เหตุผล: </span>{pick.reason}
-                                    </p>
                                 </div>
-                            ))}
+                            )}
+
+                            {currentSlot.section1.details && (
+                                <ul className="space-y-2.5">
+                                    {currentSlot.section1.details.map((detail, idx) => (
+                                        <li key={idx} className="flex items-start text-xs sm:text-sm md:text-base leading-relaxed">
+                                            <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                            <span className="text-slate-700">{detail}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
                         </div>
-                    </div>
+                    )}
+
+                    {currentSlot.section2 && (
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
+                            <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{currentSlot.section2.title}</h2>
+                            <div className="overflow-x-auto -mx-5 sm:mx-0 px-5 sm:px-0">
+                                <table className="w-full text-left border-collapse min-w-[540px]">
+                                    <thead>
+                                        <tr className="bg-slate-50 text-slate-600 text-xs sm:text-sm">
+                                            <th className="p-3 sm:p-4 rounded-l-lg font-semibold">ตัวชี้วัดสำคัญ (Checkpoints)</th>
+                                            <th className="p-3 sm:p-4 font-semibold w-28 sm:w-32">สถานะ</th>
+                                            <th className="p-3 sm:p-4 rounded-r-lg font-semibold">สรุปผลการประเมิน</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentSlot.section2.checkpoints && currentSlot.section2.checkpoints.map((cp) => (
+                                            <tr key={cp.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                                                <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-slate-800">{cp.id}. {cp.name}</td>
+                                                <td className="p-3 sm:p-4">
+                                                    <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold border ${getStatusColor(cp.status)}`}>
+                                                        {cp.status}
+                                                    </span>
+                                                </td>
+                                                <td className="p-3 sm:p-4 text-xs sm:text-sm text-slate-600 leading-relaxed">{cp.desc}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {currentSlot.section3 && (
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
+                            <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{currentSlot.section3.title}</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                                {currentSlot.section3.picks && currentSlot.section3.picks.map((pick, idx) => (
+                                    <div key={idx} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:shadow-md transition-all relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 bg-blue-600 text-white font-bold text-[11px] px-3 py-1 rounded-bl-xl">
+                                            #{idx + 1}
+                                        </div>
+                                        <div className="flex items-center space-x-3 mb-3 pt-1">
+                                            <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-lg text-blue-800 border border-slate-200/80 shrink-0">
+                                                {pick.ticker ? pick.ticker[0] : 'AI'}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-slate-900 text-sm sm:text-base">{pick.name}</h3>
+                                                <p className="text-xs font-semibold text-slate-500">{pick.ticker}</p>
+                                            </div>
+                                        </div>
+                                        <div className="mb-3">
+                                            <span className="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-1 rounded-lg font-medium">{pick.phase}</span>
+                                        </div>
+                                        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                                            <span className="font-semibold text-slate-800">เหตุผล: </span>{pick.reason}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
         };
@@ -939,7 +822,6 @@
         const App = () => {
             const [activeTab, setActiveTab] = useState('report');
             
-            // --- 5 INDEPENDENT SLOTS PER CATEGORY STATE ---
             const [newsSlots, setNewsSlots] = useState(INITIAL_NEWS_SLOTS);
             const [newsActiveIndex, setNewsActiveIndex] = useState(0);
 
@@ -950,58 +832,7 @@
             const [reportActiveIndex, setReportActiveIndex] = useState(0);
 
             const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false);
-            const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
             const [isQrModalOpen, setIsQrModalOpen] = useState(false);
-            const [uploadState, setUploadState] = useState('idle');
-            const [uploadedFileName, setUploadedFileName] = useState('');
-            const [parsedSnippet, setParsedSnippet] = useState('');
-            const fileInputRef = useRef(null);
-
-            // Simple PDF parsing preview
-            const handleFileChange = async (e) => {
-                const file = e.target.files[0];
-                if (!file) return;
-
-                setUploadedFileName(file.name);
-                setUploadState('parsing');
-
-                try {
-                    const arrayBuffer = await file.arrayBuffer();
-                    let extractedText = "";
-                    
-                    if (window.pdfjsLib) {
-                        const loadingTask = window.pdfjsLib.getDocument({ data: arrayBuffer });
-                        const pdf = await loadingTask.promise;
-                        
-                        const maxPages = Math.min(pdf.numPages, 10);
-                        for (let i = 1; i <= maxPages; i++) {
-                            const page = await pdf.getPage(i);
-                            const textContent = await page.getTextContent();
-                            const pageStrings = textContent.items.map(item => item.str);
-                            extractedText += pageStrings.join(" ") + "\n";
-                        }
-                    }
-
-                    const cleanText = extractedText.replace(/\s+/g, ' ').trim();
-                    const snippet = cleanText.length > 200 ? cleanText.substring(0, 200) + '...' : cleanText;
-                    setParsedSnippet(snippet || "สแกนข้อความ PDF สำเร็จ");
-
-                    setUploadState('success');
-                    setTimeout(() => {
-                        setIsUploadModalOpen(false);
-                        setUploadState('idle');
-                        if (fileInputRef.current) fileInputRef.current.value = "";
-                    }, 2200);
-
-                } catch (err) {
-                    console.error("PDF Parsing Error:", err);
-                    setUploadState('success');
-                    setTimeout(() => {
-                        setIsUploadModalOpen(false);
-                        setUploadState('idle');
-                    }, 2000);
-                }
-            };
 
             const navItems = [
                 { id: 'news', label: 'ข่าวรายวัน', icon: Icons.News },
@@ -1011,7 +842,6 @@
 
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(CURRENT_PAGE_URL)}`;
 
-            // Dynamic drawer props based on active tab
             const getActiveDrawerProps = () => {
                 if (activeTab === 'news') {
                     return {
@@ -1038,6 +868,7 @@
             };
 
             const drawerProps = getActiveDrawerProps();
+            const activeSortedSlots = sortSlotsByDate(drawerProps.slots);
 
             return (
                 <div className="min-h-screen flex flex-col lg:flex-row bg-slate-50">
@@ -1049,7 +880,7 @@
                             </div>
                             <div>
                                 <h1 className="text-lg font-bold text-slate-900 tracking-tight">InvestDash</h1>
-                                <p className="text-[11px] text-slate-400 font-medium">5 Slots x 3 Topics</p>
+                                <p className="text-[11px] text-slate-400 font-medium">ศูนย์ข้อมูลการลงทุน AI</p>
                             </div>
                         </div>
                         <nav className="flex-1 px-4 space-y-1.5 mt-2">
@@ -1074,13 +905,13 @@
                         </nav>
 
                         <div className="p-4 mx-4 mb-2 bg-slate-50 rounded-xl border border-slate-200 text-left">
-                            <span className="text-[11px] font-semibold text-slate-500 block mb-1">🔌 สลับ 5 Slots ย้อนหลัง:</span>
+                            <span className="text-[11px] font-semibold text-slate-500 block mb-1">📜 เลือกดูรายงานย้อนหลัง:</span>
                             <button 
                                 onClick={() => setIsHistoryDrawerOpen(true)}
                                 className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs font-bold text-indigo-700 hover:bg-indigo-50 flex items-center justify-between transition-all"
                             >
-                                <span>{drawerProps.slots[drawerProps.activeSlotIndex]?.dateLabel}</span>
-                                <span className="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md">เปิดคลัง 5 Slots</span>
+                                <span>{activeSortedSlots[drawerProps.activeSlotIndex]?.dateLabel || 'ฉบับปัจจุบัน'}</span>
+                                <span className="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md">เปิดคลังรายงาน</span>
                             </button>
                         </div>
 
@@ -1154,7 +985,6 @@
                                 slots={newsSlots}
                                 activeSlotIndex={newsActiveIndex}
                                 setActiveSlotIndex={setNewsActiveIndex}
-                                onOpenUpload={() => setIsUploadModalOpen(true)} 
                                 onOpenQr={() => setIsQrModalOpen(true)} 
                                 onOpenHistoryDrawer={() => setIsHistoryDrawerOpen(true)}
                             />
@@ -1164,7 +994,6 @@
                                 slots={portfolioSlots}
                                 activeSlotIndex={portfolioActiveIndex}
                                 setActiveSlotIndex={setPortfolioActiveIndex}
-                                onOpenUpload={() => setIsUploadModalOpen(true)} 
                                 onOpenQr={() => setIsQrModalOpen(true)} 
                                 onOpenHistoryDrawer={() => setIsHistoryDrawerOpen(true)}
                             />
@@ -1174,7 +1003,6 @@
                                 slots={reportSlots}
                                 activeSlotIndex={reportActiveIndex}
                                 setActiveSlotIndex={setReportActiveIndex}
-                                onOpenUpload={() => setIsUploadModalOpen(true)} 
                                 onOpenQr={() => setIsQrModalOpen(true)} 
                                 onOpenHistoryDrawer={() => setIsHistoryDrawerOpen(true)}
                             />
@@ -1218,68 +1046,6 @@
                                 <div className="bg-indigo-50/70 p-3 rounded-xl border border-indigo-100 text-[11px] text-indigo-900 font-medium select-all break-all">
                                     {CURRENT_PAGE_URL}
                                 </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* PDF Upload Modal */}
-                    {isUploadModalOpen && (
-                        <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 fade-in">
-                            <div className="bg-white rounded-2xl w-[92vw] sm:w-full max-w-md p-5 sm:p-6 shadow-2xl relative border border-slate-100">
-                                <button 
-                                    onClick={() => setIsUploadModalOpen(false)}
-                                    className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 p-1 rounded-lg"
-                                >
-                                    <Icons.Close />
-                                </button>
-
-                                {uploadState === 'idle' && (
-                                    <div className="text-center py-2 sm:py-4">
-                                        <div className="w-14 h-14 sm:w-16 sm:h-16 bg-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-blue-100">
-                                            <Icons.FileText />
-                                        </div>
-                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">อัปเดตข้อมูลด้วยไฟล์ PDF</h3>
-                                        <p className="text-xs text-slate-500 mb-5 leading-relaxed">
-                                            เลือกไฟล์ PDF รายงานการลงทุน เพื่อสแกนดึงข้อมูลและอัปเดต Dashboard บนสมาร์ตโฟน/iPad ของคุณทันที
-                                        </p>
-                                        
-                                        <input 
-                                            type="file" 
-                                            ref={fileInputRef} 
-                                            onChange={handleFileChange} 
-                                            accept=".pdf" 
-                                            className="hidden" 
-                                        />
-                                        
-                                        <button 
-                                            onClick={() => fileInputRef.current && fileInputRef.current.click()}
-                                            className="w-full bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-semibold py-3 px-4 rounded-xl transition-all shadow-md flex items-center justify-center text-xs sm:text-sm min-h-[44px]"
-                                        >
-                                            <Icons.Upload /> เลือกไฟล์ PDF จากเครื่อง
-                                        </button>
-                                    </div>
-                                )}
-
-                                {uploadState === 'parsing' && (
-                                    <div className="text-center py-6 sm:py-8">
-                                        <Icons.Spinner />
-                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">กำลังอ่านไฟล์ PDF...</h3>
-                                        <p className="text-xs text-slate-500">({uploadedFileName})</p>
-                                    </div>
-                                )}
-
-                                {uploadState === 'success' && (
-                                    <div className="text-center py-4 sm:py-6">
-                                        <Icons.CheckCircle />
-                                        <h3 className="text-base sm:text-lg font-bold text-slate-900 mb-1">สแกนสำเร็จ!</h3>
-                                        <p className="text-xs text-slate-600 mb-2">ไฟล์: <span className="font-semibold text-blue-600">{uploadedFileName}</span></p>
-                                        {parsedSnippet && (
-                                            <div className="bg-slate-50 p-3 rounded-xl border border-slate-100 text-[11px] text-slate-600 text-left max-h-24 overflow-y-auto mb-2">
-                                                <span className="font-semibold text-slate-800">ข้อมูลที่อ่านได้:</span> {parsedSnippet}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
                             </div>
                         </div>
                     )}
