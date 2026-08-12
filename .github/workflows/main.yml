@@ -1,4 +1,4 @@
-name: ซิงค์และตรวจสอบข้อมูล Google Docs ไปยังแดชบอร์ด
+name: ซิงค์ข้อมูล Google Docs ไปยังแดชบอร์ด
 
 on:
   schedule:
