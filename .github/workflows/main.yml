@@ -1,18 +1,40 @@
-# .github/workflows/import.yml
-name: import
+name: Sync Google Data to Dashboard
 
 on:
   schedule:
-    - cron: "0 0 * * *"
+    - cron: '0 * * * *' # รันอัตโนมัติทุกๆ 1 ชั่วโมง
+  workflow_dispatch: # ปุ่มกดสั่งรันทันทีด้วยมือ (Manual Run)
 
 jobs:
-  publish:
+  sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: google-github-actions/auth@v0
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
         with:
-          service_account: my-service-account-id@my-project-id.iam.gserviceaccount.com
-          workload_identity_provider: projects/my-project-id/locations/global/workloadIdentityPools/my-pool-id/providers/my-provider-id
-      - uses: r7kamura/google-docs-to-github@v3
-        with:
-          google_drive_folder_id: 1zD5A9LcT1aHz5_R_eXvikWy1l7SGcjH_
+          python-version: '3.x'
+
+      - name: Fetch Data from Google Sheet
+        run: |
+          python -c "
+          import urllib.request
+          # ใส่ลิงก์ Publish to Web (CSV) ของคุณในบรรทัดล่างนี้
+          url = 'https://docs.google.com/spreadsheets/d/e/YOUR_LINK_HERE/pub?output=csv'
+          try:
+              urllib.request.urlretrieve(url, 'data.csv')
+              print('ดึงข้อมูลสำเร็จเรียบร้อย!')
+          except Exception as e:
+              print('เกิดข้อผิดพลาด:', e)
+          "
+
+      - name: Commit and Push Updated Data to GitHub
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add .
+          git commit -m "Auto-update investment data from Google Sheet" || exit 0
+          git push
+
