@@ -10,36 +10,34 @@
         "title": "1. Arm Holdings plc (ARM)",
         "subsections": [
           {
-            "subtitle": "1.1 ผลประกอบการและข่าวสารล่าสุด",
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
             "highlights": [
               {
-                "label": "รายได้รวม (Q1 FY27)",
-                "value": ".29 พันล้าน",
+                "label": "รายได้รวม Q1 FY27",
+                "value": "$1.29 พันล้าน",
                 "desc": "(+22% YoY) ทำสถิติสูงสุดใหม่"
               },
               {
-                "label": "กำไรต่อหุ้น (Non-GAAP)",
-                "value": "/home/runner/work/_temp/7cc9d8fb-091c-4cc3-b257-772aaed8aad0.sh.45",
-                "desc": "สูงกว่าเป้าหมายของบริษัท"
+                "label": "กำไรต่อหุ้น Non-GAAP",
+                "value": "$0.45",
+                "desc": "สูงกว่าเป้าหมาย"
               },
               {
-                "label": "Royalty Revenue",
-                "value": "15 ล้าน",
-                "desc": "(+22% YoY) Data Center โต >100%"
+                "label": "ดีล DreamBig",
+                "value": "$265 ล้าน",
+                "desc": "ซื้อกิจการ  ขยายสู่ Physical AI & Robotics"
               },
               {
-                "label": "ความต้องการ AGI CPU",
-                "value": ">  พันล้าน",
-                "desc": "ยอดสั่งซื้อและโซลูชันทะลุเป้า"
+                "label": "แผนผลตอบแทนผู้บริหาร",
+                "value": "200%",
+                "desc": "SEC AGM ยื่นเพิ่มเพดาน PSU  มุ่งสเกล Market Cap สู่ $1-$2T"
               }
             ]
           },
           {
-            "subtitle": "1.2 ผลกระทบเชิงกลยุทธ์ต่อ Arm",
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
             "details": [
-              "การเปลี่ยนผ่านสู่โครงสร้างพื้นฐาน AI ขนาดยักษ์: ยกระดับสถาปัตยกรรมชิปจากกลุ่มสมาร์ตโฟนไปสู่ Cloud AI, Edge AI และ Physical AI อย่างสมบูรณ์",
-              "การเติบโตของ Custom Silicon จาก Hyperscalers: ผู้ให้บริการคลาวด์ระดับโลกหันมาพัฒนาชิปเฉพาะของตนเองโดยใช้สถาปัตยกรรม Arm มากยิ่งขึ้น",
-              "การเข้าซื้อ DreamBig Semiconductor: เสริมศักยภาพ AI Networking และขยายสู่หุ่นยนต์ Physical AI เช่น Atlas ของ Boston Dynamics"
+              "ประหยัดพลังงาน 50%: สถาปัตยกรรมชิปตอบโจทย์ Data Center ยุค AI"
             ]
           }
         ]
@@ -49,35 +47,262 @@
         "title": "2. Micron Technology, Inc. (MU)",
         "subsections": [
           {
-            "subtitle": "2.1 ผลประกอบการและข่าวสารล่าสุด",
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
             "highlights": [
               {
                 "label": "เป้าหมายราคา Mizuho",
-                "value": ",375.00",
-                "desc": "อุปทาน DRAM & NAND ตึงตัวถึงปี 2028"
+                "value": "$1,375.00",
+                "desc": "อุปทาน DRAM ตึงตัวถึงปี 2028"
+              },
+              {
+                "label": "งบลงทุนโรงงานสหรัฐฯ",
+                "value": "$250 พันล้าน",
+                "desc": "ขยายวงเงินเป็น ดอลลาร์"
               },
               {
                 "label": "Zacks Rank #1",
                 "value": "Strong Buy",
-                "desc": "สัญญา Take-or-pay 16 ฉบับ ลดความผันผวน"
-              },
-              {
-                "label": "งบลงทุนโรงงานสหรัฐฯ",
-                "value": "50 พันล้าน",
-                "desc": "ขยายโรงงานใน Idaho, NY, Virginia"
-              },
-              {
-                "label": "Forward P/E",
-                "value": "5.62 เท่า",
-                "desc": "Valuation น่าสนใจ อัตรากำไร 84.9%"
+                "desc": "จัดอันดับ  จาก Forward P/E เพียง 5.62 เท่า"
               }
             ]
           },
           {
-            "subtitle": "2.2 ผลกระทบเชิงกลยุทธ์ต่อ Micron",
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
             "details": [
-              "DRAM คือคอขวดหลักของ AI: ความต้องการ Memory สำหรับ Agentic AI เพิ่มขึ้น 5-30 เท่า",
-              "สัญญาระยะยาวการันตีรายได้: ลูกค้ารายใหญ่เซ็นสัญญา Take-or-Pay ล่วงหน้า 20% ของ DRAM และ 1/3 ของ NAND"
+              "สัญญา Take-or-pay: สัญญาลูกค้า 16 ฉบับช่วยการันตีรายได้"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slotId": "news-11 สิงหาคม 2026",
+    "dateLabel": "11 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 11 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "รายงาน SEC 6-K",
+                "value": "200%",
+                "desc": "เตรียมประชุม AGM 9 ก.ย. 2026 ปรับเพิ่มเพดาน PSU CEO เป็น"
+              },
+              {
+                "label": "แผน Value Creation",
+                "value": "$1",
+                "desc": "มุ่งเป้ามาร์เก็ตแคป -$2 Trillion ภายในปี 2029-2031"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              "ติดตามความคืบหน้าของอุตสาหกรรมอย่างต่อเนื่อง"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "อุปสงค์ Agentic AI",
+                "value": "30 เท่า",
+                "desc": "ดันความต้องการ Memory เพิ่มขึ้น 5-"
+              },
+              {
+                "label": "งบลงทุนสหรัฐฯ",
+                "value": "$250 พันล้าน",
+                "desc": "เพิ่มงบลงทุนโรงงาน (Idaho, NY, Virginia) รวมเป็น ดอลลาร์"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              "KeyBanc Forum: ปี 2027 อุปทาน DRAM ตึงตัวหนักกว่าปี 2026 เป็นคอขวด AI อันดับ 1"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slotId": "news-10 สิงหาคม 2026",
+    "dateLabel": "10 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 10 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "อุปสงค์ Arm AGI CPU",
+                "value": "$2,000M",
+                "desc": "ยอดสั่งซื้อทะลุ > ลดความเสี่ยงพึ่งพาสมาร์ทโฟน"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              "ขยายสู่ Physical AI: รุกตลาด ADAS ยานยนต์ไร้คนขับ และ Robotics"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "ฟื้นตัว +10% จากจุดต่ำสุด",
+                "value": "$50B",
+                "desc": "รับคาดการณ์รายได้ Q4 FY26 ที่  และ Gross Margin 86%"
+              },
+              {
+                "label": "สัญญา Take-or-pay",
+                "value": "20%",
+                "desc": "ครอบคลุม  ของ DRAM และ 1/3 ของ NAND ล่วงหน้า"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              "ติดตามความคืบหน้าของอุตสาหกรรมอย่างต่อเนื่อง"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slotId": "news-9 สิงหาคม 2026",
+    "dateLabel": "9 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 9 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "ยุทธศาสตร์ CSS & AGI CPU",
+                "value": "98%",
+                "desc": "เปลี่ยนจากขาย IP สู่โซลูชันสำเร็จรูป ดัน Gross Margin แตะ"
+              },
+              {
+                "label": "Gross Profit per Socket",
+                "value": "10 เท่า",
+                "desc": "กำไรต่อชิปเพิ่มขึ้นสูงถึง"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              "ติดตามความคืบหน้าของอุตสาหกรรมอย่างต่อเนื่อง"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "Fair Value $1,480.67",
+                "value": "อัปเดต",
+                "desc": "ราคาหุ้นเทรด P/E ~18.8x-19.6x (Forward P/E ~5.9x) อยู่ในภาวะ Undervalued"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              "Fair Value $1,480.67: ราคาหุ้นเทรด P/E ~18.8x-19.6x (Forward P/E ~5.9x) อยู่ในภาวะ Undervalued"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slotId": "news-8 สิงหาคม 2026",
+    "dateLabel": "8 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 8 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "ราคาหุ้นเบรกเอาต์",
+                "value": "$280.00",
+                "desc": "ทะลุแนวต้าน  (+3.95%) ปิดที่ $286.00 จากเงินทุนไหลเข้าหุ้นเติบโต"
+              },
+              {
+                "label": "ราคาเป้าหมายสูงสุด",
+                "value": "$450",
+                "desc": "สถาบันการเงินประเมินเป้าหมายสูงสุดถึง  USD"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              "ติดตามความคืบหน้าของอุตสาหกรรมอย่างต่อเนื่อง"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "อานิสงส์ Alphabet CapEx",
+                "value": "$195",
+                "desc": "เพิ่มงบ AI CapEx สู่ -$205B หนุนอุปสงค์ DRAM/NAND"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              "PCIe Gen 6 SSD: เปิดตัวชิปจัดเก็บข้อมูลสำหรับ AI Server"
             ]
           }
         ]
