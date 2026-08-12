@@ -1,5 +1,90 @@
 [
   {
+    "slotId": "news-12 สิงหาคม 2026",
+    "dateLabel": "12 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 12 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "1.1 ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "จุดแข็งประหยัดพลังงาน",
+                "value": "50%",
+                "desc": "ประหยัดไฟกว่า x86 ลดคอขวด Data Center"
+              },
+              {
+                "label": "AI Networking Deal",
+                "value": "65 ล้าน",
+                "desc": "ซื้อกิจการ DreamBig Semiconductor"
+              },
+              {
+                "label": "PSU Cap Increase",
+                "value": "200%",
+                "desc": "แผน Value Creation สู่ - Trillion"
+              },
+              {
+                "label": "เป้าหมายระยะยาว",
+                "value": "2029-2031",
+                "desc": "มุ่งขยายสู่ Physical AI & Robotics"
+              }
+            ]
+          },
+          {
+            "subtitle": "1.2 ผลกระทบเชิงกลยุทธ์ต่อ Arm",
+            "details": [
+              "สถาปัตยกรรมประหยัดพลังงานระดับ 50%: ผู้ให้บริการคลาวด์ยักษ์ใหญ่อย่าง Nvidia, Amazon, Google, Microsoft เลือกใช้อย่างแพร่หลาย",
+              "การขยายธุรกิจสู่ AI Networking & Physical AI: เสริมความแข็งแกร่งร่วมกับหุ่นยนต์ Atlas ของ Boston Dynamics และ Nvidia Jetson Thor",
+              "แผนปรับผลตอบแทนผู้บริหารระยะยาว (VCP/PSU): เตรียมประชุม AGM 9 กันยายน 2026 เพื่อมุ่งสู่ Market Cap - Trillion"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "2.1 ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "เป้าหมายราคา Mizuho",
+                "value": ",375.00",
+                "desc": "อุปทาน DRAM & NAND ตึงตัวถึงปี 2028"
+              },
+              {
+                "label": "Zacks Rank #1",
+                "value": "Strong Buy",
+                "desc": "สัญญา Take-or-pay 16 ฉบับ ลดความผันผวน"
+              },
+              {
+                "label": "งบลงทุนโรงงานสหรัฐฯ",
+                "value": "50 พันล้าน",
+                "desc": "ขยายโรงงานใน Idaho, NY, Virginia"
+              },
+              {
+                "label": "Forward P/E",
+                "value": "5.62 เท่า",
+                "desc": "Valuation น่าสนใจ อัตรากำไรแข็งแกร่ง"
+              }
+            ]
+          },
+          {
+            "subtitle": "2.2 ผลกระทบเชิงกลยุทธ์ต่อ Micron",
+            "details": [
+              "DRAM คือคอขวดหลักของระบบ AI: ฝ่ายบริหารระบุว่าปี 2027 ตลาดจะตึงตัวกว่าปี 2026",
+              "ความต้องการ Memory สำหรับ Agentic AI: คาดว่าจะดันอุปสงค์ชิปหน่วยความจำสูงขึ้น 5-30 เท่า"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-27 ตลาดจะตึงตัวกว่าปี 2026",
     "dateLabel": "27 ตลาดจะตึงตัวกว่าปี 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตNews",
