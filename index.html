@@ -55,52 +55,6 @@
         .pt-safe {
             padding-top: env(safe-area-inset-top, 0px);
         }
-        /* Custom Google Doc Container Styles */
-        .gdoc-wrapper {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 1.25rem;
-            padding: 1.5rem;
-            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
-        }
-        @media (min-width: 640px) {
-            .gdoc-wrapper {
-                padding: 2rem;
-            }
-        }
-        .gdoc-wrapper table {
-            width: 100% !important;
-            border-collapse: collapse !important;
-            margin: 1.25rem 0 !important;
-            font-size: 0.875rem !important;
-        }
-        .gdoc-wrapper td, .gdoc-wrapper th {
-            border: 1px solid #cbd5e1 !important;
-            padding: 0.75rem 1rem !important;
-            text-align: left !important;
-        }
-        .gdoc-wrapper th {
-            background-color: #f1f5f9 !important;
-            font-weight: 700 !important;
-            color: #1e293b !important;
-        }
-        .gdoc-wrapper p {
-            margin-bottom: 0.75rem !important;
-            line-height: 1.65 !important;
-            color: #334155 !important;
-        }
-        .gdoc-wrapper ul, .gdoc-wrapper ol {
-            padding-left: 1.5rem !important;
-            margin-bottom: 1rem !important;
-        }
-        .gdoc-wrapper li {
-            margin-bottom: 0.4rem !important;
-            line-height: 1.6 !important;
-        }
-        .gdoc-wrapper a {
-            color: #2563eb !important;
-            text-decoration: underline !important;
-        }
     </style>
 </head>
 <body className="antialiased selection:bg-blue-500 selection:text-white">
@@ -114,7 +68,61 @@
             ? window.location.href 
             : GITHUB_PAGES_LIVE_URL;
 
-        // --- BASELINE DATASETS ---
+        const MAX_HISTORY_PER_CATEGORY = 5;
+
+        // =========================================================================
+        // --- DYNAMIC DATE PARSER & AUTOMATIC CHRONOLOGICAL SORTING SYSTEM ---
+        // =========================================================================
+        const parseDateToTimestamp = (dateStr) => {
+            if (!dateStr) return 0;
+            
+            const isoMatch = dateStr.match(/(\d{4})-(\d{1,2})-(\d{1,2})/);
+            if (isoMatch) {
+                return new Date(parseInt(isoMatch[1]), parseInt(isoMatch[2]) - 1, parseInt(isoMatch[3])).getTime();
+            }
+
+            const thaiMonths = {
+                'มกราคม': 0, 'ม.ค.': 0,
+                'กุมภาพันธ์': 1, 'ก.พ.': 1,
+                'มีนาคม': 2, 'มี.ค.': 2,
+                'เมษายน': 3, 'เม.ย.': 3,
+                'พฤษภาคม': 4, 'พ.ค.': 4,
+                'มิถุนายน': 5, 'มิ.ย.': 5,
+                'กรกฎาคม': 6, 'ก.ค.': 6,
+                'สิงหาคม': 7, 'ส.ค.': 7,
+                'กันยายน': 8, 'ก.ย.': 8,
+                'ตุลาคม': 9, 'ต.ค.': 9,
+                'พฤศจิกายน': 10, 'พ.ย.': 10,
+                'ธันวาคม': 11, 'ธ.ค.': 11
+            };
+
+            const thaiMatch = dateStr.match(/(\d{1,2})\s+([^\s\d]+)\s+(\d{4})/);
+            if (thaiMatch) {
+                const day = parseInt(thaiMatch[1]);
+                const monthName = thaiMatch[2];
+                let year = parseInt(thaiMatch[3]);
+                if (year > 2400) year -= 543;
+                const month = thaiMonths[monthName] !== undefined ? thaiMonths[monthName] : 0;
+                return new Date(year, month, day).getTime();
+            }
+
+            const fallbackDate = Date.parse(dateStr);
+            return isNaN(fallbackDate) ? 0 : fallbackDate;
+        };
+
+        const sortSlotsByDate = (slots) => {
+            if (!slots || !Array.isArray(slots)) return [];
+            return [...slots].sort((a, b) => {
+                const timeA = parseDateToTimestamp(a.dateLabel || a.date);
+                const timeB = parseDateToTimestamp(b.dateLabel || b.date);
+                return timeB - timeA;
+            });
+        };
+
+        // =========================================================================
+        // --- BASELINE DATASETS (100% GORGEOUS FALLBACK GUARANTEE) ---
+        // =========================================================================
+
         const INITIAL_NEWS_SLOTS = [
             {
                 slotId: "news-0",
@@ -139,7 +147,8 @@
                                 subtitle: "1.2 ผลกระทบเชิงกลยุทธ์ต่อ Arm",
                                 details: [
                                     "การเปลี่ยนผ่านสู่โครงสร้างพื้นฐาน AI ขนาดยักษ์: ยกระดับสถาปัตยกรรมชิปจากกลุ่มสมาร์ตโฟนไปสู่ Cloud AI, Edge AI และ Physical AI อย่างสมบูรณ์",
-                                    "การเติบโตของ Custom Silicon จาก Hyperscalers: ผู้ให้บริการคลาวด์ระดับโลกหันมาพัฒนาชิปเฉพาะของตนเองโดยใช้สถาปัตยกรรม Arm มากยิ่งขึ้น"
+                                    "การเติบโตของ Custom Silicon จาก Hyperscalers: ผู้ให้บริการคลาวด์ระดับโลกหันมาพัฒนาชิปเฉพาะของตนเองโดยใช้สถาปัตยกรรม Arm มากยิ่งขึ้น",
+                                    "การเข้าซื้อ DreamBig Semiconductor: เสริมศักยภาพ AI Networking และขยายสู่หุ่นยนต์ Physical AI เช่น Atlas ของ Boston Dynamics"
                                 ]
                             }
                         ]
@@ -151,8 +160,17 @@
                             {
                                 subtitle: "2.1 ผลประกอบการและข่าวสารล่าสุด",
                                 highlights: [
-                                    { label: "รายได้ Q3 (Fiscal 2026)", value: "$41.5 พันล้าน", desc: "(+346% YoY) ระเบิดตัวเหนือคาดหมาย" },
-                                    { label: "อัตรากำไรขั้นต้น", value: "84.9%", desc: "ราคาขายเฉลี่ยพุ่ง ลดความผันผวนต้นทุน" }
+                                    { label: "เป้าหมายราคา Mizuho", value: "$1,375.00", desc: "อุปทาน DRAM & NAND ตึงตัวถึงปี 2028" },
+                                    { label: "Zacks Rank #1", value: "Strong Buy", desc: "สัญญา Take-or-pay 16 ฉบับ ลดความผันผวน" },
+                                    { label: "งบลงทุนโรงงานสหรัฐฯ", value: "$250 พันล้าน", desc: "ขยายโรงงานใน Idaho, NY, Virginia" },
+                                    { label: "Forward P/E", value: "5.62 เท่า", desc: "Valuation น่าสนใจ อัตรากำไร 84.9%" }
+                                ]
+                            },
+                            {
+                                subtitle: "2.2 ผลกระทบเชิงกลยุทธ์ต่อ Micron",
+                                details: [
+                                    "DRAM คือคอขวดหลักของ AI: ความต้องการ Memory สำหรับ Agentic AI เพิ่มขึ้น 5-30 เท่า",
+                                    "สัญญาระยะยาวการันตีรายได้: ลูกค้ารายใหญ่เซ็นสัญญา Take-or-Pay ล่วงหน้า 20% ของ DRAM และ 1/3 ของ NAND"
                                 ]
                             }
                         ]
@@ -177,8 +195,8 @@
                     'YTD': [20000, 21000, 23000, 24000, 25500, 24500, 23000, 21668],
                 },
                 holdings: [
-                    { ticker: "ARM", desc: "ผู้นำสถาปัตยกรรมชิป AI", share: "78.60%", avgCost: "$286.63", price: "$224.89", pl: "-21.54%" },
-                    { ticker: "MU", desc: "ผู้ผลิต HBM/DRAM", share: "21.40%", avgCost: "$794.99", price: "$739.00", pl: "-7.04%" }
+                    { ticker: "ARM Holdings (ARM)", desc: "ผู้นำสถาปัตยกรรมชิป AI & Data Center", share: "78.60%", avgCost: "$286.63", price: "$224.89", pl: "-21.54%" },
+                    { ticker: "Micron Technology (MU)", desc: "ผู้ผลิตหน่วยความจำ HBM / DRAM ยุค AI", share: "21.40%", avgCost: "$794.99", price: "$739.00", pl: "-7.04%" }
                 ]
             }
         ];
@@ -193,34 +211,34 @@
                     title: "1. สรุปอัปเดตข่าวและงบการเงิน Arm Holdings (ARM)",
                     intro: "อัปเดตงบการเงินไตรมาส Q1 FYE27 และการวิเคราะห์รายสัปดาห์ล่าสุด:",
                     highlights: [
-                        { label: "รายได้รวม (Total Revenue)", value: "$1.289 พันล้าน", desc: "(+22% YoY) - ทำสถิติสูงสุดใหม่สำหรับ Q1" },
-                        { label: "กำไรสุทธิปรับปรุง (Non-GAAP EPS)", value: "$0.45", desc: "(+29% YoY) - สูงกว่ากรอบประมาณการ" },
-                        { label: "Royalty Revenue", value: "$715 ล้าน", desc: "(+22% YoY) - ทำสถิติ Q1 สูงสุด" },
-                        { label: "Licensing Revenue", value: "$574 ล้าน", desc: "(+23% YoY)" }
+                        { label: "รายได้รวม (Total Revenue)", value: "$1.289 พันล้าน", desc: "(+22% YoY) ทำสถิติสูงสุดใหม่สำหรับ Q1" },
+                        { label: "กำไรสุทธิปรับปรุง (Non-GAAP EPS)", value: "$0.45", desc: "(+29% YoY) สูงกว่ากรอบเป้าหมาย" },
+                        { label: "Royalty Revenue", value: "$715 ล้าน", desc: "(+22% YoY) ทำสถิติ Q1 สูงสุด" },
+                        { label: "Licensing Revenue", value: "$574 ล้าน", desc: "(+23% YoY) เติบโตแข็งแกร่ง" }
                     ],
                     details: [
-                        "Data Center Royalty: พุ่งขึ้นสถิติใหม่ เติบโตเกินกว่าเท่าตัว (>100% YoY) จากชิป Neoverse",
+                        "Data Center Royalty: พุ่งขึ้นสถิติใหม่ เติบโตเกินกว่าเท่าตัว (>100% YoY) จากชิป Neoverse ใน Hyperscalers",
                         "ปฏิกิริยาราคาหุ้น: หุ้นรีบาวด์ขึ้นแรง +6.5% ถึง +7.4% ปิดสัปดาห์ที่บริเวณ ~$240-$241 USD",
-                        "Morgan Stanley ปรับเพิ่มราคาเป้าหมายเป็น $212 USD (จาก $202)",
-                        "RBC Capital ($340), Evercore ISI ($326), UBS ($320) ยังคงแนะนำ Buy / Outperform"
+                        "NVIDIA & Arm Synergy: ชิป Grace & Vera CPU เชื่อมต่อผ่าน NVLink-C2C แบนด์วิดท์ 1.8 TB/s ปลดล็อกคอขวดระบบ AI",
+                        "เป้าหมาย Valuation: แผน Value Creation Plan มุ่งสู่ Market Cap $1-$2 Trillion ภายในปี 2029-2031"
                     ]
                 },
                 section2: {
                     title: "2. ประเมินสถิติ Arm ตามกรอบ 5 Checkpoints",
                     checkpoints: [
-                        { id: 1, name: "CSS Adoption & Royalty Expansion", status: "ผ่าน", desc: "รายได้ Royalty ทำสถิติ $715M (+22% YoY)" },
+                        { id: 1, name: "CSS Adoption & Royalty Expansion", status: "ผ่าน", desc: "รายได้ Royalty ทำสถิติ $715M (+22% YoY) ค่าสิทธิ์ขยับสู่ 5%-10% ต่อชิป" },
                         { id: 2, name: "Data Center & Cloud AI", status: "ผ่านดีเยี่ยม", desc: "รายได้ Royalty ฝั่ง Data Center เติบโตมากกว่า >100% YoY" },
-                        { id: 3, name: "Armv9 Penetration", status: "ผ่าน", desc: "การส่งมอบ Neoverse ทะลุ 1.5 พันล้าน Cores" },
-                        { id: 4, name: "Margins & Cash Flow", status: "ผ่านดีเยี่ยม", desc: "Gross Margin 98.1%, Free Cash Flow $665M" },
-                        { id: 5, name: "Guidance & Risks", status: "เฝ้าระวัง", desc: "คาดการณ์ Q2 รายได้ $1.38B (+20% YoY) เติบโตต่อเนื่อง" }
+                        { id: 3, name: "Armv9 Penetration", status: "ผ่าน", desc: "สัดส่วนรายได้จาก Armv9 เพิ่มขึ้นเกิน >30%-35% ของ Royalty รวม" },
+                        { id: 4, name: "Margins & Cash Flow", status: "ผ่านดีเยี่ยม", desc: "Gross Margin 95%-98%, โมเดล Asset-Light ไม่มีภาระสร้าง Fab" },
+                        { id: 5, name: "Guidance & Risks", status: "เฝ้าระวัง", desc: "ติดตามการแข่งขันจาก RISC-V และคดีความ Qualcomm vs. Arm" }
                     ]
                 },
                 section3: {
                     title: "3. คัดสรรหุ้น AI ที่น่าสนใจประจำสัปดาห์ (Top AI Stock Picks)",
                     picks: [
-                        { ticker: "MU", name: "Micron Technology", phase: "Phase 2: Hardware & Memory", reason: "ราคาหุ้นรีบาวด์พุ่งขึ้นแรง +14.12% ยืนยันอุปสงค์หน่วยความจำ HBM สำหรับ AI" },
-                        { ticker: "NVDA", name: "NVIDIA", phase: "Phase 1: Core AI Enablers", reason: "รีบาวด์กลับขึ้นตามกลุ่มชิป หลัง Microsoft ยืนยันเพิ่มงบ AI Infrastructure" },
-                        { ticker: "GOOGL", name: "Alphabet", phase: "Phase 3: Cloud Hyperscaler", reason: "Google Cloud รายได้โตแรงต่อเนื่อง Valuation P/E เหมาะสม (~16-17 เท่า)" }
+                        { ticker: "MU", name: "Micron Technology", phase: "Phase 2: Hardware & Memory", reason: "ราคาหุ้นรีบาวด์พุ่งขึ้นแรง ได้รับประโยชน์สูงสุดจากอุปสงค์ HBM และ DRAM ขาดแคลน" },
+                        { ticker: "NVDA", name: "NVIDIA", phase: "Phase 1: Core AI Enablers", reason: "ผู้นำระบบ AI เต็มรูปแบบ Grace/Vera Rubin สถาปัตยกรรม Blackwell ขยายตัวต่อเนื่อง" },
+                        { ticker: "GOOGL", name: "Alphabet", phase: "Phase 3: Cloud Hyperscaler", reason: "Google Axion N4A ชิป Arm ประสิทธิภาพสูง Cloud โตแรง Valuation P/E น่าดึงดูด" }
                     ]
                 }
             }
@@ -232,6 +250,7 @@
             'YTD': ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.'],
         };
 
+        // --- SVG ICONS ---
         const Icons = {
             News: () => <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"></path></svg>,
             Portfolio: () => <svg className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z"></path><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z"></path></svg>,
@@ -244,68 +263,179 @@
             SlotIcon: () => <svg className="w-4 h-4 text-blue-600 mr-1.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
         };
 
-        const CleanGoogleDocRenderer = ({ rawHtml }) => {
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(rawHtml, 'text/html');
-            const docBody = doc.querySelector('.doc-content') || doc.body;
+        const AwaitingUpdateState = ({ title = "อยู่ระหว่างรอการอัปเดตข้อมูลย้อนหลัง", subtitle = "ยังไม่มีรายงานย้อนหลังในหมวดนี้ ข้อมูลจะถูกจัดเก็บสะสมให้อัตโนมัติเมื่อมีการอัปเดตในรอบถัดไป" }) => (
+            <div className="bg-white rounded-2xl border border-slate-200 p-8 sm:p-12 text-center my-6 shadow-xs">
+                <div className="w-14 h-14 bg-amber-50 rounded-2xl flex items-center justify-center mx-auto mb-3 border border-amber-100">
+                    <Icons.Clock />
+                </div>
+                <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-1">{title}</h3>
+                <p className="text-xs sm:text-sm text-slate-500 max-w-md mx-auto leading-relaxed">{subtitle}</p>
+            </div>
+        );
+
+        const HistoryDrawerPopup = ({ slots, activeSlotIndex, setActiveSlotIndex, isOpen, setIsOpen, categoryTitle }) => {
+            if (!isOpen) return null;
+
+            const sortedSlots = sortSlotsByDate(slots);
 
             return (
-                <div className="gdoc-wrapper fade-in">
-                    <div dangerouslySetInnerHTML={{ __html: docBody.innerHTML }} />
+                <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex justify-end fade-in">
+                    <div className="bg-white w-full max-w-md h-full shadow-2xl flex flex-col relative border-l border-slate-200">
+                        <div className="p-5 border-b border-slate-200 flex justify-between items-center bg-slate-50/80">
+                            <div className="flex items-center space-x-2">
+                                <div className="w-8 h-8 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center font-bold">
+                                    <Icons.SlotIcon />
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-slate-900 text-base">คลังประวัติ{categoryTitle}</h3>
+                                    <p className="text-xs text-slate-500">เรียงลำดับจากฉบับล่าสุดไปเก่าอัตโนมัติ</p>
+                                </div>
+                            </div>
+                            <button 
+                                onClick={() => setIsOpen(false)}
+                                className="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-200/60 transition-all"
+                            >
+                                <Icons.Close />
+                            </button>
+                        </div>
+
+                        <div className="flex-1 overflow-y-auto p-4 space-y-3">
+                            <div className="bg-blue-50/70 border border-blue-100 rounded-xl p-3 text-xs text-blue-800 font-medium flex items-center justify-between">
+                                <span>📅 <strong>จัดเรียงตามเวลา:</strong> ระบบอ่านวันเดือนปีและเรียงฉบับล่าสุดให้อัตโนมัติ</span>
+                                <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-md shrink-0 ml-1">Auto Sort</span>
+                            </div>
+
+                            {sortedSlots.length > 0 ? (
+                                sortedSlots.map((slot, index) => {
+                                    const isSelected = activeSlotIndex === index;
+                                    const isCurrent = index === 0;
+
+                                    return (
+                                        <div 
+                                            key={slot.slotId || index}
+                                            onClick={() => {
+                                                setActiveSlotIndex(index);
+                                                setIsOpen(false);
+                                            }}
+                                            className={`p-4 rounded-xl border transition-all cursor-pointer relative overflow-hidden ${
+                                                isSelected 
+                                                ? 'bg-blue-50/80 border-blue-500 shadow-md ring-2 ring-blue-500/20' 
+                                                : 'bg-white border-slate-200 hover:border-blue-300 hover:shadow-xs'
+                                            }`}
+                                        >
+                                            <div className="flex justify-between items-start mb-1.5">
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className={`text-[11px] font-bold px-2.5 py-0.5 rounded-md ${
+                                                        isCurrent 
+                                                        ? 'bg-emerald-100 text-emerald-800 border border-emerald-200' 
+                                                        : 'bg-slate-100 text-slate-600'
+                                                    }`}>
+                                                        {isCurrent ? '🌟 ฉบับล่าสุด' : `📜 ฉบับย้อนหลัง`}
+                                                    </span>
+                                                </div>
+                                                <span className="text-xs font-semibold text-slate-500">📅 {slot.dateLabel}</span>
+                                            </div>
+
+                                            <h4 className="text-sm font-bold text-slate-900 mb-1 leading-snug">
+                                                {slot.title || (slot.totalThb ? `พอร์ตรวม ${slot.totalThb} THB` : `รายงานฉบับวันที่ ${slot.dateLabel}`)}
+                                            </h4>
+                                            <p className="text-xs text-slate-500 line-clamp-2">
+                                                {slot.subtitle || (slot.unrealizedPl ? `Unrealized P/L: ${slot.unrealizedPl}` : 'ข้อมูลสรุปรายการ')}
+                                            </p>
+
+                                            {isSelected && (
+                                                <div className="mt-3 pt-2 border-t border-blue-200/60 flex items-center justify-between text-xs text-blue-700 font-semibold">
+                                                    <span>✓ กำลังแสดงผลอยู่ขณะนี้</span>
+                                                    <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-md">กำลังเปิดอ่าน</span>
+                                                </div>
+                                            )}
+                                        </div>
+                                    );
+                                })
+                            ) : (
+                                <AwaitingUpdateState />
+                            )}
+                        </div>
+                    </div>
                 </div>
             );
         };
 
-        const NewsTab = ({ fetchedHtml, onOpenQr }) => {
-            if (fetchedHtml) {
-                return (
-                    <div className="fade-in space-y-4 pb-10">
-                        <div className="bg-white rounded-2xl p-4 sm:p-6 border border-slate-100 shadow-xs flex justify-between items-center">
-                            <div>
-                                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">ข่าวรายวัน (อัปเดตสดจาก Google Docs)</h1>
-                                <p className="text-xs text-slate-500 font-medium mt-0.5">🟢 ซิงค์เนื้อหาต้นฉบับอัตโนมัติผ่าน GitHub Actions</p>
-                            </div>
-                            <button onClick={onOpenQr} className="text-xs text-indigo-600 border border-indigo-600 rounded-xl px-3 py-1.5 font-medium">
-                                <Icons.QrCode /> แชร์ QR
-                            </button>
-                        </div>
-                        <CleanGoogleDocRenderer rawHtml={fetchedHtml} />
-                    </div>
-                );
-            }
+        const NewsTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenQr, onOpenHistoryDrawer }) => {
+            const sortedSlots = sortSlotsByDate(slots);
+            const currentSlot = sortedSlots[activeSlotIndex] || sortedSlots[0] || INITIAL_NEWS_SLOTS[0];
 
-            const currentSlot = INITIAL_NEWS_SLOTS[0];
             return (
                 <div className="fade-in space-y-6 md:space-y-8 pb-10">
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8 relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-cyan-500 to-blue-600"></div>
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                             <div>
-                                <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 leading-tight mb-2">{currentSlot.title}</h1>
+                                <div className="flex items-center gap-2 mb-2 flex-wrap">
+                                    <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 leading-tight">{currentSlot.title}</h1>
+                                    {activeSlotIndex === 0 ? (
+                                        <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-200 shrink-0">ข่าวสารล่าสุด</span>
+                                    ) : (
+                                        <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-200 shrink-0">ข่าวย้อนหลังประจำวันที่ {currentSlot.dateLabel}</span>
+                                    )}
+                                </div>
                                 <p className="text-sm sm:text-base text-slate-500 font-medium">{currentSlot.subtitle}</p>
                             </div>
-                            <button onClick={onOpenQr} className="text-xs text-indigo-600 border border-indigo-600 rounded-xl px-3 py-2 font-medium shrink-0">
-                                <Icons.QrCode /> แชร์ QR
-                            </button>
+                            
+                            <div className="flex flex-wrap gap-2 w-full sm:w-auto shrink-0">
+                                <button 
+                                    onClick={onOpenHistoryDrawer}
+                                    className="flex items-center justify-center text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-300 rounded-xl px-3.5 py-2 font-semibold shadow-xs"
+                                >
+                                    <Icons.HistoryDrawer /> คลังข่าวสารย้อนหลัง ({sortedSlots.length} ฉบับ)
+                                </button>
+                                <button 
+                                    onClick={onOpenQr}
+                                    className="flex items-center justify-center text-xs text-indigo-600 hover:text-white hover:bg-indigo-600 transition-all border border-indigo-600 rounded-xl px-3 py-2 font-medium shadow-xs"
+                                >
+                                    <Icons.QrCode /> แชร์ QR
+                                </button>
+                            </div>
                         </div>
                     </div>
 
-                    {currentSlot.sections.map((section) => (
+                    {currentSlot.sections && currentSlot.sections.map((section) => (
                         <div key={section.id} className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
                             <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{section.title}</h2>
-                            {section.subsections.map((sub, idx) => (
+                            
+                            {section.subsections && section.subsections.map((sub, idx) => (
                                 <div key={idx} className={idx > 0 ? "mt-6 sm:mt-8" : ""}>
                                     <h3 className="text-base sm:text-lg font-semibold text-slate-800 mb-4">{sub.subtitle}</h3>
+                                    
                                     {sub.highlights && (
                                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-5 sm:mb-6">
                                             {sub.highlights.map((hl, i) => (
-                                                <div key={i} className="bg-blue-50/60 rounded-xl p-4 border border-blue-100/80">
+                                                <div key={i} className="bg-blue-50/60 rounded-xl p-4 border border-blue-100/80 hover:shadow-md transition-all">
                                                     <p className="text-xs text-blue-600 mb-1 font-semibold">{hl.label}</p>
                                                     <p className="text-base sm:text-lg font-bold text-slate-900">{hl.value}</p>
                                                     <p className="text-xs text-slate-600 mt-1 leading-snug">{hl.desc}</p>
                                                 </div>
                                             ))}
                                         </div>
+                                    )}
+
+                                    {sub.details && (
+                                        <ul className="space-y-3 bg-slate-50/80 rounded-xl p-4 sm:p-5 border border-slate-100">
+                                            {sub.details.map((detail, i) => {
+                                                const parts = detail.split(':');
+                                                const boldPart = parts.length > 1 ? parts[0] : null;
+                                                const restPart = parts.length > 1 ? parts.slice(1).join(':') : detail;
+                                                return (
+                                                    <li key={i} className="flex items-start">
+                                                        <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                                        <span className="text-slate-700 text-xs sm:text-sm md:text-base leading-relaxed">
+                                                            {boldPart && <strong className="text-slate-900 font-semibold">{boldPart}:</strong>}
+                                                            {restPart}
+                                                        </span>
+                                                    </li>
+                                                )
+                                            })}
+                                        </ul>
                                     )}
                                 </div>
                             ))}
@@ -315,34 +445,97 @@
             );
         };
 
-        const PortfolioTab = ({ fetchedHtml, onOpenQr }) => {
-            if (fetchedHtml) {
-                return (
-                    <div className="fade-in space-y-4 pb-10">
-                        <div className="bg-white rounded-2xl p-4 sm:p-6 border border-slate-100 shadow-xs flex justify-between items-center">
-                            <div>
-                                <h2 className="text-xl sm:text-2xl font-bold text-slate-800">สถานะพอร์ต (อัปเดตสดจาก Google Docs)</h2>
-                                <p className="text-xs text-slate-500 font-medium mt-0.5">🟢 ซิงค์เนื้อหาต้นฉบับอัตโนมัติผ่าน GitHub Actions</p>
-                            </div>
-                            <button onClick={onOpenQr} className="text-xs text-indigo-600 border border-indigo-600 rounded-xl px-3 py-1.5 font-medium">
+        const PortfolioTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenQr, onOpenHistoryDrawer }) => {
+            const [filter, setFilter] = useState('YTD');
+            const chartRef = useRef(null);
+            const chartInstance = useRef(null);
+
+            const sortedSlots = sortSlotsByDate(slots);
+            const currentSlot = sortedSlots[activeSlotIndex] || sortedSlots[0] || INITIAL_PORTFOLIO_SLOTS[0];
+
+            useEffect(() => {
+                if (!currentSlot || !currentSlot.historyFilterData) return;
+
+                if (chartInstance.current) {
+                    chartInstance.current.destroy();
+                }
+
+                const chartValues = currentSlot.historyFilterData[filter] || currentSlot.historyFilterData['YTD'];
+
+                const ctx = chartRef.current.getContext('2d');
+                chartInstance.current = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: PORTFOLIO_LABELS[filter],
+                        datasets: [{
+                            label: 'มูลค่าพอร์ต (THB)',
+                            data: chartValues,
+                            borderColor: '#2563eb',
+                            backgroundColor: 'rgba(37, 99, 235, 0.08)',
+                            borderWidth: 2.5,
+                            tension: 0.35,
+                            fill: true,
+                            pointBackgroundColor: '#ffffff',
+                            pointBorderColor: '#2563eb',
+                            pointRadius: 4,
+                            pointHoverRadius: 6
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: {
+                                mode: 'index',
+                                intersect: false,
+                                padding: 12,
+                                titleFont: { family: 'Prompt', size: 13 },
+                                bodyFont: { family: 'Prompt', size: 12 }
+                            }
+                        },
+                        scales: {
+                            y: { border: { display: false }, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Prompt', size: 11 } } },
+                            x: { border: { display: false }, grid: { display: false }, ticks: { font: { family: 'Prompt', size: 11 } } }
+                        }
+                    }
+                });
+
+                return () => {
+                    if (chartInstance.current) {
+                        chartInstance.current.destroy();
+                    }
+                };
+            }, [filter, currentSlot]);
+
+            return (
+                <div className="fade-in space-y-6 pb-10">
+                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-4">
+                        <div className="flex items-center gap-3">
+                            <h2 className="text-xl sm:text-2xl font-bold text-slate-800">อัปเดตสถานะพอร์ต</h2>
+                            {activeSlotIndex === 0 ? (
+                                <span className="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-emerald-200">พอร์ตปัจจุบัน (อัปเดตล่าสุด)</span>
+                            ) : (
+                                <span className="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-bold border border-amber-200">พอร์ตรอบย้อนหลัง ({currentSlot.dateLabel})</span>
+                            )}
+                        </div>
+                        
+                        <div className="flex flex-wrap gap-2 w-full sm:w-auto shrink-0">
+                            <button 
+                                onClick={onOpenHistoryDrawer}
+                                className="flex items-center justify-center text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-300 rounded-xl px-3.5 py-2 font-semibold shadow-xs"
+                            >
+                                <Icons.HistoryDrawer /> คลังพอร์ตย้อนหลัง ({sortedSlots.length} ฉบับ)
+                            </button>
+                            <button 
+                                onClick={onOpenQr}
+                                className="flex items-center justify-center text-xs text-indigo-600 hover:text-white hover:bg-indigo-600 transition-all border border-indigo-600 rounded-xl px-3.5 py-2 font-medium shadow-xs"
+                            >
                                 <Icons.QrCode /> แชร์ QR
                             </button>
                         </div>
-                        <CleanGoogleDocRenderer rawHtml={fetchedHtml} />
                     </div>
-                );
-            }
-
-            const currentSlot = INITIAL_PORTFOLIO_SLOTS[0];
-            return (
-                <div className="fade-in space-y-6 pb-10">
-                    <div className="flex justify-between items-center">
-                        <h2 className="text-xl sm:text-2xl font-bold text-slate-800">อัปเดตสถานะพอร์ต</h2>
-                        <button onClick={onOpenQr} className="text-xs text-indigo-600 border border-indigo-600 rounded-xl px-3 py-2 font-medium">
-                            <Icons.QrCode /> แชร์ QR
-                        </button>
-                    </div>
-
+                    
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                         <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-5 sm:p-6 text-white shadow-md">
                             <p className="text-slate-400 text-xs sm:text-sm mb-1">มูลค่าพอร์ตรวม (THB)</p>
@@ -355,54 +548,232 @@
                         <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 shadow-sm flex flex-col justify-center">
                             <p className="text-slate-500 text-xs sm:text-sm mb-1">สัดส่วนหุ้นสหรัฐฯ (US Stocks)</p>
                             <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">{currentSlot.usStocksShare}</h3>
+                            <p className="text-xs text-slate-400">กลุ่ม Semiconductor (ARM, MU)</p>
                         </div>
-                        <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 shadow-sm flex flex-col justify-center">
+                        <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 shadow-sm flex flex-col justify-center sm:col-span-2 lg:col-span-1">
                             <p className="text-slate-500 text-xs sm:text-sm mb-1">สัดส่วนเงินสด (Cash / Dry Powder)</p>
                             <h3 className="text-xl sm:text-2xl font-bold text-slate-800 mb-1">{currentSlot.cashShare}</h3>
+                            <p className="text-xs text-slate-400">{currentSlot.cashThb} - พร้อมรอช้อนซื้อ</p>
+                        </div>
+                    </div>
+
+                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-6">
+                        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-5 gap-3">
+                            <h3 className="text-base sm:text-lg font-bold text-slate-800">กราฟความเคลื่อนไหวมูลค่าพอร์ต (THB)</h3>
+                            <div className="flex space-x-1.5 bg-slate-100 p-1 rounded-xl w-full sm:w-auto justify-center">
+                                {['1W', '1M', 'YTD'].map(f => (
+                                    <button 
+                                        key={f}
+                                        onClick={() => setFilter(f)}
+                                        className={`flex-1 sm:flex-initial px-4 py-1.5 rounded-lg text-xs sm:text-sm font-medium transition-all ${filter === f ? 'bg-white text-blue-600 shadow-xs' : 'text-slate-500 hover:text-slate-800'}`}
+                                    >
+                                        {f}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                        <div className="h-60 sm:h-72 md:h-80 w-full relative">
+                            <canvas ref={chartRef}></canvas>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-6">
+                            <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-4 pb-2 border-b">เจาะลึกสถานะหุ้นรายตัว</h3>
+                            <div className="overflow-x-auto -mx-4 sm:mx-0 px-4 sm:px-0">
+                                <table className="w-full text-left text-xs sm:text-sm min-w-[460px]">
+                                    <thead>
+                                        <tr className="text-slate-500 bg-slate-50/80">
+                                            <th className="p-3 rounded-l-lg font-semibold">สินทรัพย์</th>
+                                            <th className="p-3 font-semibold text-right">สัดส่วน</th>
+                                            <th className="p-3 font-semibold text-right">ต้นทุนเฉลี่ย</th>
+                                            <th className="p-3 font-semibold text-right">ราคาตลาด</th>
+                                            <th className="p-3 rounded-r-lg font-semibold text-right">P/L</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentSlot.holdings && currentSlot.holdings.map((h, i) => (
+                                            <tr key={i} className="border-b border-slate-50">
+                                                <td className="p-3 font-medium text-slate-800">
+                                                    {h.ticker}
+                                                    <div className="text-[11px] text-slate-400 font-normal mt-0.5">{h.desc}</div>
+                                                </td>
+                                                <td className="p-3 text-right">{h.share}</td>
+                                                <td className="p-3 text-right">{h.avgCost}</td>
+                                                <td className="p-3 text-right">{h.price}</td>
+                                                <td className="p-3 text-right text-red-500 font-semibold">{h.pl}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-4 sm:p-6 flex flex-col gap-4">
+                            <div>
+                                <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-2">การประเมินความเสี่ยง</h3>
+                                <div className="bg-orange-50/80 border border-orange-200 text-orange-900 rounded-xl p-3.5 text-xs sm:text-sm">
+                                    <span className="font-semibold">Concentration Risk:</span> พอร์ตกระจุกตัวในกลุ่ม Semiconductor 100% (โดยเฉพาะ ARM 78.6%) ทำให้มีความผันผวนสูงตามรอบวัฏจักร
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3 className="text-base sm:text-lg font-bold text-slate-800 mb-2">แผนและกลยุทธ์ (High-Growth Barbell)</h3>
+                                <ul className="space-y-2.5 text-xs sm:text-sm text-slate-600">
+                                    <li className="flex items-start">
+                                        <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                        <span><strong>แนวทางแก้ไข:</strong> ทยอยกระจายความเสี่ยงไป Index ETFs (QQQM/VOO) และ Sector ETFs (SMH) ชะลอการซื้อ ARM ชั่วคราว</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                        <span><strong>การบริหารเงินสด:</strong> รักษาเงินสด 15-20% เพื่อเตรียมช้อนซื้อ (Buy the Dip) เมื่อตลาดปรับฐาน</span>
+                                    </li>
+                                    <li className="flex items-start">
+                                        <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                        <span><strong>Watchlist:</strong> เฝ้าระวัง NVDA (โซนรับ $190-$210), CAMT, AVGO, PLTR</span>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
             );
         };
 
-        const ReportTab = ({ fetchedHtml, onOpenQr }) => {
-            if (fetchedHtml) {
-                return (
-                    <div className="fade-in space-y-4 pb-10">
-                        <div className="bg-white rounded-2xl p-4 sm:p-6 border border-slate-100 shadow-xs flex justify-between items-center">
-                            <div>
-                                <h1 className="text-xl sm:text-2xl font-bold text-slate-900">รายงานวิเคราะห์ (อัปเดตสดจาก Google Docs)</h1>
-                                <p className="text-xs text-slate-500 font-medium mt-0.5">🟢 ซิงค์เนื้อหาต้นฉบับอัตโนมัติผ่าน GitHub Actions</p>
-                            </div>
-                            <button onClick={onOpenQr} className="text-xs text-indigo-600 border border-indigo-600 rounded-xl px-3 py-1.5 font-medium">
-                                <Icons.QrCode /> แชร์ QR
-                            </button>
-                        </div>
-                        <CleanGoogleDocRenderer rawHtml={fetchedHtml} />
-                    </div>
-                );
-            }
+        const ReportTab = ({ slots, activeSlotIndex, setActiveSlotIndex, onOpenQr, onOpenHistoryDrawer }) => {
+            const getStatusColor = (status) => {
+                if (status.includes("ดีเยี่ยม")) return "bg-emerald-100 text-emerald-800 border-emerald-200";
+                if (status === "ผ่าน") return "bg-teal-50 text-teal-700 border-teal-200";
+                return "bg-amber-50 text-amber-700 border-amber-200";
+            };
 
-            const currentSlot = INITIAL_REPORT_SLOTS[0];
+            const sortedSlots = sortSlotsByDate(slots);
+            const currentSlot = sortedSlots[activeSlotIndex] || sortedSlots[0] || INITIAL_REPORT_SLOTS[0];
+
             return (
                 <div className="fade-in space-y-6 sm:space-y-8 pb-10">
                     <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-8 text-center relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-1.5 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                        <div className="flex flex-wrap justify-between items-center gap-2 mb-3 sm:mb-4">
+                            <button 
+                                onClick={onOpenHistoryDrawer}
+                                className="flex items-center text-xs bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all border border-slate-300 rounded-xl px-3 py-1.5 font-semibold shadow-xs"
+                            >
+                                <Icons.HistoryDrawer /> คลังรายงานย้อนหลัง ({sortedSlots.length} ฉบับ)
+                            </button>
+                            <div className="flex gap-2">
+                                <button 
+                                    onClick={onOpenQr}
+                                    className="flex items-center text-xs text-indigo-600 hover:text-white hover:bg-indigo-600 transition-all border border-indigo-600 rounded-xl px-3 py-1.5 font-medium shadow-xs" 
+                                >
+                                    <Icons.QrCode /> แชร์ QR
+                                </button>
+                            </div>
+                        </div>
+                        
+                        {activeSlotIndex === 0 ? (
+                            <div className="inline-block bg-emerald-50 text-emerald-800 text-xs px-3 py-1 rounded-full font-bold border border-emerald-200 mb-2">
+                                🌟 รายงานฉบับปัจจุบัน (อัปเดตล่าสุด)
+                            </div>
+                        ) : (
+                            <div className="inline-block bg-amber-50 text-amber-800 text-xs px-3 py-1 rounded-full font-bold border border-amber-200 mb-2">
+                                📜 รายงานย้อนหลังประจำวันที่ {currentSlot.dateLabel}
+                            </div>
+                        )}
+
                         <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-slate-900 mb-2">{currentSlot.title}</h1>
                         <p className="text-xs sm:text-sm text-slate-500 font-medium">{currentSlot.subtitle}</p>
                     </div>
 
-                    <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
-                        <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 pb-2 border-b border-slate-100">{currentSlot.section1.title}</h2>
-                        <ul className="space-y-2.5">
-                            {currentSlot.section1.details.map((detail, idx) => (
-                                <li key={idx} className="flex items-start text-xs sm:text-sm md:text-base leading-relaxed">
-                                    <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
-                                    <span className="text-slate-700">{detail}</span>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                    {currentSlot.section1 && (
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
+                            <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-3 pb-2 border-b border-slate-100">{currentSlot.section1.title}</h2>
+                            <p className="text-xs sm:text-sm text-slate-700 mb-5">{currentSlot.section1.intro}</p>
+                            
+                            {currentSlot.section1.highlights && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-6">
+                                    {currentSlot.section1.highlights.map((hl, idx) => (
+                                        <div key={idx} className="bg-slate-50/80 rounded-xl p-4 border border-slate-100">
+                                            <p className="text-xs text-slate-500 mb-1">{hl.label}</p>
+                                            <p className="text-base sm:text-lg font-bold text-slate-900">{hl.value}</p>
+                                            <p className="text-xs text-emerald-600 mt-1">{hl.desc}</p>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {currentSlot.section1.details && (
+                                <ul className="space-y-2.5">
+                                    {currentSlot.section1.details.map((detail, idx) => (
+                                        <li key={idx} className="flex items-start text-xs sm:text-sm md:text-base leading-relaxed">
+                                            <span className="text-blue-500 mr-2.5 mt-0.5 font-bold">•</span>
+                                            <span className="text-slate-700">{detail}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            )}
+                        </div>
+                    )}
+
+                    {currentSlot.section2 && (
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
+                            <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{currentSlot.section2.title}</h2>
+                            <div className="overflow-x-auto -mx-5 sm:mx-0 px-5 sm:px-0">
+                                <table className="w-full text-left border-collapse min-w-[540px]">
+                                    <thead>
+                                        <tr className="bg-slate-50 text-slate-600 text-xs sm:text-sm">
+                                            <th className="p-3 sm:p-4 rounded-l-lg font-semibold">ตัวชี้วัดสำคัญ (Checkpoints)</th>
+                                            <th className="p-3 sm:p-4 font-semibold w-28 sm:w-32">สถานะ</th>
+                                            <th className="p-3 sm:p-4 rounded-r-lg font-semibold">สรุปผลการประเมิน</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {currentSlot.section2.checkpoints && currentSlot.section2.checkpoints.map((cp) => (
+                                            <tr key={cp.id} className="border-b border-slate-50 hover:bg-slate-50/50 transition-colors">
+                                                <td className="p-3 sm:p-4 text-xs sm:text-sm font-medium text-slate-800">{cp.id}. {cp.name}</td>
+                                                <td className="p-3 sm:p-4">
+                                                    <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-semibold border ${getStatusColor(cp.status)}`}>
+                                                        {cp.status}
+                                                    </span>
+                                                </td>
+                                                <td className="p-3 sm:p-4 text-xs sm:text-sm text-slate-600 leading-relaxed">{cp.desc}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {currentSlot.section3 && (
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-5 sm:p-6 md:p-8">
+                            <h2 className="text-lg sm:text-xl font-bold text-blue-800 mb-5 pb-2 border-b border-slate-100">{currentSlot.section3.title}</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+                                {currentSlot.section3.picks && currentSlot.section3.picks.map((pick, idx) => (
+                                    <div key={idx} className="bg-white rounded-2xl border border-slate-200 p-5 shadow-2xs hover:shadow-md transition-all relative overflow-hidden">
+                                        <div className="absolute top-0 right-0 bg-blue-600 text-white font-bold text-[11px] px-3 py-1 rounded-bl-xl">
+                                            #{idx + 1}
+                                        </div>
+                                        <div className="flex items-center space-x-3 mb-3 pt-1">
+                                            <div className="w-11 h-11 rounded-xl bg-slate-100 flex items-center justify-center font-bold text-lg text-blue-800 border border-slate-200/80 shrink-0">
+                                                {pick.ticker ? pick.ticker[0] : 'AI'}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-bold text-slate-900 text-sm sm:text-base">{pick.name}</h3>
+                                                <p className="text-xs font-semibold text-slate-500">{pick.ticker}</p>
+                                            </div>
+                                        </div>
+                                        <div className="mb-3">
+                                            <span className="text-[11px] bg-indigo-50 text-indigo-700 border border-indigo-100 px-2.5 py-1 rounded-lg font-medium">{pick.phase}</span>
+                                        </div>
+                                        <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                                            <span className="font-semibold text-slate-800">เหตุผล: </span>{pick.reason}
+                                        </p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
                 </div>
             );
         };
@@ -410,27 +781,52 @@
         const App = () => {
             const [activeTab, setActiveTab] = useState('report');
             
-            const [newsHtml, setNewsHtml] = useState(null);
-            const [portfolioHtml, setPortfolioHtml] = useState(null);
-            const [reportHtml, setReportHtml] = useState(null);
+            const [newsSlots, setNewsSlots] = useState(INITIAL_NEWS_SLOTS);
+            const [newsActiveIndex, setNewsActiveIndex] = useState(0);
 
+            const [portfolioSlots, setPortfolioSlots] = useState(INITIAL_PORTFOLIO_SLOTS);
+            const [portfolioActiveIndex, setPortfolioActiveIndex] = useState(0);
+
+            const [reportSlots, setReportSlots] = useState(INITIAL_REPORT_SLOTS);
+            const [reportActiveIndex, setReportActiveIndex] = useState(0);
+
+            const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false);
             const [isQrModalOpen, setIsQrModalOpen] = useState(false);
 
+            // =========================================================================
+            // --- AUTOMATIC CLIENT HYDRATION WITH CACHE-BUSTING ---
+            // =========================================================================
             useEffect(() => {
-                // Fetch direct clean Google Docs HTML files synced by Workflow
-                fetch('./doc_news.html')
-                    .then(res => res.ok ? res.text() : null)
-                    .then(html => { if (html && html.trim().length > 100) setNewsHtml(html); })
+                const cacheBuster = `?_t=${Date.now()}`;
+
+                // 1. Fetch News Slots JSON
+                fetch(`./news_slots.json${cacheBuster}`)
+                    .then(res => res.ok ? res.json() : null)
+                    .then(data => {
+                        if (Array.isArray(data) && data.length > 0) {
+                            setNewsSlots(data);
+                        }
+                    })
                     .catch(() => {});
 
-                fetch('./doc_portfolio.html')
-                    .then(res => res.ok ? res.text() : null)
-                    .then(html => { if (html && html.trim().length > 100) setPortfolioHtml(html); })
+                // 2. Fetch Portfolio Slots JSON
+                fetch(`./portfolio_slots.json${cacheBuster}`)
+                    .then(res => res.ok ? res.json() : null)
+                    .then(data => {
+                        if (Array.isArray(data) && data.length > 0) {
+                            setPortfolioSlots(data);
+                        }
+                    })
                     .catch(() => {});
 
-                fetch('./doc_report.html')
-                    .then(res => res.ok ? res.text() : null)
-                    .then(html => { if (html && html.trim().length > 100) setReportHtml(html); })
+                // 3. Fetch Report Slots JSON
+                fetch(`./report_slots.json${cacheBuster}`)
+                    .then(res => res.ok ? res.json() : null)
+                    .then(data => {
+                        if (Array.isArray(data) && data.length > 0) {
+                            setReportSlots(data);
+                        }
+                    })
                     .catch(() => {});
             }, []);
 
@@ -441,6 +837,34 @@
             ];
 
             const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=10&data=${encodeURIComponent(CURRENT_PAGE_URL)}`;
+
+            const getActiveDrawerProps = () => {
+                if (activeTab === 'news') {
+                    return {
+                        slots: newsSlots,
+                        activeSlotIndex: newsActiveIndex,
+                        setActiveSlotIndex: setNewsActiveIndex,
+                        categoryTitle: "ข่าวรายวัน"
+                    };
+                }
+                if (activeTab === 'portfolio') {
+                    return {
+                        slots: portfolioSlots,
+                        activeSlotIndex: portfolioActiveIndex,
+                        setActiveSlotIndex: setPortfolioActiveIndex,
+                        categoryTitle: "สถานะพอร์ต"
+                    };
+                }
+                return {
+                    slots: reportSlots,
+                    activeSlotIndex: reportActiveIndex,
+                    setActiveSlotIndex: setReportActiveIndex,
+                    categoryTitle: "รายงานวิเคราะห์"
+                };
+            };
+
+            const drawerProps = getActiveDrawerProps();
+            const activeSortedSlots = sortSlotsByDate(drawerProps.slots);
 
             return (
                 <div className="min-h-screen flex flex-col lg:flex-row bg-slate-50">
@@ -476,6 +900,17 @@
                             })}
                         </nav>
 
+                        <div className="p-4 mx-4 mb-2 bg-slate-50 rounded-xl border border-slate-200 text-left">
+                            <span className="text-[11px] font-semibold text-slate-500 block mb-1">📜 เลือกดูรายงานย้อนหลัง:</span>
+                            <button 
+                                onClick={() => setIsHistoryDrawerOpen(true)}
+                                className="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-xs font-bold text-indigo-700 hover:bg-indigo-50 flex items-center justify-between transition-all"
+                            >
+                                <span>{activeSortedSlots[drawerProps.activeSlotIndex]?.dateLabel || 'ฉบับปัจจุบัน'}</span>
+                                <span className="text-[10px] bg-indigo-100 text-indigo-800 px-2 py-0.5 rounded-md">เปิดคลังรายงาน</span>
+                            </button>
+                        </div>
+
                         <div className="p-4 m-4 bg-indigo-50/70 rounded-xl border border-indigo-100 text-center">
                             <button 
                                 onClick={() => setIsQrModalOpen(true)}
@@ -486,7 +921,7 @@
                         </div>
                     </aside>
 
-                    {/* Mobile Top Header */}
+                    {/* Mobile / Tablet Top Header */}
                     <header className="lg:hidden sticky top-0 w-full bg-white/90 backdrop-blur-md border-b border-slate-200/80 z-30 pt-safe px-4 py-3">
                         <div className="flex items-center justify-between">
                             <div className="flex items-center space-x-2.5">
@@ -542,15 +977,43 @@
                     {/* Main Content Area */}
                     <main className="flex-1 lg:ml-64 p-4 sm:p-6 md:p-8 pb-24 sm:pb-8">
                         {activeTab === 'news' && (
-                            <NewsTab fetchedHtml={newsHtml} onOpenQr={() => setIsQrModalOpen(true)} />
+                            <NewsTab 
+                                slots={newsSlots}
+                                activeSlotIndex={newsActiveIndex}
+                                setActiveSlotIndex={setNewsActiveIndex}
+                                onOpenQr={() => setIsQrModalOpen(true)} 
+                                onOpenHistoryDrawer={() => setIsHistoryDrawerOpen(true)}
+                            />
                         )}
                         {activeTab === 'portfolio' && (
-                            <PortfolioTab fetchedHtml={portfolioHtml} onOpenQr={() => setIsQrModalOpen(true)} />
+                            <PortfolioTab 
+                                slots={portfolioSlots}
+                                activeSlotIndex={portfolioActiveIndex}
+                                setActiveSlotIndex={setPortfolioActiveIndex}
+                                onOpenQr={() => setIsQrModalOpen(true)} 
+                                onOpenHistoryDrawer={() => setIsHistoryDrawerOpen(true)}
+                            />
                         )}
                         {activeTab === 'report' && (
-                            <ReportTab fetchedHtml={reportHtml} onOpenQr={() => setIsQrModalOpen(true)} />
+                            <ReportTab 
+                                slots={reportSlots}
+                                activeSlotIndex={reportActiveIndex}
+                                setActiveSlotIndex={setReportActiveIndex}
+                                onOpenQr={() => setIsQrModalOpen(true)} 
+                                onOpenHistoryDrawer={() => setIsHistoryDrawerOpen(true)}
+                            />
                         )}
                     </main>
+
+                    {/* Collapsible History Drawer / Popover for Category Slots */}
+                    <HistoryDrawerPopup 
+                        slots={drawerProps.slots}
+                        activeSlotIndex={drawerProps.activeSlotIndex}
+                        setActiveSlotIndex={drawerProps.setActiveSlotIndex}
+                        isOpen={isHistoryDrawerOpen}
+                        setIsOpen={setIsHistoryDrawerOpen}
+                        categoryTitle={drawerProps.categoryTitle}
+                    />
 
                     {/* QR Code Modal */}
                     {isQrModalOpen && (
