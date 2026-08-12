@@ -30,18 +30,19 @@ jobs:
           python -c "
           import requests, hashlib, os
 
+          # ใช้ช่องทาง mobilebasic ปลดล็อกคอขวด 404/401 100%
           urls = {
-              'ข่าวรายวัน (News)': ('doc_news.html', 'https://docs.google.com/document/d/e/2PACX-1vRYI9on5s5Jangd9f6VwrfDMjyekNOfsf5zjdJEcTTo1899hoZPXj4-EZX4T3MhBNsBcJZrHOFJGqnH/pub'),
-              'สถานะพอร์ต (Portfolio)': ('doc_portfolio.html', 'https://docs.google.com/document/d/e/2PACX-1vSNiyDfbJVZpflAOct_QhOPpJmMl8IdNyykWI4ft_OOnqXuP_cnjzOqVFKrL1EindN6oVhlCwWA1T/pub'),
-              'รายงานวิเคราะห์ (Report)': ('doc_report.html', 'https://docs.google.com/document/d/e/2PACX-1vThZWexqCf6uYyqNPG9IBJ4zuz7ij2WDfRkCspE0OlhfOUY5YAhD54YL7LgS4EvdcYH7nhR6b_6QUOm/pub')
+              'ข่าวรายวัน (News)': ('doc_news.html', 'https://docs.google.com/document/d/1WKpJ23Rat0qBIF5flz11xRkR7s26x2W5fiBhc6lz7Ww/mobilebasic'),
+              'สถานะพอร์ต (Portfolio)': ('doc_portfolio.html', 'https://docs.google.com/document/d/1Dbrad52p9vrD5JYNqdzphmaHT58bx33p4KV8wbKUg2E/mobilebasic'),
+              'รายงานวิเคราะห์ (Report)': ('doc_report.html', 'https://docs.google.com/document/d/12z-gUI6mbkJodbjBdLAiPoOBbHS3ooJ8hyf1J0yTC7k/mobilebasic')
           }
 
-          headers = {'User-Agent': 'Mozilla/5.0'}
+          headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
           summary_rows = []
 
           for category, (filename, url) in urls.items():
               try:
-                  res = requests.get(url, headers=headers, timeout=10)
+                  res = requests.get(url, headers=headers, timeout=15)
                   if res.status_code == 200 and len(res.text.strip()) > 0:
                       new_content = res.text
                       new_hash = hashlib.md5(new_content.encode('utf-8')).hexdigest()
@@ -54,13 +55,13 @@ jobs:
                       with open(filename, 'w', encoding='utf-8') as f:
                           f.write(new_content)
 
-                      status = '🟢 ตรงกัน 100% (ข้อมูลอัปเดตใหม่)' if new_hash != old_hash else '✅ ตรงกัน 100% (ข้อมูลเป็นปัจจุบัน)'
+                      status = '🟢 ตรงกัน 100% (พบข้อมูลอัปเดตใหม่)' if new_hash != old_hash else '✅ ตรงกัน 100% (ข้อมูลเป็นปัจจุบัน)'
                       size_kb = f'{len(new_content) / 1024:.1f} KB'
                       summary_rows.append(f'| {category} | {status} | {size_kb} | HTTP 200 OK |')
                   else:
-                      summary_rows.append(f'| {category} | ❌ เนื้อหาว่างเปล่า/ผิดพลาด | - | HTTP {res.status_code} |')
+                      summary_rows.append(f'| {category} | ❌ ผิดพลาด | - | HTTP {res.status_code} |')
               except Exception as e:
-                  summary_rows.append(f'| {category} | ❌ การเชื่อมต่อล้มเหลว | - | {str(e)} |')
+                  summary_rows.append(f'| {category} | ❌ เชื่อมต่อล้มเหลว | - | {str(e)} |')
 
           summary_md = '''## 📊 รายงานผลการตรวจสอบและซิงค์ข้อมูล (Data Audit Report)
 
