@@ -1,8 +1,8 @@
-name: ซิงค์ข้อมูล Google Docs ไปยังแดชบอร์ด
+name: ซิงค์และตรวจสอบข้อมูล Google Docs ไปยังแดชบอร์ด
 
 on:
   schedule:
-    - cron: '*/30 * * * *' # ⏰ สั่งทำงานอัตโนมัติทุกๆ 30 นาที
+    - cron: '*/30 * * * *' # ⏰ ทำงานอัตโนมัติทุกๆ 30 นาที
   workflow_dispatch: # ปุ่มกดสั่งรันด้วยตัวเองได้ตลอดเวลา
 
 permissions:
@@ -31,9 +31,9 @@ jobs:
           import requests, hashlib, os
 
           urls = {
-              'ข่าวรายวัน (News)': ('doc_news.html', 'https://docs.google.com/document/d/1WKpJ23Rat0qBIF5flz11xRkR7s26x2W5fiBhc6lz7Ww/pub'),
-              'สถานะพอร์ต (Portfolio)': ('doc_portfolio.html', 'https://docs.google.com/document/d/1Dbrad52p9vrD5JYNqdzphmaHT58bx33p4KV8wbKUg2E/pub'),
-              'รายงานวิเคราะห์ (Report)': ('doc_report.html', 'https://docs.google.com/document/d/12z-gUI6mbkJodbjBdLAiPoOBbHS3ooJ8hyf1J0yTC7k/pub')
+              'ข่าวรายวัน (News)': ('doc_news.html', 'https://docs.google.com/document/d/e/2PACX-1vRYI9on5s5Jangd9f6VwrfDMjyekNOfsf5zjdJEcTTo1899hoZPXj4-EZX4T3MhBNsBcJZrHOFJGqnH/pub'),
+              'สถานะพอร์ต (Portfolio)': ('doc_portfolio.html', 'https://docs.google.com/document/d/e/2PACX-1vSNiyDfbJVZpflAOct_QhOPpJmMl8IdNyykWI4ft_OOnqXuP_cnjzOqVFKrL1EindN6oVhlCwWA1T/pub'),
+              'รายงานวิเคราะห์ (Report)': ('doc_report.html', 'https://docs.google.com/document/d/e/2PACX-1vThZWexqCf6uYyqNPG9IBJ4zuz7ij2WDfRkCspE0OlhfOUY5YAhD54YL7LgS4EvdcYH7nhR6b_6QUOm/pub')
           }
 
           headers = {'User-Agent': 'Mozilla/5.0'}
