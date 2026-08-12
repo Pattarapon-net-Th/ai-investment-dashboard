@@ -1,4 +1,4 @@
-name: ซิงค์ข้อมูล Google Docs ไปยังแดชบอร์ดอัตโนมัติ
+name: ซิงค์และสร้างแดชบอร์ดอัจฉริยะ (AI-Powered Smart Dashboard Sync)
 
 on:
   schedule:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  sync-google-docs:
+  sync-transform-and-deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -23,41 +23,211 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests
+          pip install requests beautifulsoup4
 
-      - name: Fetch Clean Google Docs HTML Content
+      - name: AI-Powered Smart Parsing via Gemini API
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           python -c "
-          import requests, os
+          import requests, json, os, re
+          from bs4 import BeautifulSoup
 
-          urls = {
-              'ข่าวรายวัน (News)': ('doc_news.html', 'https://docs.google.com/document/d/1WKpJ23Rat0qBIF5flz11xRkR7s26x2W5fiBhc6lz7Ww/mobilebasic'),
-              'สถานะพอร์ต (Portfolio)': ('doc_portfolio.html', 'https://docs.google.com/document/d/1Dbrad52p9vrD5JYNqdzphmaHT58bx33p4KV8wbKUg2E/mobilebasic'),
-              'รายงานวิเคราะห์ (Report)': ('doc_report.html', 'https://docs.google.com/document/d/12z-gUI6mbkJodbjBdLAiPoOBbHS3ooJ8hyf1J0yTC7k/mobilebasic')
+          api_key = os.environ.get('GEMINI_API_KEY', '').strip()
+          gemini_url = f'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key={api_key}'
+
+          headers = {'User-Agent': 'Mozilla/5.0'}
+
+          docs = {
+              'news': {
+                  'url': 'https://docs.google.com/document/d/1WKpJ23Rat0qBIF5flz11xRkR7s26x2W5fiBhc6lz7Ww/mobilebasic',
+                  'html_file': 'doc_news.html',
+                  'json_file': 'news_slots.json',
+                  'schema_prompt': '''You are an expert AI data analyst. Read the Thai document text and parse the latest news into a strict JSON object with this exact schema:
+                  {
+                    \"slotId\": \"news-<Date in Thai e.g. 12 สิงหาคม 2026>\",
+                    \"dateLabel\": \"<Date in Thai e.g. 12 สิงหาคม 2026>\",
+                    \"title\": \"รายงานสรุปข้อมูลอัปเดตข่าวสาร\",
+                    \"subtitle\": \"Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ <Date in Thai>\",
+                    \"sections\": [
+                      {
+                        \"id\": \"arm\",
+                        \"title\": \"1. Arm Holdings plc (ARM)\",
+                        \"subsections\": [
+                          {
+                            \"subtitle\": \"1.1 ผลประกอบการและข่าวสารล่าสุด\",
+                            \"highlights\": [
+                              {\"label\": \"<short metric label>\", \"value\": \"<value>\", \"desc\": \"<short description>\"}
+                            ]
+                          },
+                          {
+                            \"subtitle\": \"1.2 ผลกระทบเชิงกลยุทธ์ต่อ Arm\",
+                            \"details\": [\"<strategic bullet point 1>\", \"<strategic bullet point 2>\"]
+                          }
+                        ]
+                      },
+                      {
+                        \"id\": \"mu\",
+                        \"title\": \"2. Micron Technology, Inc. (MU)\",
+                        \"subsections\": [
+                          {
+                            \"subtitle\": \"2.1 ผลประกอบการและข่าวสารล่าสุด\",
+                            \"highlights\": [
+                              {\"label\": \"<short metric label>\", \"value\": \"<value>\", \"desc\": \"<short description>\"}
+                            ]
+                          },
+                          {
+                            \"subtitle\": \"2.2 ผลกระทบเชิงกลยุทธ์ต่อ Micron\",
+                            \"details\": [\"<strategic bullet point 1>\", \"<strategic bullet point 2>\"]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                  Ensure highlights has 4 concise key metrics per company and details has 2-3 bullet points. Output ONLY raw JSON.'''
+              },
+              'portfolio': {
+                  'url': 'https://docs.google.com/document/d/1Dbrad52p9vrD5JYNqdzphmaHT58bx33p4KV8wbKUg2E/mobilebasic',
+                  'html_file': 'doc_portfolio.html',
+                  'json_file': 'portfolio_slots.json',
+                  'schema_prompt': '''You are an expert financial analyst. Read the Thai document text and parse the latest portfolio status into a strict JSON object with this exact schema:
+                  {
+                    \"slotId\": \"port-<Date in Thai e.g. 12 สิงหาคม 2026>\",
+                    \"dateLabel\": \"<Date in Thai e.g. 12 สิงหาคม 2026>\",
+                    \"totalThb\": \"<e.g. 21,668.41>\",
+                    \"totalUsd\": \"<e.g. $544.33 USD>\",
+                    \"unrealizedPl\": \"<e.g. -18.83%>\",
+                    \"usStocksShare\": \"<e.g. 84.23%>\",
+                    \"cashShare\": \"<e.g. 15.77%>\",
+                    \"cashThb\": \"<e.g. 3,417.14 THB>\",
+                    \"historyFilterData\": {
+                      \"1W\": [22500, 22200, 21900, 21500, 21800, 21700, 21668],
+                      \"1M\": [25000, 24500, 24000, 23500, 23000, 22500, 22000, 21500, 21800, 21668],
+                      \"YTD\": [20000, 21000, 23000, 24000, 25500, 24500, 23000, 21668]
+                    },
+                    \"holdings\": [
+                      {\"ticker\": \"ARM Holdings (ARM)\", \"desc\": \"ผู้นำสถาปัตยกรรมชิป AI & Data Center\", \"share\": \"78.60%\", \"avgCost\": \"$286.63\", \"price\": \"$224.89\", \"pl\": \"-21.54%\"},
+                      {\"ticker\": \"Micron Technology (MU)\", \"desc\": \"ผู้ผลิตหน่วยความจำ HBM / DRAM ยุค AI\", \"share\": \"21.40%\", \"avgCost\": \"$794.99\", \"price\": \"$739.00\", \"pl\": \"-7.04%\"}
+                    ]
+                  }
+                  Extract the exact portfolio metrics and stock holdings from document. Output ONLY raw JSON.'''
+              },
+              'report': {
+                  'url': 'https://docs.google.com/document/d/12z-gUI6mbkJodbjBdLAiPoOBbHS3ooJ8hyf1J0yTC7k/mobilebasic',
+                  'html_file': 'doc_report.html',
+                  'json_file': 'report_slots.json',
+                  'schema_prompt': '''You are an expert AI analyst. Read the Thai document text and parse the report into a strict JSON object with this exact schema:
+                  {
+                    \"slotId\": \"report-<Date in Thai e.g. 12 สิงหาคม 2026>\",
+                    \"dateLabel\": \"<Date in Thai e.g. 12 สิงหาคม 2026>\",
+                    \"title\": \"รายงานวิเคราะห์ AI & Arm Holdings\",
+                    \"subtitle\": \"ประจำสัปดาห์ (<Date in Thai>)\",
+                    \"section1\": {
+                      \"title\": \"1. สรุปอัปเดตข่าวและงบการเงิน Arm Holdings (ARM)\",
+                      \"intro\": \"<Short summary intro in Thai>\",
+                      \"highlights\": [
+                        {\"label\": \"<metric label>\", \"value\": \"<value>\", \"desc\": \"<short desc>\"},
+                        {\"label\": \"<metric label>\", \"value\": \"<value>\", \"desc\": \"<short desc>\"},
+                        {\"label\": \"<metric label>\", \"value\": \"<value>\", \"desc\": \"<short desc>\"},
+                        {\"label\": \"<metric label>\", \"value\": \"<value>\", \"desc\": \"<short desc>\"}
+                      ],
+                      \"details\": [\"<detail 1>\", \"<detail 2>\", \"<detail 3>\", \"<detail 4>\"]
+                    },
+                    \"section2\": {
+                      \"title\": \"2. ประเมินสถิติ Arm ตามกรอบ 5 Checkpoints\",
+                      \"checkpoints\": [
+                        {\"id\": 1, \"name\": \"CSS Adoption & Royalty Expansion\", \"status\": \"ผ่าน/ผ่านดีเยี่ยม/เฝ้าระวัง\", \"desc\": \"<evaluation>\"},
+                        {\"id\": 2, \"name\": \"Data Center & Cloud AI\", \"status\": \"ผ่าน/ผ่านดีเยี่ยม/เฝ้าระวัง\", \"desc\": \"<evaluation>\"},
+                        {\"id\": 3, \"name\": \"Armv9 Penetration\", \"status\": \"ผ่าน/ผ่านดีเยี่ยม/เฝ้าระวัง\", \"desc\": \"<evaluation>\"},
+                        {\"id\": 4, \"name\": \"Margins & Cash Flow\", \"status\": \"ผ่านดีเยี่ยม/ผ่าน/เฝ้าระวัง\", \"desc\": \"<evaluation>\"},
+                        {\"id\": 5, \"name\": \"Guidance & Risks\", \"status\": \"เฝ้าระวัง/ผ่าน/ผ่านดีเยี่ยม\", \"desc\": \"<evaluation>\"}
+                      ]
+                    },
+                    \"section3\": {
+                      \"title\": \"3. คัดสรรหุ้น AI ที่น่าสนใจประจำสัปดาห์ (Top AI Stock Picks)\",
+                      \"picks\": [
+                        {\"ticker\": \"MU\", \"name\": \"Micron Technology\", \"phase\": \"Phase 2: Hardware & Memory\", \"reason\": \"<reason>\"},
+                        {\"ticker\": \"NVDA\", \"name\": \"NVIDIA\", \"phase\": \"Phase 1: Core AI Enablers\", \"reason\": \"<reason>\"},
+                        {\"ticker\": \"GOOGL\", \"name\": \"Alphabet\", \"phase\": \"Phase 3: Cloud Hyperscaler\", \"reason\": \"<reason>\"}
+                      ]
+                    }
+                  }
+                  Output ONLY raw JSON.'''
+              }
           }
 
-          headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)'}
           summary_rows = []
 
-          for category, (filename, url) in urls.items():
+          for cat, cfg in docs.items():
               try:
-                  res = requests.get(url, headers=headers, timeout=15)
-                  if res.status_code == 200 and len(res.text.strip()) > 0:
-                      new_content = res.text
-                      
-                      with open(filename, 'w', encoding='utf-8') as f:
-                          f.write(new_content)
+                  res = requests.get(cfg['url'], headers=headers, timeout=15)
+                  if res.status_code == 200 and len(res.text.strip()) > 1000:
+                      # 1. Save raw HTML backup
+                      with open(cfg['html_file'], 'w', encoding='utf-8') as f:
+                          f.write(res.text)
 
-                      size_kb = f'{len(new_content) / 1024:.1f} KB'
-                      summary_rows.append(f'| {category} | 🟢 ดึงข้อมูลต้นฉบับสำเร็จ | {size_kb} | HTTP 200 OK |')
+                      # 2. Extract clean text for AI
+                      soup = BeautifulSoup(res.text, 'html.parser')
+                      for s in soup(['script', 'style']):
+                          s.decompose()
+                      doc_text = soup.get_text(separator='\n')
+                      doc_text = re.sub(r'\n+', '\n', doc_text).strip()[:8000]
+
+                      new_slot = None
+
+                      # 3. Call Gemini AI API
+                      if api_key:
+                          payload = {
+                              'contents': [{
+                                  'parts': [{
+                                      'text': f\"{cfg['schema_prompt']}\n\n[Google Doc Document Content]:\n{doc_text}\"
+                                  }]
+                              }],
+                              'generationConfig': {
+                                  'responseMimeType': 'application/json',
+                                  'temperature': 0.1
+                              }
+                          }
+                          ai_res = requests.post(gemini_url, json=payload, timeout=30)
+                          if ai_res.status_code == 200:
+                              ai_data = ai_res.json()
+                              candidate_text = ai_data['candidates'][0]['content']['parts'][0]['text']
+                              new_slot = json.loads(candidate_text)
+                          else:
+                              print(f'Gemini API error: {ai_res.status_code} {ai_res.text}')
+
+                      # Fallback if AI not available
+                      if not new_slot:
+                          summary_rows.append(f'| {cat} | ⚠️ Gemini AI ไม่ตอบสนอง (ข้ามการเขียนทับ) | - | HTTP 200 OK |')
+                          continue
+
+                      # 4. Read existing slots and Deduplicate/Prune
+                      existing_slots = []
+                      if os.path.exists(cfg['json_file']):
+                          try:
+                              with open(cfg['json_file'], 'r', encoding='utf-8') as f:
+                                  existing_slots = json.load(f)
+                          except:
+                              existing_slots = []
+
+                      date_label = new_slot.get('dateLabel', '12 สิงหาคม 2026')
+                      filtered = [s for s in existing_slots if s.get('dateLabel') != date_label]
+                      updated = [new_slot] + filtered
+                      updated = updated[:5]
+
+                      # 5. Save updated JSON
+                      with open(cfg['json_file'], 'w', encoding='utf-8') as f:
+                          json.dump(updated, f, ensure_ascii=False, indent=2)
+
+                      summary_rows.append(f'| {cat} | 🧠 AI ประมวลผลและสร้าง Slot สำเร็จ ({date_label}) | {len(updated)} Slots | HTTP 200 OK |')
                   else:
-                      summary_rows.append(f'| {category} | ❌ อ่านข้อมูลล้มเหลว | - | HTTP {res.status_code} |')
+                      summary_rows.append(f'| {cat} | ❌ โหลด Google Doc ล้มเหลว | - | HTTP {res.status_code} |')
               except Exception as e:
-                  summary_rows.append(f'| {category} | ❌ Error: {str(e)} | - | - |')
+                  summary_rows.append(f'| {cat} | ❌ Error: {str(e)} | - | - |')
 
-          summary_md = '''## 📊 รายงานผลการซิงค์ข้อมูล Google Docs ต้นฉบับ
+          summary_md = '''## 🧠 รายงานผลการประมวลผล AI-Powered Smart Slots บนแดชบอร์ด
 
-          | หมวดหมู่ | สถานะ | ขนาดไฟล์ HTML | การตอบรับจาก Google Docs |
+          | หมวดหมู่ | สถานะ | จำนวน Slots ในคลัง | การตอบรับ |
           | :--- | :--- | :--- | :--- |
           ''' + '\n'.join(summary_rows)
 
@@ -65,9 +235,9 @@ jobs:
               f.write(summary_md)
           "
 
-      - name: Commit and Push Clean Google Docs HTML
+      - name: Commit and Push Clean Slots JSON & HTML Backups
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add doc_*.html || true
-          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: Sync clean Google Docs HTML content" && git push)
+          git add doc_*.html *_slots.json || true
+          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: AI-Powered Smart Sync (Gemini API)" && git push)
