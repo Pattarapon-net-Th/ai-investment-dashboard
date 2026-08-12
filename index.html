@@ -463,7 +463,42 @@
                     chartInstance.current.destroy();
                 }
 
-                const chartValues = currentSlot.historyFilterData[filter] || currentSlot.historyFilterData['YTD'];
+                const calculateSmartChartScales = (values) => {
+                    if (!values || values.length === 0) return { min: 0, max: 1000, stepSize: 200 };
+                    
+                    const minVal = Math.min(...values);
+                    const maxVal = Math.max(...values);
+                    const diff = maxVal - minVal;
+
+                    let step = 500;
+                    if (maxVal < 1000) {
+                        step = 100;
+                    } else if (maxVal < 5000) {
+                        step = 500;
+                    } else if (maxVal < 20000) {
+                        step = 1000;
+                    } else if (maxVal < 50000) {
+                        step = 2500;
+                    } else if (maxVal < 100000) {
+                        step = 5000;
+                    } else {
+                        step = 10000;
+                    }
+
+                    const padding = Math.max(diff * 0.25, step);
+                    let calcMin = Math.floor((minVal - padding) / step) * step;
+                    let calcMax = Math.ceil((maxVal + padding) / step) * step;
+
+                    calcMin = Math.max(0, calcMin);
+                    if (calcMin === calcMax) {
+                        calcMin = Math.max(0, calcMin - step);
+                        calcMax = calcMax + step;
+                    }
+
+                    return { min: calcMin, max: calcMax, stepSize: step };
+                };
+
+                const scaleConfig = calculateSmartChartScales(chartValues);
 
                 const ctx = chartRef.current.getContext('2d');
                 chartInstance.current = new Chart(ctx, {
@@ -494,11 +529,25 @@
                                 intersect: false,
                                 padding: 12,
                                 titleFont: { family: 'Prompt', size: 13 },
-                                bodyFont: { family: 'Prompt', size: 12 }
+                                bodyFont: { family: 'Prompt', size: 12 },
+                                callbacks: {
+                                    label: (context) => ` มูลค่าพอร์ต: ${Number(context.raw).toLocaleString()} THB`
+                                }
                             }
                         },
                         scales: {
-                            y: { border: { display: false }, grid: { color: '#f1f5f9' }, ticks: { font: { family: 'Prompt', size: 11 } } },
+                            y: { 
+                                min: scaleConfig.min,
+                                max: scaleConfig.max,
+                                border: { display: false }, 
+                                grid: { color: '#f1f5f9' }, 
+                                ticks: { 
+                                    maxTicksLimit: 6,
+                                    stepSize: scaleConfig.stepSize,
+                                    font: { family: 'Prompt', size: 11 },
+                                    callback: (val) => Number(val).toLocaleString() + ' ฿'
+                                } 
+                            },
                             x: { border: { display: false }, grid: { display: false }, ticks: { font: { family: 'Prompt', size: 11 } } }
                         }
                     }
