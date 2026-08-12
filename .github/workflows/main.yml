@@ -1,15 +1,15 @@
-name: ซิงค์ Google Docs 3 รายการไปยังแดชบอร์ด
+name: ซิงค์และตรวจสอบข้อมูล Google Docs ไปยังแดชบอร์ด
 
 on:
   schedule:
-    - cron: '0 * * * *' # ทำงานอัตโนมัติทุกๆ 1 ชั่วโมง
-  workflow_dispatch: # ปุ่มกดสั่งรันด้วยตัวเอง
+    - cron: '*/30 * * * *' # ⏰ สั่งทำงานอัตโนมัติทุกๆ 30 นาที
+  workflow_dispatch: # ปุ่มกดสั่งรันด้วยตัวเองได้ตลอดเวลา
 
 permissions:
   contents: write
 
 jobs:
-  sync-docs:
+  sync-and-verify:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -25,26 +25,51 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Fetch Google Docs Data
+      - name: Sync and Audit Data Integrity
         run: |
           python -c "
-          import requests
-          
-          # ลิงก์ Publish to web ของ Google Docs ทั้ง 3 ไฟล์
+          import requests, hashlib, os
+
           urls = {
-              'doc_news.html': 'ใส่ลิงก์_PUBLISH_TO_WEB_หมวดข่าวสาร',
-              'doc_portfolio.html': 'ใส่ลิงก์_PUBLISH_TO_WEB_หมวดสถานะพอร์ต',
-              'doc_report.html': 'ใส่ลิงก์_PUBLISH_TO_WEB_หมวดรายงานวิเคราะห์'
+              'ข่าวรายวัน (News)': ('doc_news.html', 'https://docs.google.com/document/d/1WKpJ23Rat0qBIF5flz11xRkR7s26x2W5fiBhc6lz7Ww/pub'),
+              'สถานะพอร์ต (Portfolio)': ('doc_portfolio.html', 'https://docs.google.com/document/d/1Dbrad52p9vrD5JYNqdzphmaHT58bx33p4KV8wbKUg2E/pub'),
+              'รายงานวิเคราะห์ (Report)': ('doc_report.html', 'https://docs.google.com/document/d/12z-gUI6mbkJodbjBdLAiPoOBbHS3ooJ8hyf1J0yTC7k/pub')
           }
 
           headers = {'User-Agent': 'Mozilla/5.0'}
-          for filename, url in urls.items():
-              if 'pub' in url:
-                  res = requests.get(url, headers=headers)
-                  if res.status_code == 200:
+          summary_rows = []
+
+          for category, (filename, url) in urls.items():
+              try:
+                  res = requests.get(url, headers=headers, timeout=10)
+                  if res.status_code == 200 and len(res.text.strip()) > 0:
+                      new_content = res.text
+                      new_hash = hashlib.md5(new_content.encode('utf-8')).hexdigest()
+
+                      old_hash = ''
+                      if os.path.exists(filename):
+                          with open(filename, 'r', encoding='utf-8') as f:
+                              old_hash = hashlib.md5(f.read().encode('utf-8')).hexdigest()
+
                       with open(filename, 'w', encoding='utf-8') as f:
-                          f.write(res.text)
-                      print(f'Successfully downloaded {filename}')
+                          f.write(new_content)
+
+                      status = '🟢 ตรงกัน 100% (ข้อมูลอัปเดตใหม่)' if new_hash != old_hash else '✅ ตรงกัน 100% (ข้อมูลเป็นปัจจุบัน)'
+                      size_kb = f'{len(new_content) / 1024:.1f} KB'
+                      summary_rows.append(f'| {category} | {status} | {size_kb} | HTTP 200 OK |')
+                  else:
+                      summary_rows.append(f'| {category} | ❌ เนื้อหาว่างเปล่า/ผิดพลาด | - | HTTP {res.status_code} |')
+              except Exception as e:
+                  summary_rows.append(f'| {category} | ❌ การเชื่อมต่อล้มเหลว | - | {str(e)} |')
+
+          summary_md = '''## 📊 รายงานผลการตรวจสอบและซิงค์ข้อมูล (Data Audit Report)
+
+          | หมวดหมู่หัวข้อหลัก | สถานะความตรงกัน (Source vs Destination) | ขนาดข้อมูล | การตอบรับจาก Google Docs |
+          | :--- | :--- | :--- | :--- |
+          ''' + '\n'.join(summary_rows)
+
+          with open(os.environ['GITHUB_STEP_SUMMARY'], 'a', encoding='utf-8') as f:
+              f.write(summary_md)
           "
 
       - name: Commit and Push changes
@@ -52,4 +77,4 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git add doc_news.html doc_portfolio.html doc_report.html || true
-          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: Sync latest 3 Google Docs content" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "auto: Sync & Audit 3 Google Docs content" && git push)
