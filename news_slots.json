@@ -1,5 +1,70 @@
 [
   {
+    "slotId": "news-13 สิงหาคม 2026",
+    "dateLabel": "13 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 13 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$188.4M",
+                "desc": "รายงาน SEC ล่าสุดระบุว่า Hyperion Asset Management คงสัดส่วนหุ้น ARM เป็นสินทรัพย์ใหญ่ที่สุดอันดับ 10 ของกองทุน (มูลค่า  คิดเป็น 5% ของพอร์ต) โดยนักวิเคราะห์สถาบันส่วนใหญ่ให้คำแนะนำ Moderate Buy ด้วยเป้าหมายราคาเฉลี่ย $285.33–$287.00"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "การถือครองของกองทุน Hyperion & ราคาเป้าหมายสถาบัน",
+              "ARM Holdings PLC Sponsored ADR is Hyperion Asset's 10th Largest Position",
+              "Arm Stock 134% Higher Since January"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "+4.7%",
+                "desc": "ราคาหุ้น MU พุ่งขึ้นแรง  ถึง +6.5% รับเชิงบวกจากยอดสั่งซื้อและรายได้ทะลุเป้าของพันธมิตร AI Infrastructure อย่าง CoreWeave และ Nebius"
+              },
+              {
+                "label": "",
+                "value": "40%",
+                "desc": "ตลาดผ่อนคลายความกังวลเรื่องการแข่งขันจากผู้ผลิตจีน (CXMT) หลังมีกระแสเคลื่อนไหวล็อบบี้จำกัดการใช้ชิปจีนในสหรัฐฯ ขณะที่สัญญา Take-or-pay 16 ฉบับช่วยการันตีรายได้  ล่วงหน้า 5 ปี ป้องกันความผันผวนวัฏจักร"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "แรงหนุนจากผลประกอบการ Neocloud AI (CoreWeave & Nebius)",
+              "Why Micron Stock Is Surging Today",
+              "การสลัดความกังวลชิปจีน & สัญญาล็อกราคา Take-or-pay 16 ฉบับ",
+              "Why Micron Stock Is Surging Today",
+              "Micron Set A Margin Record On Prices It Has Agreed To Cap"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-12 สิงหาคม 2026",
     "dateLabel": "12 สิงหาคม 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
