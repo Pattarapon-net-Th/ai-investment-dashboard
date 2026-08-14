@@ -1,5 +1,70 @@
 [
   {
+    "slotId": "news-14 สิงหาคม 2026",
+    "dateLabel": "14 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 14 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$430",
+                "desc": "หุ้น ARM ดีดตัวกลับรับความต้องการชิป Custom Silicon โดยบทวิเคราะห์ชี้ว่ากระแสคาดการณ์ระยะยาวของนักลงทุนสถาบันประเมินมูลค่าเหมาะสม (Fair Value) สูงถึง  ต่อหุ้น"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "การรุกงาน OCP APAC Summit 2026 ณ ไทเป",
+              ": Arm ร่วมแสดงวิสัยทัศน์ในงาน OCP APAC Summit ตอกย้ำการขยายตัวของสถาปัตยกรรม Neoverse V3 และ Compute Subsystems (CSS) สำหรับเซิร์ฟเวอร์ AI",
+              "ราคาหุ้นฟื้นตัวสู่ $271.87 (+5.50%) & มูลค่าเหมาะสมระยะยาว"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$250 ล้าน",
+                "desc": "Micron Ventures จัดตั้งกองทุน ดอลลาร์ มุ่งลงทุนในสตาร์ตอัปเทคโนโลยี AI ยุคถัดไป เพื่อเร่งขยายระบบนิเวศการประมวลผลและการใช้หน่วยความจำ"
+              },
+              {
+                "label": "",
+                "value": "$949.83",
+                "desc": "ราคาหุ้น MU ขยับขึ้นสู่ระดับ  (+4.23%) เข้าใกล้แนวต้านสำคัญ $1,000 ท่ามกลางกระแสคาดการณ์ว่า Micron อาจประกาศโครงการซื้อหุ้นคืน/จ่ายปันผลเพิ่มขึ้นหลังพ้นข้อจำกัด CHIPS Act ปลายปีนี้"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "เปิดตัวกองทุน Paradigm Fund $250 ล้านดอลลาร์",
+              "Micron Ventures Launches $250M Fund",
+              "ราคาหุ้นทดสอบแนวต้าน $1,000 & คาดการณ์ Capital Return",
+              "Talk of Capital Return Boosts MU Stock",
+              "Micron Rises on Strong AI Demand Signals"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-13 สิงหาคม 2026",
     "dateLabel": "13 สิงหาคม 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
