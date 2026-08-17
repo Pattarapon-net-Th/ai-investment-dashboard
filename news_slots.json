@@ -1,5 +1,87 @@
 [
   {
+    "slotId": "news-17 สิงหาคม 2026",
+    "dateLabel": "17 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 17 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$1,000 ล้าน",
+                "desc": "ความต้องการสั่งซื้อชิปประมวลผลสำเร็จรูป Arm AGI CPU สำหรับ Agentic AI และ Physical AI เติบโตขึ้นจาก ดอลลาร์ สู่ระดับกว่า $2,000 ล้านดอลลาร์ภายในไตรมาสเดียว ซึ่งช่วยชดเชยการเติบโตของค่า Royalty ในตลาดสมาร์ตโฟนที่เริ่มชะลอตัวลงมาอยู่ที่ระดับ High-Teens จากแรงกดดันต้นทุนหน่วยความจำ"
+              },
+              {
+                "label": "",
+                "value": "$279.44",
+                "desc": "หุ้น ARM ปิดสัปดาห์ที่  ท่ามกลางฉันทามติเชิงบวกของนักวิเคราะห์ (Buy/Outperform รวม 28 ราย) ด้วยราคาเป้าหมายเฉลี่ย $288.00 และบทวิเคราะห์ระยะยาวประเมินมูลค่าเหมาะสมจากโครงสร้างพื้นฐาน AI ทศวรรษหน้าไว้สูงถึง $1,403 ต่อหุ้น"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ยอดส่งมอบ Neoverse ทะลุ 1.5 พันล้านชิป & สถิติรายได้ Data Center โตกว่า 100%",
+              ": ยอดส่งมอบชิปสถาปัตยกรรม Arm Neoverse ทะลุหลัก 1.5 พันล้านแกน (1.5B Cores) โดยกว่า 500 ล้านแกนถูกส่งมอบในช่วง 9 เดือนล่าสุด สะท้อนการขยายตัวอย่างรวดเร็วของ AI Data Center และชิปเซิร์ฟเวอร์คลาวด์ (AWS Graviton, Google Axion, Microsoft Cobalt) ส่งผลให้รายได้ค่า Royalty กลุ่ม Data Center เพิ่มขึ้นกว่าเท่าตัว YoY ต่อเนื่อง",
+              "Arm Stock Is Up 144% This Year. The Data Center Did Almost All the Work",
+              "อุปสงค์ชิป Arm AGI CPU ทะลุ $2,000 ล้านดอลลาร์ ชดเชยการชะลอตัวของสมาร์ตโฟน",
+              "Arm Stock Is Up 144% This Year. The Data Center Did Almost All the Work",
+              "ราคาหุ้นทรงตัวระดับสูงที่ $279.44 (+143.6% YTD) พร้อมแรงหนุนสถาบัน",
+              "Arm Stock Is Up 144% This Year. The Data Center Did Almost All the Work",
+              "ARM Stock Price and Quote"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$924",
+                "desc": "Michael Burry ผู้จัดการกองทุน Scion Asset Management เพิ่มสถานะชอร์ตในหุ้น MU (ที่ราคาประมาณ ) ร่วมกับ Nebius, Oracle และ Put Options ของ SOXX โดยตั้งข้อสังเกตเรื่องความเสี่ยงจากการยืดระยะเวลาตัดค่าเสื่อมราคาฮาร์ดแวร์ AI และความเสี่ยงอุปทานล้นเกินในระยะยาว"
+              },
+              {
+                "label": "",
+                "value": "$971.66",
+                "desc": "หุ้น MU ฟื้นตัวต่อเนื่องขึ้นมาทดสอบแนวต้าน –$972.98 (+14.6% ในรอบ 30 วันจากจุดต่ำสุดช่วงปลายเดือน ก.ค.) ดันมูลค่าบริษัทแตะ $1.1 Trillion จากแรงขับเคลื่อนอุปสงค์ HBM และสต็อก DRAM/NAND ที่ตึงตัว"
+              },
+              {
+                "label": "",
+                "value": "$1,375",
+                "desc": "วอลล์สตรีทยังคงปรับเพิ่มประมาณการรายได้และราคาเป้าหมายสู่ระดับ –$1,500 โดยมองว่าสัญญา Take-or-pay มูลค่า $100B และภาวะคอขวดหน่วยความจำ AI ตลอดปี 2026–2028 จะช่วยปกป้องอัตรากำไรของ Micron ได้อย่างแข็งแกร่ง"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "Michael Burry เพิ่มสถานะชอร์ต (Short/Puts) กดดันหุ้น AI และวัฏจักรต้นทุน",
+              "Michael Burry Ramped Up His Bets Against Micron and the QQQ ETF",
+              "Michael Burry Sends Fresh AI Warning on Nebius, Micron and Oracle",
+              "ราคาหุ้นฟื้นตัวสู่ $971.66–$972.98 (+14.6% ใน 30 วัน) หนุน Market Cap แตะ $1.1 ล้านล้านดอลลาร์",
+              "เป้าหมายรายได้ Q4 ที่ $50B และสัญญา Take-or-Pay คุ้มกันความเสี่ยงระยะยาว",
+              "Analysts Keep Hiking Micron's Revenue and Price Forecasts",
+              "Micron posts $41.5B Q3 revenue, guides Q4 to $50B"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-14 สิงหาคม 2026",
     "dateLabel": "14 สิงหาคม 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
