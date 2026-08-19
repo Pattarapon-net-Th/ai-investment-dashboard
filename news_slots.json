@@ -1,5 +1,87 @@
 [
   {
+    "slotId": "news-19 สิงหาคม 2026",
+    "dateLabel": "19 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 19 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "-6.7%",
+                "desc": "หุ้น ARM เผชิญแรงเทขายหนัก  ถึง -8.02% ในการซื้อขายวันที่ 18 ส.ค. 2026 เนื่องจาก Valuation ที่เทรด P/S สูงถึง ~52 เท่า ทำให้ราคาหุ้นมีความอ่อนไหวสูงต่อความกังวลเรื่องรอบงบลงทุน AI CapEx ของกลุ่ม Big Tech และการชะลอตัวของตลาดสมาร์ตโฟน"
+              },
+              {
+                "label": "ARM (NASDAQ",
+                "value": "6.7%",
+                "desc": "ARM) Trading Down  - Here's Why"
+              },
+              {
+                "label": "",
+                "value": "70%",
+                "desc": "รายงานการถือครองสินทรัพย์ล่าสุดแสดงว่า Stanley Druckenmiller ได้เทขายลดสัดส่วนหุ้น ARM ออกไปมากกว่า  ในช่วงไตรมาส 2 เพื่อลดความเสี่ยงจากมูลค่าหุ้นที่พุ่งขึ้นแรง"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นร่วงลง -6.7% ถึง -8.02% จากการปรับสมดุลมูลค่า (Valuation Reset)",
+              "รายงาน 13F ระบุกองทุน Duquesne ของ Druckenmiller ลดสัดส่วนหุ้น ARM กว่า 70%",
+              "Billionaire Druckenmiller dumps chips, piles into Amazon in Q2",
+              "สัญญาณ Oversold ทางเทคนิค & ปัจจัยพื้นฐาน Neoverse ยังคงแข็งแกร่ง",
+              ": แม้ราคาหุ้นจะปรับตัวลงแรง แต่ดัชนีทางเทคนิคอย่าง Williams %R เริ่มเข้าสู่โซน Oversold ส่งสัญญาณลุ้นรีบาวด์ระยะสั้น ขณะที่รายได้ค่าสิทธิบัตรจาก Data Center Neoverse V3 และ CSS ยังคงเป็นแกนหลักในการขับเคลื่อนกำไรระยะยาว"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "7.02%",
+                "desc": "หุ้น MU ปรับตัวลดลงแรง  กลับมาเคลื่อนไหวในกรอบ $940–$945 หลังแตะระดับ $1,000 เมื่อวันก่อนหน้า โดยเผชิญแรงเทขายพร้อมกลุ่มชิป AI ทั่วทั้งวอลล์สตรีท ท่ามกลางความกังวลเรื่องอัตราผลตอบแทนพันธบัตรและราคาน้ำมันที่ดีดตัว"
+              },
+              {
+                "label": "",
+                "value": "85%",
+                "desc": "รายงาน 13F ของ Stanley Druckenmiller เผยการลดน้ำหนักหุ้นกลุ่มชิป อย่างไรก็ดี นักวิเคราะห์สถาบันส่วนใหญ่ยังคงมองว่าการย่อตัวครั้งนี้เป็นความผันผวนตามปัจจัยมหภาค ขณะที่พื้นฐานอุปสงค์ HBM และ Gross Margin  ยังคงแข็งแกร่ง"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นร่วง -7.02% สู่ระดับ ~$940 จากแรงเทขายกลุ่ม Semiconductor & แรงกดดันมหภาค",
+              "Micron MU Stock Plunges to $940 as $1,000 Recovery Quickly Collapses",
+              "Sinking AI stocks pull Wall Street further from its record",
+              "แรงกดดันคดีสิทธิบัตร Netlist กระทบความเชื่อมั่นชิป DDR5 ระยะสั้น",
+              ": ประเด็นข้อพิพาททางกฎหมายด้านสิทธิบัตรโมดูลหน่วยความจำ DDR5 ร่วมกับ Netlist กลับมากดดันบรรยากาศการลงทุน ส่งผลให้เกิดแรงขายทำกำไรระยะสั้นในหมู่นักลงทุน",
+              "MU Stock Slides As Netlist Patent Fight Hits DDR5 Outlook",
+              "Why Is Micron Stock (MU) Down Over 5% Today after Monday's Gain?",
+              "รายงาน 13F ชี้การปรับพอร์ตของ Druckenmiller & มุมมองวัฏจักรของนักวิเคราะห์",
+              "Billionaire Druckenmiller dumps chips, piles into Amazon in Q2",
+              "Micron (MU) Sees a More Significant Dip Than Broader Market"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-18 สิงหาคม 2026",
     "dateLabel": "18 สิงหาคม 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
