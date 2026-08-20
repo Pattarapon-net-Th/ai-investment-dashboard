@@ -1,5 +1,93 @@
 [
   {
+    "slotId": "news-20 สิงหาคม 2026",
+    "dateLabel": "20 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 20 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "-1.6%",
+                "desc": "หุ้น ARM ขยับลงต่อเนื่องเล็กน้อย  ปิดที่ $253.32 (After-hours $249.22) ลงมาทดสอบแนวรับสำคัญบริเวณ $243–$250 จากแรงกดดันด้าน Valuation พรีเมียม (P/E >100x) ในช่วงที่ตลาดปรับลดความเสี่ยง"
+              },
+              {
+                "label": "ARM (NASDAQ",
+                "value": "1.6%",
+                "desc": "ARM) Shares Down  - What's Next?"
+              },
+              {
+                "label": "",
+                "value": "$2,000 ล้าน",
+                "desc": "บทวิเคราะห์ย้ำว่าอุปสงค์ AGI CPU สำหรับ Agentic AI และชิป Neoverse V3 ที่มียอดคำสั่งซื้อกว่า ดอลลาร์ พร้อมการขยายสู่ Physical AI (Robotics, Jetson Thor) กำลังขับเคลื่อนการเปลี่ยนผ่านเชิงโครงสร้างของ Arm สู่ศูนย์กลางชิป AI"
+              },
+              {
+                "label": "ARM Stock",
+                "value": "$2 B",
+                "desc": "The illion AI Signal Investors Shouldn't Ignore"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นอ่อนตัวลงสู่ $249.22–$253.32 (-1.6%) ทดสอบแนวรับสำคัญ",
+              "ARM Tests $267 After 34% Growth and DreamBig Deal",
+              "สัญญาณอุปสงค์ AI Datacenter $2,000 ล้านดอลลาร์ & การรุก Physical AI",
+              "Trade ARM Stock After-hours on Public.com",
+              "สัดส่วนคำแนะนำ Buy เพิ่มขึ้นแตะ 75% ด้วยราคาเป้าหมาย $287.79",
+              ": นักวิเคราะห์ 20 รายให้คำแนะนำเชิงบวกเพิ่มขึ้นเป็น 75% Buy โดยมีราคาเป้าหมายเฉลี่ย $287.79 มองว่าโซนราคาปัจจุบันเป็นโอกาสสะสมเพื่อรับการเติบโตของค่า Royalty ในระยะยาว",
+              "ARM Holdings PLC ADR Live Share Price",
+              "ARM Stock Forecast: Analyst Ratings & Price Target 2026"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$933.45",
+                "desc": "หุ้น MU เริ่มชะลอแรงเทขายและทรงตัวได้ในกรอบ –$940.76 (-0.39% ถึง -0.78%) หลังเผชิญแรงขายหนักในวันก่อนหน้า โดยยังคงรักษามูลค่าตลาดระดับ $1.06 Trillion ท่ามกลางการดูดซับแรงกดดันด้านมหภาค"
+              },
+              {
+                "label": "",
+                "value": "7 เท่า",
+                "desc": "บทวิเคราะห์ชี้ว่าราคาหุ้นปัจจุบันเทรดที่ระดับ Forward P/E เพียง ของประมาณการกำไรปี 2027 ซึ่งยังคงน่าดึงดูดเมื่อเทียบกับอัตราการเติบโตของอุปสงค์ชิป AI HBM และสัญญา Take-or-pay"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นเริ่มทรงตัวที่ $933.45–$940.76 & Market Cap ยืน $1.06 ล้านล้านดอลลาร์",
+              "Micron stock falls 7.02%. Memory rally pauses after a sharp run",
+              "Valuation Forward P/E อยู่ที่ ~7 เท่า หนุนมุมมองเติบโตระยะยาว",
+              "Micron Is Trading at About 7 Times Next Year's Earnings Estimate",
+              "Jim Cramer says Micron stock can double from here",
+              "การปรับคำแนะนำเป็น Hold โดย Envision Research",
+              ": มีการปรับลดคำแนะนำระยะสั้นเป็น Hold จากประเด็นการประเมินมูลค่าตามแบบจำลอง GF Value ที่มองว่าราคาขึ้นมาตอบรับการเติบโตไประดับหนึ่งแล้ว ทำให้นักลงทุนควรเน้นจังหวะสะสมเมื่อราคาปรับฐาน",
+              "MU Looks 58.3% Overvalued on GF Value™"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-19 สิงหาคม 2026",
     "dateLabel": "19 สิงหาคม 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
