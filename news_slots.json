@@ -1,5 +1,79 @@
 [
   {
+    "slotId": "news-23 สิงหาคม 2026",
+    "dateLabel": "23 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 23 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$1,403",
+                "desc": "บทวิเคราะห์ชี้ว่าแม้ระยะสั้นจะมีความผันผวนจาก Valuation แต่แบบจำลองระยะยาว (TIKR Model) ประเมินมูลค่าหุ้นไว้ที่ –$1,773 ในปี 2031 จากการที่ Neoverse และ CSS ครองส่วนแบ่งใน Cloud Data Center เพิ่มขึ้นต่อเนื่อง"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "การรุกงานสัมมนา AI ระดับโลก ตอกย้ำขีดความสามารถการสร้างกระแสเงินสดระยะยาว",
+              ": Arm เดินสายแสดงวิสัยทัศน์ในงานประชุมระดับโลก (OCP APAC, Rosenblatt AI Summit, TestMu) ชูระบบนิเวศการออกแบบชิป AI-Centric หนุนความเชื่อมั่นของนักลงทุนต่อความสามารถในการสร้างกระแสเงินสดที่ยั่งยืน (Durable Cash Power)",
+              "Does Arm (ARM)ʼs AI Conference Push Reflect Durable Cash Power or Just Multiple Expansion?",
+              "ขยายพันธมิตรในภูมิภาคอาเซียนผ่านโครงการ Malaysia-ARM Strategic Programme",
+              ": Arm ร่วมมือกับ Oppstar ขยายโครงการความร่วมมือเชิงยุทธศาสตร์ในมาเลเซีย เพื่อเร่งการพัฒนาชิปเซมิคอนดักเตอร์และระบบประมวลผลขั้นสูงในเอเชียตะวันออกเฉียงใต้",
+              "Oppstar Share Price Rises Upon Selection For Malaysia-ARM Strategic Programme",
+              "แบบจำลองระยะยาวประเมินมูลค่าปี 2031 แแตะ $1,403–$1,773 หนุนด้วยสถาปัตยกรรม Neoverse",
+              "Arm Stock Is Up 144% This Year. The Data Center Did Almost All the Work",
+              "ARM (ARM) Stock Forecast and Price Target 2026"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "Strong Buy",
+                "desc": "รายงาน 13F ล่าสุดระบุว่า Oppenheimer และ Summit Global Investments เพิ่มสัดส่วนการถือครองหุ้น MU ขณะที่นักวิเคราะห์ส่วนใหญ่คงคำแนะนำ \"\" ด้วยราคาเป้าหมายเฉลี่ยที่ $1,515.11 ก่อนการรายงานงบของ NVIDIA"
+              },
+              {
+                "label": "",
+                "value": "$50B",
+                "desc": "บทวิเคราะห์ตอกย้ำแนวโน้มการเติบโตของรายได้ Q4 ที่  (+21% QoQ) และกระแสเงินสดจากการดำเนินงานระดับประวัติศาสตร์ $25.39B ชี้ให้เห็นถึงความสามารถในการทำกำไรที่แข็งแกร่งที่สุดในอุตสาหกรรม"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ทุ่มงบ $10,000 ล้านดอลลาร์สร้างศูนย์วิจัย 'Micron Research Labs' เจาะตลาด Next-Gen AI Memory",
+              ": Micron ประกาศแผนสร้างศูนย์วิจัยแห่งใหม่ใน Boise รัฐไอดาโฮ เริ่มก่อสร้างปี 2027 มุ่งเน้นการพัฒนา HBM4/HBM4E และ 3D DRAM ตอกย้ำความเชื่อมั่นต่ออุปสงค์หน่วยความจำ AI ระยะยาว",
+              "Does Micron's US$10 Billion Micron Research Labs Plan Reshape The Bull Case For Micron (MU)?",
+              "กองทุนสถาบันเพิ่มการถือครอง & ราคาเป้าหมายเฉลี่ยปรับขึ้นสู่ $1,515.11",
+              "Oppenheimer Asset Management Inc. Grows Position in Micron",
+              "Summit Global Investments Has $8.29 Million Position in Micron",
+              "การยืนยันเป้าหมายรายได้ Q4 ที่ $50B พร้อม Gross Margin 86%",
+              "Weekly Large-Cap Breakdown: MU"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-22 สิงหาคม 2026",
     "dateLabel": "22 สิงหาคม 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
