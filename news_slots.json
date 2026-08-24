@@ -1,5 +1,91 @@
 [
   {
+    "slotId": "news-24 สิงหาคม 2026",
+    "dateLabel": "24 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 24 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "50%",
+                "desc": "บทวิเคราะห์ชี้ว่าระบบ Multi-Agent AI ทำให้เกิดคอขวดด้าน Orchestration Latency สูงถึง –90% ส่งผลให้ Data Center ต้องเพิ่มสัดส่วน CPU-to-GPU Ratio สูงขึ้น หนุนให้ชิปสำเร็จรูป Arm AGI CPU (136 คอร์บน Neoverse V3) และสถาปัตยกรรม CSS กลายเป็นหัวใจสำคัญของการประมวลผล"
+              },
+              {
+                "label": "",
+                "value": "90%",
+                "desc": "นักวิเคราะห์ประเมินว่าชิปสถาปัตยกรรม Arm จะครองส่วนแบ่งกว่า  ในเซิร์ฟเวอร์ Custom AI ของกลุ่ม Hyperscalers ภายในปี 2029 โดยการใช้โมเดล CSS จะช่วยยกระดับค่า Royalty เข้าใกล้ 10% ของมูลค่าชิป (เพิ่มขึ้นมหาศาลจากเดิมในยุคสมาร์ตโฟน)"
+              },
+              {
+                "label": "",
+                "value": "$286.79",
+                "desc": "Simply Wall St ประเมินราคาเหมาะสมของ Arm ไว้ที่  (+18% Upside) บนสมมติฐานรายได้ปี 2029 ที่ $12,100 ล้านดอลลาร์ และกำไรสุทธิ $3,500 ล้านดอลลาร์ มองการสร้างฐานราคา $245–$250 เป็นโอกาสสะสมระยะยาว"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "บทวิเคราะห์ Agentic AI ชี้คอขวดเปลี่ยนสู่ CPU หนุนอุปสงค์ Arm AGI CPU พุ่ง",
+              "Arm Earnings Preview: As Agentic AI Shifts the Bottleneck to CPUs",
+              "What Are ARM Concept Stocks?",
+              "คาดครองส่วนแบ่งตลาดในชิป Custom AI ASIC Server สูงถึง 90% ภายในปี 2029",
+              "Arm Earnings Preview: As Agentic AI Shifts the Bottleneck to CPUs",
+              "บทวิเคราะห์ประเมินมูลค่าเหมาะสม $286.79 อิงเป้าหมายรายได้ปี 2029 แตะ $12.1B",
+              "Does Arm (ARM)ʼs AI Conference Push Reflect Durable Cash Power or Just Multiple Expansion?"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "+238.7%",
+                "desc": "บทวิเคราะห์ชี้ว่าแม้ราคาหุ้นจะปรับขึ้นแรงกว่า  YTD แต่ค่า Trailing P/E ที่ 21.8 เท่า บนกำไรสุทธิ 55.9% และรายได้รวม $90.3B ยังคงต่ำกว่าค่าเฉลี่ยของผู้นำกลุ่มชิป AI อย่าง NVIDIA (P/E 32.9x) อย่างมาก"
+              },
+              {
+                "label": "",
+                "value": "$1,625",
+                "desc": "บทวิเคราะห์ประเมินเป้าหมาย Bull Case สูงสุดถึง  หากผลประกอบการ NVIDIA ยืนยันภาวะขาดแคลน HBM ไปจนถึงปี 2028 ขณะที่แบบจำลอง Machine Learning คาดการณ์ราคาหุ้นจะพยายามทดสอบระดับจิตวิทยา $1,000 อีกครั้ง"
+              },
+              {
+                "label": "Micron (MU) Stock Prediction",
+                "value": "$1,625 B",
+                "desc": "ull vs $620 Bear"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "กองทุนสถาบันเข้าซื้อสะสมหุ้นต่อเนื่อง (TD Asset Management ซื้อเพิ่ม 134,619 หุ้น)",
+              ": รายงาน 13F ล่าสุดระบุว่า TD Asset Management, Ascent Group LLC และ Oppenheimer เดินหน้าเพิ่มสัดส่วนการถือครองหุ้น MU อย่างมีนัยสำคัญเพื่อรับกระแสเงินทุนก่อนงบการเงินของ NVIDIA ในวันที่ 26 ส.ค.",
+              "TD Asset Management Inc Purchases 134,619 Shares of Micron",
+              "Ascent Group LLC Increases Stock Position in Micron",
+              "บทวิเคราะห์ 'No-Brainer Buy' เทียบ Valuation P/E 21.8x กับการเติบโตยอดขาย 345% YoY",
+              "กรอบการคาดการณ์ Bull Case $1,625 vs Bear Case $620",
+              "Machine learning algorithm sets Micron stock price for September 1"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-23 สิงหาคม 2026",
     "dateLabel": "23 สิงหาคม 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",

@@ -1,5 +1,101 @@
 [
   {
+    "slotId": "report-24 สิงหาคม 2026",
+    "dateLabel": "24 สิงหาคม 2026",
+    "title": "รายงานวิเคราะห์ AI & Arm Holdings",
+    "subtitle": "ประจำสัปดาห์ (24 สิงหาคม 2026)",
+    "section1": {
+      "title": "1. สรุปอัปเดตข่าวและงบการเงิน Arm Holdings (ARM)",
+      "intro": "อัปเดตงบการเงินไตรมาส Q1 FYE27 และการวิเคราะห์รายสัปดาห์ล่าสุด:",
+      "highlights": [
+        {
+          "label": "รายได้รวม (Total Revenue)",
+          "value": "$1.289 พันล้าน",
+          "desc": "(+22% YoY) ทำสถิติสูงสุดใหม่สำหรับ Q1"
+        },
+        {
+          "label": "กำไรสุทธิปรับปรุง (Non-GAAP EPS)",
+          "value": "$0.45",
+          "desc": "(+29% YoY) สูงกว่ากรอบเป้าหมาย"
+        },
+        {
+          "label": "Royalty Revenue",
+          "value": "$715 ล้าน",
+          "desc": "(+22% YoY) ทำสถิติ Q1 สูงสุด"
+        },
+        {
+          "label": "Licensing Revenue",
+          "value": "$574 ล้าน",
+          "desc": "(+23% YoY) เติบโตแข็งแกร่ง"
+        }
+      ],
+      "details": [
+        "Data Center Royalty: พุ่งขึ้นสถิติใหม่ เติบโตเกินกว่าเท่าตัว (>100% YoY) จากชิป Neoverse ใน Hyperscalers",
+        "ปฏิกิริยาราคาหุ้น: หุ้นรีบาวด์ขึ้นแรง +6.5% ถึง +7.4% ปิดสัปดาห์ที่บริเวณ ~$240-$241 USD",
+        "NVIDIA & Arm Synergy: ชิป Grace & Vera CPU เชื่อมต่อผ่าน NVLink-C2C แบนด์วิดท์ 1.8 TB/s ปลดล็อกคอขวดระบบ AI",
+        "เป้าหมาย Valuation: แผน Value Creation Plan มุ่งสู่ Market Cap $1-$2 Trillion ภายในปี 2029-2031"
+      ]
+    },
+    "section2": {
+      "title": "2. ประเมินสถิติ Arm ตามกรอบ 5 Checkpoints",
+      "checkpoints": [
+        {
+          "id": 1,
+          "name": "CSS Adoption & Royalty Expansion",
+          "status": "ผ่าน",
+          "desc": "รายได้ Royalty ทำสถิติ $715M (+22% YoY) ค่าสิทธิ์ขยับสู่ 5%-10% ต่อชิป"
+        },
+        {
+          "id": 2,
+          "name": "Data Center & Cloud AI",
+          "status": "ผ่านดีเยี่ยม",
+          "desc": "รายได้ Royalty ฝั่ง Data Center เติบโตมากกว่า >100% YoY"
+        },
+        {
+          "id": 3,
+          "name": "Armv9 Penetration",
+          "status": "ผ่าน",
+          "desc": "สัดส่วนรายได้จาก Armv9 เพิ่มขึ้นเกิน >30%-35% ของ Royalty รวม"
+        },
+        {
+          "id": 4,
+          "name": "Margins & Cash Flow",
+          "status": "ผ่านดีเยี่ยม",
+          "desc": "Gross Margin 95%-98%, โมเดล Asset-Light ไม่มีภาระสร้าง Fab"
+        },
+        {
+          "id": 5,
+          "name": "Guidance & Risks",
+          "status": "เฝ้าระวัง",
+          "desc": "ติดตามการแข่งขันจาก RISC-V และคดีความ Qualcomm vs. Arm"
+        }
+      ]
+    },
+    "section3": {
+      "title": "3. คัดสรรหุ้น AI ที่น่าสนใจประจำสัปดาห์ (Top AI Stock Picks)",
+      "picks": [
+        {
+          "ticker": "MU",
+          "name": "Micron Technology",
+          "phase": "Phase 2: Hardware & Memory",
+          "reason": "ราคาหุ้นรีบาวด์พุ่งขึ้นแรง ได้รับประโยชน์สูงสุดจากอุปสงค์ HBM และ DRAM ขาดแคลน"
+        },
+        {
+          "ticker": "NVDA",
+          "name": "NVIDIA",
+          "phase": "Phase 1: Core AI Enablers",
+          "reason": "ผู้นำระบบ AI เต็มรูปแบบ Grace/Vera Rubin สถาปัตยกรรม Blackwell ขยายตัวต่อเนื่อง"
+        },
+        {
+          "ticker": "GOOGL",
+          "name": "Alphabet",
+          "phase": "Phase 3: Cloud Hyperscaler",
+          "reason": "Google Axion N4A ชิป Arm ประสิทธิภาพสูง Cloud โตแรง Valuation P/E น่าดึงดูด"
+        }
+      ]
+    }
+  },
+  {
     "slotId": "report-14 สิงหาคม 2026",
     "dateLabel": "14 สิงหาคม 2026",
     "title": "รายงานวิเคราะห์ AI & Arm Holdings",
