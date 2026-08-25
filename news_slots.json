@@ -1,5 +1,92 @@
 [
   {
+    "slotId": "news-25 สิงหาคม 2026",
+    "dateLabel": "25 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 25 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$243.32",
+                "desc": "หุ้น ARM ปรับตัวลดลงปิดที่  (เคลื่อนไหวในกรอบ $233.29–$240.25 ในช่วงข้ามคืน) จากแรงเทขายทำกำไรและการปรับพอร์ตหุ้นเทคโนโลยีที่มี Valuation สูงก่อนงบ NVIDIA"
+              },
+              {
+                "label": "ARM (NASDAQ",
+                "value": "1.9%",
+                "desc": "ARM) Shares Down  - Time to Sell?"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นย่อตัวสู่ $236.34–$243.32 (-1.9% ถึง -3.01%) ตามแรงขายหุ้นชิป",
+              "ARM Holdings PLC Share Price Today",
+              "การรุกตลาด Robotics & Industrial Automation ช่วยขยายฐานรายได้",
+              ": บทวิเคราะห์ชี้ว่า Arm กำลังก้าวขึ้นเป็นสถาปัตยกรรมหลักสำหรับชิป Edge AI ในระบบหุ่นยนต์และระบบอัตโนมัติ ช่วยเสริมการเติบโตนอกเหนือจากตลาดสมาร์ตโฟนและ Data Center",
+              "Arm Stock And 2 Robotics Picks For The Automation Buildout",
+              "ฉันทามตินักวิเคราะห์ยังคงระดับ 'Moderate Buy' ด้วยสัดส่วนคำแนะนำ Buy 75%",
+              ": รายงานจาก MarketBeat ระบุว่านักวิเคราะห์สถาบันส่วนใหญ่ยังคงคำแนะนำเชิงบวก มองว่าการปรับฐานระยะสั้นไม่กระทบพื้นฐานของรายได้ค่า Royalty จากชิป AGI CPU และสถาปัตยกรรม Neoverse V3",
+              "ARM Holdings PLC Sponsored ADR Receives Consensus Recommendation of Moderate Buy"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$910.43",
+                "desc": "หุ้น MU เผชิญแรงขายหนักตามกลุ่มชิป AI ปิดที่  (แตะระดับต่ำสุดระหว่างวันที่ $887.61 และ After-hours $904.50–$909.32) จากแรงกดดันด้านคดีสิทธิบัตร Netlist และการปรับลดความเสี่ยงของตลาด"
+              },
+              {
+                "label": "MU Stock Today",
+                "value": "7%",
+                "desc": "Micron Falls  With Its 2026 Output Already Sold"
+              },
+              {
+                "label": "MU Stock Today",
+                "value": "7%",
+                "desc": "Micron Falls  With Its 2026 Output Already Sold"
+              },
+              {
+                "label": "",
+                "value": "$900",
+                "desc": "การปรับฐานลงมาทดสอบระดับ  ทำให้ P/E ลดลงมาอยู่ที่ 21.89 เท่า บน Market Cap $1.03 ล้านล้านดอลลาร์ ซึ่งนักวิเคราะห์มองว่าเป็นจุดสะสมที่น่าสนใจก่อนการรายงานงบ NVIDIA ในวันที่ 26 ส.ค."
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นร่วง -5.83% สู่ $909.32–$910.43 จากแรงเทขายกลุ่ม Semiconductor",
+              "Micron (MU) Falls More Steeply Than Broader Market",
+              "ยอดผลิตปี 2026 ขายหมดล่วงหน้า 100% (Sold Out) คุ้มกันความเสี่ยงคำสั่งซื้อ",
+              ": บทวิเคราะห์ย้ำว่าสิ่งที่ปรับลดลงคือ Valuation Multiple ไม่ใช่ยอดคำสั่งซื้อจริง เนื่องจากกำลังการผลิตชิป HBM3E ตลอดปี 2026 ของ Micron ถูกจองซื้อหมดแล้ว",
+              "MU Stock Drops As Netlist Patent Fight Escalates",
+              "Valuation ลดลงสู่ P/E 21.89x เปิดโอกาสสะสมก่อนงบ NVIDIA",
+              "MU Looks 52.2% Overvalued on GF Value™"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-24 สิงหาคม 2026",
     "dateLabel": "24 สิงหาคม 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
