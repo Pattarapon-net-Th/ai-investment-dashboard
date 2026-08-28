@@ -83,6 +83,181 @@
     ]
   },
   {
+    "slotId": "news-27 สิงหาคม 2026",
+    "dateLabel": "27 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 27 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$96.2 พันล้าน",
+                "desc": "รายงานงบไตรมาส 2 ของ NVIDIA ที่ทำสถิติ ดอลลาร์ (+106% YoY) ยืนยันการขยายตัวอย่างก้าวกระโดดของชิป CPU เซิร์ฟเวอร์บนสถาปัตยกรรม Arm (Grace/Vera) ช่วยคลายความกังวลเรื่องการชะลอตัวของรายได้ค่า Royalty ใน Data Center"
+              },
+              {
+                "label": "",
+                "value": "$238",
+                "desc": "หุ้น ARM เริ่มทรงตัวสร้างฐานราคาเหนือระดับ –$240 โดยนักวิเคราะห์มองว่าการย่อตัวลงมาจากจุดสูงสุดช่วยลดความตึงตัวของ Valuation และเปิดโอกาสสะสมเพื่อรับการเติบโตของค่า Royalty ในครึ่งปีหลัง"
+              },
+              {
+                "label": "ARM (NASDAQ",
+                "value": "1.2%",
+                "desc": "ARM) Trading Up  - What's Next?"
+              },
+              {
+                "label": "",
+                "value": "$2,000 ล้าน",
+                "desc": "อุปสงค์ชิปสำเร็จรูป Arm AGI CPU ที่ทะลุ ดอลลาร์ และยอดส่งมอบ Neoverse กว่า 1.5 พันล้านแกน ยังคงเป็นฟันเฟืองหลักที่ช่วยรักษาอัตรากำไรขั้นต้น Non-GAAP ในระดับสูงถึง 98.1% ก่อนการประชุมผู้ถือหุ้น AGM 9 ก.ย."
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "อานิสงส์ยอดส่งมอบ Grace/Vera Superchip ในงบ NVIDIA $96.2B หนุนรายได้ค่า Royalty",
+              "Financial Reports - NVIDIA Investor Relations",
+              "Nvidia Surpasses Q2 Estimates",
+              "Arm Q1 FYE27 Revenue Rises 22% to Record $1.29 Billion",
+              "ราคาหุ้นฟื้นตัวสร้างฐานที่ $238.78–$242.00 รับกระแสความต้องการชิป AI Infrastructure",
+              "การเติบโตของค่า Royalty ต่อ Socket จาก AGI CPU และ Neoverse V3 หนุน Gross Margin 98%",
+              "ARM Holdings (ARM) Live Share Price"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "106%",
+                "desc": "ผลประกอบการ NVIDIA ที่โต  พร้อมการระบุถึงภาวะขาดแคลนหน่วยความจำ AI อย่างรุนแรง ได้ส่งแรงส่งเชิงบวกโดยตรงต่อ Micron ในฐานะซัพพลายเออร์หลักของ HBM3E ผลักดันราคาหุ้นดีดตัวขึ้นทดสอบ $938.40–$940+ ในช่วงข้ามคืน"
+              },
+              {
+                "label": "",
+                "value": "$50B",
+                "desc": "Micron ประกาศวันรายงานงบการเงินไตรมาส 4 ในวันที่ 30 กันยายน 2026 เพื่อยืนยันเป้าหมายรายได้  พร้อมแต่งตั้งผู้บริหารชุดใหม่เพื่อเร่งการพัฒนาชิป HBM4 และหน่วยความจำเจเนอเรชันถัดไป"
+              },
+              {
+                "label": "",
+                "value": "$1,300",
+                "desc": "Mizuho คงคำแนะนำ Outperform พร้อมปรับราคาเป้าหมายสู่  โดยประเมินว่าภาวะตึงตัวของ DRAM และสัญญา Take-or-pay จะช่วยหนุนฐานกำไรของ Micron อย่างต่อเนื่องไปอีก 2–3 ปี"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "งบ NVIDIA ทุบสถิติ & สัญญาณ 'Extreme Memory Demand' ดันราคาหุ้น MU ดีดตัวสู่ $938–$940+ After-Hours",
+              "MU Stock Rises After-Hours as Nvidia Spending Boosts Micron",
+              "Micron Stock Today Aug 26 — MU +2.3% on HBM3E Demand Surge",
+              "Nvidia Earnings Recap: Big Revenue Growth and 'Extreme' Memory",
+              "กำหนดวันรายงานงบ Q4 FY26 วันที่ 30 ก.ย. 2026 & ปรับทัพผู้บริหารขับเคลื่อนนวัตกรรม",
+              "Micron Announces Leadership Appointments",
+              "Mizuho ปรับเป้าหมายราคาเป็น $1,300 ตอกย้ำภาพรวมกำไรแกร่งถึงปี 2028",
+              "Micron Stock Price Target Cut to $1,300 by Mizuho"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "slotId": "news-26 สิงหาคม 2026",
+    "dateLabel": "26 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 26 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$238.78",
+                "desc": "หุ้น ARM มีแรงซื้อพยุงกลับขึ้นมาปิดที่  (แกว่งตัวในกรอบ $233.29–$240.25) สร้างฐานราคาเพื่อรอความชัดเจนจากรายงานผลประกอบการไตรมาส 2 ของ NVIDIA ในวันที่ 26 ส.ค."
+              },
+              {
+                "label": "ARM (NASDAQ",
+                "value": "1.2%",
+                "desc": "ARM) Trading Up  - What's Next?"
+              },
+              {
+                "label": "",
+                "value": "93 เท่า",
+                "desc": "บทวิเคราะห์ชี้ว่าแม้ระดับ P/E ที่ จะกดดันราคาหุ้นระยะสั้น แต่การขยายตัวของชิป AGI CPU และสถาปัตยกรรม Neoverse V3 ใน AI Data Center ยังคงเป็นปัจจัยเร่งการเติบโตของกำไรในระยะ 2–3 ปีข้างหน้า"
+              },
+              {
+                "label": "",
+                "value": "$1,400",
+                "desc": "บทวิเคราะห์เชิงปริมาณประเมินมูลค่าพื้นฐานของ Arm ในปี 2031 ไว้ที่ประมาณ  ต่อหุ้น โดยมองว่าการปรับฐานของราคาหุ้นเป็นโอกาสสำหรับนักลงทุนระยะยาวที่มองการเติบโตของค่า Royalty ในเซิร์ฟเวอร์ AI"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นฟื้นตัวสร้างฐานที่ $238.78–$240.25 (+1.2% ระหว่างวัน) ก่อนงบ NVIDIA",
+              "ARM Holdings PLC Share Price Today",
+              "การถกเถียงเรื่อง Valuation P/E 93x เทียบกับศักยภาพการเติบโต Data Center",
+              "ARM's 93X Earnings Multiple Overshadows Its Growth Potential",
+              "โมเดล TIKR คงเป้าหมายระยะยาวปี 2031 ที่ ~$1,400 (Upside ~486%)"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$932.97",
+                "desc": "หุ้น MU ฟื้นตัวขึ้นมาปิดที่  (After-hours $930.25) รีบาวด์ขึ้นจากแนวรับ $910 รับแรงซื้อดักผลประกอบการ NVIDIA ในฐานะผู้จัดหาหน่วยความจำ HBM3E หลัก"
+              },
+              {
+                "label": "",
+                "value": "$50B",
+                "desc": "Simply Wall St และ TradingKey ชี้ว่าแม้ราคาหุ้นจะปรับขึ้นมาอย่างมากในรอบ 3 ปี แต่เป้าหมายรายได้ Q4 ที่  และกำไรขั้นต้น 86% ยังคงสนับสนุนให้มูลค่าหุ้นอยู่ในระดับที่น่าดึงดูด"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นดีดตัวรีบาวด์ +2.5% สู่ $932.97 รับแรงเก็งกำไรก่อนงบ NVIDIA",
+              "CEO Sanjay Mehrotra ขายหุ้นตามแผนล่วงหน้า 10b5-1 มูลค่า $38.7 ล้านดอลลาร์",
+              ": รายงาน SEC ระบุว่า CEO ของ Micron ขายหุ้นจำนวน 40,000 หุ้นตามแผนการเงิน Rule 10b5-1 ที่กำหนดไว้ล่วงหน้า ซึ่งไม่กระทบต่อพื้นฐานและการบริหารธุรกิจ",
+              "บทวิเคราะห์ 'Cheap Valuation' หลังแรลลี่ 3 ปี & เป้าหมาย Q4 $50B ยังคงแข็งแกร่ง",
+              "Micron (MU) Stock Still Looks Cheap As Its Three Year Run Nears 13x",
+              "Q3 $41.46B (+346%), Q4 $50B Guidance Intact"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-25 สิงหาคม 2026",
     "dateLabel": "25 สิงหาคม 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
