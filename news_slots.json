@@ -1,5 +1,85 @@
 [
   {
+    "slotId": "news-28 สิงหาคม 2026",
+    "dateLabel": "28 สิงหาคม 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 28 สิงหาคม 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$266.50",
+                "desc": "หุ้น ARM ดีดตัวขึ้นอย่างโดเด่นทดสอบระดับ  รับแรงหนุนจากผลประกอบการที่แข็งแกร่งของภาคเซมิคอนดักเตอร์ AI และความต้องการสถาปัตยกรรม CPU เซิร์ฟเวอร์ในศูนย์ข้อมูลที่เติบโตต่อเนื่อง"
+              },
+              {
+                "label": "ARM (NASDAQ",
+                "value": "1.7%",
+                "desc": "ARM) Shares Up  - Should You Buy?"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นพุ่งแรง +4.81% ถึง +6.2% แตะ $266.50 รับอานิสงส์ความต้องการชิป AI CPU",
+              "Why is Arm stock surging today?",
+              "Arm Stock Jumps With AI CPU Demand Rising",
+              "ขยายความร่วมมือเชิงยุทธศาสตร์กับ IBM รองรับ Enterprise AI Workloads",
+              ": Arm ร่วมมือกับ IBM เพื่อปรับแต่งและเพิ่มประสิทธิภาพของเวิร์กโหลด AI ระดับองค์กรบนสถาปัตยกรรม Arm Neoverse ขยายระบบนิเวศคลาวด์และองค์กรขนาดใหญ่",
+              "Why Is Arm Stock Surging on Thursday?",
+              "CFO Jason E. Child ยื่นแบบ Form 144 ขายหุ้น ADS 10,400 หุ้น ($2.65M) ตามสิทธิ์ RSU",
+              ": รายงาน SEC ระบุการยื่นขายหุ้น ADS ของ CFO ตามแผนบริหารสิทธิ์หุ้น RSU เดิมที่ได้รับมอบตั้งแต่ปี 2024 ซึ่งเป็นการบริหารสภาพคล่องส่วนบุคคลและไม่กระทบต่อการดำเนินงาน"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$906.89",
+                "desc": "หุ้น MU เผชิญความผันผวนสูงในกรอบ –$981.00 โดยดีดตัวขึ้นรับอานิสงส์งบ NVIDIA ก่อนมีแรงขายทำกำไรสลับกลุ่มเล่นในตลาด"
+              },
+              {
+                "label": "",
+                "value": "$10B",
+                "desc": "Micron เดินหน้าแผนพัฒนาศูนย์วิจัย Boise มูลค่า  โดยโครงสร้างโรงงานในสหรัฐฯ และสัญญา Take-or-pay ถูกมองว่าเป็นเกราะป้องกันความเสี่ยงจากนโยบายภาษีการค้าได้ดีกว่าคู่แข่ง"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นผันผวนทดสอบแนวต้าน $981.00 ก่อนปิดทรงตัวที่ $930.25–$935.76",
+              "Micron Stock Price Today",
+              "Micron Jumps After NVIDIA Earnings as AI Memory Demand Holds",
+              "บทวิเคราะห์ยกเป็น 'หุ้น AI ที่สำคัญที่สุดอันดับ 2 รองจาก NVIDIA'",
+              ": บทวิเคราะห์ชี้ว่า Micron ครองตำแหน่งเสาหลักสำคัญในฐานะผู้ผลิต HBM3E/HBM4 และ DRAM รายใหญ่ของสหรัฐฯ ซึ่งเป็นคอขวดสำคัญที่ระบบประมวลผล AI ขาดไม่ได้",
+              "Prediction: Micron Could Be the Most Important AI Stock After Nvidia",
+              "Micron Lags Despite NVIDIA's $279B Memory Commitment",
+              "เดินหน้างบลงทุนศูนย์วิจัยใหม่ $10,000 ล้านดอลลาร์ รับมือกระแสภาษีเซมิคอนดักเตอร์",
+              "MU Looks 51.7% Overvalued on GF Value™",
+              "Micron MU Stock Falls to $900 as Lutnick's Semiconductor Tariff Risks Hit Sentiment"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-26 สิงหาคม 2026",
     "dateLabel": "26 สิงหาคม 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
