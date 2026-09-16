@@ -1,5 +1,94 @@
 [
   {
+    "slotId": "news-16 กันยายน 2026",
+    "dateLabel": "16 กันยายน 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 16 กันยายน 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$238",
+                "desc": "หุ้น ARM เริ่มฟื้นตัวขึ้นอย่างมีเสถียรภาพในการซื้อขายวันอังคาร (15 ก.ย.) หลังเผชิญแรงขายตามกลุ่มเทคโนโลยีเมื่อวันจันทร์ โดยมีแรงซื้อสถาบันเข้ามาพยุงฐานราคาเหนือแนวรับสำคัญ –$240"
+              },
+              {
+                "label": "",
+                "value": "$239",
+                "desc": "กองทุนสถาบันกำลังใช้จังหวะที่ราคาแกว่งตัวในโซน –$250 ในการทยอยสะสมหุ้นเพื่อเก็งกำไรในโครงการ AGI CPU และการขยายระบบนิเวศ Total Design กว่า 80 ราย ร่วมกับ OpenAI และ SoftBank ในระยะยาว"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นฟื้นตัวเปิดบวก +1.14% ถึง +3.20% แตะ $241.52–$241.74 สร้างฐานสะสมหลังผ่านจุดต่ำสุด",
+              "NASDAQ Stock Price and Market Movers - BNN Bloomberg",
+              "ARM Trading 1.2% Higher - Here's Why - MarketBeat",
+              "Trade ARM Stock Pre-Market - Public.com",
+              "Investing.com & Benzinga ตอกย้ำโมเดลผูกขาดสถาปัตยกรรมชิป AI ยังแข็งแกร่ง Wave 4 ใกล้สิ้นสุด",
+              ": บทวิเคราะห์ชี้ว่าการปรับฐานสะท้อนเพียงความตึงตัวของ Valuation ระยะสั้น แต่การทยอยส่งมอบชิปสมาร์ตโฟน AI เรือธงสถาปัตยกรรม Arm v9 และแพลตฟอร์ม Mobile CSS 2 ยังคงเป็นตัวเร่งรายได้ค่า Royalty ต่อเนื่อง สอดคล้องกับมุมมองทางเทคนิคที่ประเมินว่าการพักฐานใกล้สิ้นสุด",
+              "Why is Arm stock rallying today? - Investing.com",
+              "NASDAQ ARM Holdings: Is Wave (4) Nearing Its Final Stage? - Moneymunch",
+              "Stock Traders Daily เผยการจัดสรรพอร์ตเชิงราคา (Price-Sensitive Allocations) ของสถาบัน",
+              "ARM and the Role of Price-Sensitive Allocations - Stock Traders Daily",
+              "Fair Value, Tuesday, September 15, 2026 - Buttondown"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$923.75",
+                "desc": "หุ้น MU ปิดตลาดวันที่ 15 ก.ย. ทรงตัวในกรอบ –$931.52 (จุดสูงสุดระหว่างวัน $944.47, After-hours $931.94) หลังหยุดแรงเทขายของวันจันทร์ โดยมีสถาบันการเงิน Range Advisory LLC ทยอยเข้าสะสมหุ้น"
+              },
+              {
+                "label": "The Motley Fool & Simply Wall St แนะนำจับตาก่อนงบ 30 ก.ย.",
+                "value": "$1,300",
+                "desc": "ชี้ Valuation สมเหตุสมผล มุ่งสู่เป้าหมาย"
+              },
+              {
+                "label": "",
+                "value": "$50B",
+                "desc": "บทวิเคราะห์ระบุว่า Forward P/E ที่อยู่ในระดับต่ำมากเมื่อเทียบกับคาดการณ์รายได้ไตรมาส 4 ที่  และอัตรากำไรขั้นต้น 86% ส่งผลให้ระดับราคาต่ำกว่า $1,000 มีความน่าดึงดูด โดยยังคงเป้าหมายราคาของปี 2026 ไว้ที่ $1,300"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "เปิดตัว 'Ultra-Dense Memory Module' ชิปหน่วยความจำเซิร์ฟเวอร์ความหนาแน่นสูงสุดในโลกสำหรับ Next-Gen AI",
+              ": Micron ประกาศความสำเร็จครั้งสำคัญในการพัฒนาโมดูลหน่วยความจำความหนาแน่นสูงพิเศษสำหรับเซิร์ฟเวอร์ AI เจเนอเรชันถัดไป ช่วยประหยัดพลังงานและเพิ่มแบนด์วิดท์มหาศาล พร้อมแต่งตั้ง Deirdre Hanford เข้าคุมทัพ Micron Research Labs",
+              "Micron Advances Memory Innovation With the World's First Ultra-Dense Module - Micron IR",
+              "Micron Appoints Deirdre Hanford to Lead Micron Research Labs - Micron IR",
+              "ราคาหุ้นฟื้นตัวทรงตัวที่ $923.75–$931.52 ยืนหยัดเหนือแนวรับ $900–$920 ได้อย่างเหนียวแน่น",
+              "Micron Stock Price History - Investing.com",
+              "MU Stock Quote - Morningstar",
+              "Range Advisory LLC Purchases 1,559 Shares of Micron - MarketBeat",
+              "Should You Buy Micron Stock Before Its Sept. 30 Report? - The Motley Fool",
+              "Micron (MU) Stock Looks Reasonable On Its Very Large 3 Year Run - Simply Wall St",
+              "Micron Sits Far Below Wall Street's Target - 24/7 Wall St."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-14 กันยายน 2026",
     "dateLabel": "14 กันยายน 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
