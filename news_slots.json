@@ -1,5 +1,90 @@
 [
   {
+    "slotId": "news-20 กันยายน 2026",
+    "dateLabel": "20 กันยายน 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 20 กันยายน 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$2,000 ล้าน",
+                "desc": "Simply Wall St เน้นย้ำว่าโครงสร้างพื้นฐาน AI กำลังขับเคลื่อนด้วยสถาปัตยกรรมของ Arm ขณะที่ MarketBeat เผยแพร่บทวิเคราะห์ฉันทามติคงคำแนะนำ Buy พร้อมประเมินว่าการขยายเครือข่ายห่วงโซ่อุปทานระดับโลก (Global Supply-Chain) จะช่วยเร่งการส่งมอบชิป AGI CPU ได้ตามเป้า ดอลลาร์"
+              },
+              {
+                "label": "",
+                "value": "+4.04%",
+                "desc": "หุ้น ARM พุ่งขึ้นอย่างแข็งแกร่งส่งท้ายสัปดาห์ ( ในวันศุกร์ และ +8.6% ในวันพฤหัสบดี) สะท้อนแรงซื้อสะสมของนักลงทุนสถาบันที่คลายความกังวลเรื่อง Valuation ตึงตัว และหันมาโฟกัสการเติบโตของค่า Royalty ในสถาปัตยกรรม Arm v9 และแพลตฟอร์ม CSS สำหรับรอบเปิดตัวอุปกรณ์ AI ปลายปี"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "The Motley Fool ชี้ Arm คือ 'Hidden Winner of the AI Chip Race' ที่ตลาดเพิ่งเริ่มตระหนัก",
+              ": บทวิเคราะห์สุดสัปดาห์ระบุว่า Wall Street กำลังเร่งปรับมุมมองต่อ Arm จากเดิมที่มองเป็นเพียงผู้ออกแบบชิปสมาร์ตโฟน สู่การเป็นผู้ถือครอง 'พิมพ์เขียวสถาปัตยกรรม AI' (Blueprints) ที่แทรกซึมอยู่ในระบบดาต้าเซ็นเตอร์และ Edge AI ทั่วโลก ทำให้การเติบโตของรายได้ค่า Royalty มีความยั่งยืนในระดับพรีเมียม",
+              "Simply Wall St & MarketBeat ตอกย้ำความได้เปรียบเชิงโครงสร้าง หนุนฉันทามติตั้งเป้าหมายเฉลี่ยสูงกว่า $275–$305",
+              "AMD Stock And Other AI Infrastructure Names Investors Are Scrutinizing - Simply Wall St",
+              "ARM (ARM) Stock Forecast and Price Target 2026 - MarketBeat",
+              "การปิดสัปดาห์ทะลุ $264.90–$275.61 ยืนยันการเบรกทะลุกรอบขาลง (Trend Reversal) อย่างสมบูรณ์",
+              "Market Movers - TradingKey"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$1,000",
+                "desc": "RBC Capital ชี้ว่าการที่ราคาหุ้น MU รีบาวด์กลับมายืนเหนือ  (ปิดสัปดาห์ที่ $1,015.80 พุ่งเกือบ 4%) ยังคงมีช่องว่างให้อัปไซด์อีกมาก เนื่องจากระดับราคาปัจจุบันยังแทบไม่ได้สะท้อนผลประโยชน์มหาศาลจากคลื่นความต้องการหน่วยความจำ AI ส่งผลให้มีโอกาสเกิด Valuation Multiple Expansion ครั้งใหญ่"
+              },
+              {
+                "label": "Micron Stock Price Forecast",
+                "value": "$1,000",
+                "desc": "Return to  as RBC Says Valuation Barely Reflects AI Exposure - TradingKey"
+              },
+              {
+                "label": "Daily Stocks News",
+                "value": "4%",
+                "desc": "Memory Stocks Lead Gains, Micron Up Nearly  - TradingKey"
+              },
+              {
+                "label": "",
+                "value": "20%",
+                "desc": "รายงานล่าสุดชี้ว่าราคาจำหน่ายหน่วยความจำ HBM3E ในสัญญาปี 2026 ปรับตัวขึ้นอีกราว  ขณะที่อุปทานของ Micron ถูกจองซื้อล่วงหน้าเต็ม 100% ยาวไปจนถึงปี 2028 ส่งผลให้อัตรากำไรขั้นต้น (Gross Margin) จะทรงตัวในระดับสูงพิเศษ 70–85% ต่อเนื่อง โดยไม่มีแรงกดดันด้านสงครามราคา"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "RBC Capital ชี้หุ้นทวงคืนระดับ $1,000 เป็นเพียงจุดเริ่มต้น เหตุ Valuation ยังแทบไม่สะท้อน AI Exposure",
+              "Silicon Analysts เผยราคาคอนแทรค HBM3E ปี 2026 พุ่งขึ้นอีก ~20% กำลังผลิตถูกจองเต็มถึงปี 2028",
+              "HBM3E Contract Prices Surge ~20% for 2026; TSMC CoWoS Capacity Set to Double by 2028 - Silicon Analysts",
+              "The Motley Fool ชี้แผนเพิ่มกำลังผลิต HBM เป็น 100,000 เวเฟอร์/เดือน หนุนผลประกอบการก้าวกระโดดก่อนงบ Q4 (30 ก.ย.)",
+              ": แผนการเร่งกำลังการผลิตเวเฟอร์สำหรับ HBM สู่ 100,000 แผ่น/เดือนภายในสิ้นปี 2026 จะเป็นตัวเร่งรายได้และกำไรสุทธิไตรมาส 4 และหนุนเป้าหมายรายได้ปีงบประมาณ 2027 ท่ามกลางการเจรจาโบนัสแรงงานในไต้หวัน",
+              "Is Micron's 9% Dip a Warning Sign or Buying Opportunity? - The Motley Fool"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-19 กันยายน 2026",
     "dateLabel": "19 กันยายน 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
