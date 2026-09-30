@@ -1,5 +1,100 @@
 [
   {
+    "slotId": "news-30 กันยายน 2026",
+    "dateLabel": "30 กันยายน 2026",
+    "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
+    "subtitle": "Arm Holdings (ARM) & Micron Technology (MU) - ประจำวันที่ 30 กันยายน 2026",
+    "sections": [
+      {
+        "id": "arm",
+        "title": "1. Arm Holdings plc (ARM)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "+3.6%",
+                "desc": "หุ้น ARM รีบาวด์กลับขึ้นมาอย่างรวดเร็วหลังเผชิญแรงขายทำกำไรเมื่อต้นสัปดาห์ โดย TradingKey และ MarketBeat รายงานว่าแรงซื้อสถาบันไหลกลับเข้ามาหนุนราคาให้ดีดตัวขึ้น  ถึง +3.81% พร้อมส่งสัญญาณซื้อทางเทคนิค MACD Buy Signal สะท้อนความเชื่อมั่นต่อโมเมนตัมขาขึ้นในระยะยาว"
+              },
+              {
+                "label": "ARM (NASDAQ",
+                "value": "3.6%",
+                "desc": "ARM) Shares Up  - Still a Buy? - MarketBeat"
+              },
+              {
+                "label": "",
+                "value": "$2,000 ล้าน",
+                "desc": "รายงานระบุว่า Arm กำลังเปลี่ยนผ่านเชิงกลยุทธ์จากการเป็นเพียงผู้ออกแบบสถาปัตยกรรม สู่การเป็นผู้พัฒนาชิปเซิร์ฟเวอร์ AI และระบบชิปสำเร็จรูป (Compute Subsystems: CSS) โดยผู้บริหารยืนยันว่ามีความต้องการจากลูกค้าสะสมสำหรับชิป Arm AGI CPU ทะลุ ดอลลาร์สำหรับปีงบประมาณ 2027–2028"
+              },
+              {
+                "label": "ปิดไตรมาสบัญชี Q2 FY27 (30 ก.ย.)",
+                "value": "30%",
+                "desc": "Benzinga และ Schwab ชี้ดีมานด์โครงสร้างพื้นฐาน AI หนุนราคาหุ้นพุ่งเกือบ  ในรอบ 1 เดือน"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นฟื้นตัวเปิดบวกแรง +3.81% สู่ $293.67–$296.00 แรงซื้อสถาบันช้อนซื้อหลังพักฐาน (Dip-Buying)",
+              "ARM Holdings (ARM) Stock Price, Quote, News & History - Benzinga",
+              "Kalkine CA ชี้ Arm ก้าวข้ามโมเดลขายไลเซนส์ สู่ผู้ผลิตซิลิคอนดาต้าเซ็นเตอร์ AGI CPU เต็มตัว",
+              "Moving Beyond Licensing With Its Own Data Center CPU - Kalkine CA",
+              ": ในวันสิ้นสุดไตรมาสบัญชีที่สอง นักวิเคราะห์เน้นย้ำว่าแม้ Valuation จะอยู่ในระดับพรีเมียม แต่การนำชิปสถาปัตยกรรม Arm v9 ไปใช้ในศูนย์ข้อมูล Hyperscaler เพื่อรันโมเดล Agentic AI ยังคงเป็นปัจจัยหนุนการเติบโตของค่า Royalty อย่างมีนัยสำคัญ",
+              "Stocks Up Early, Led by Tech, as AI Dominates News - Charles Schwab"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "mu",
+        "title": "2. Micron Technology, Inc. (MU)",
+        "subsections": [
+          {
+            "subtitle": "ผลประกอบการและข่าวสารล่าสุด",
+            "highlights": [
+              {
+                "label": "",
+                "value": "$1,050",
+                "desc": "หุ้น MU ปรับตัวขึ้นสร้างฐานอย่างมั่นคงเหนือระดับ –$1,065 โดยมีแรงซื้อเก็งกำไรผลประกอบการไตรมาส 4 ปีงบประมาณ 2026 ที่จะประกาศอย่างเป็นทางการหลังตลาดสหรัฐฯ ปิดทำการในคืนนี้ (30 ก.ย.)"
+              },
+              {
+                "label": "D-Day รายงานผลประกอบการ Q4 FY26 คืนนี้",
+                "value": "$50B",
+                "desc": "ตลาดคาดรายได้ทุบสถิติ , กำไร EPS $31.00 และ Margin 86%"
+              },
+              {
+                "label": "",
+                "value": "$50.0 พันล้าน",
+                "desc": "ข้อมูลทางการจากนักลงทุนสัมพันธ์ของ Micron ระบุการจัดประชุมแถลงผลการดำเนินงานหลังปิดตลาด โดยตลาดและนักวิเคราะห์จาก IG และ InsiderFinance คาดการณ์รายได้ที่ ดอลลาร์ (±$1.0B), อัตรากำไรขั้นต้น 86.0% และกำไรต่อหุ้น Non-GAAP EPS ที่ $31.00 (±$1.00) ท่ามกลางภาวะดีมานด์ HBM และ DRAM ที่แซงหน้าซัพพลายอย่างมหาศาล"
+              },
+              {
+                "label": "",
+                "value": "$1,000",
+                "desc": "นักวิเคราะห์ Jeremy Bowman จาก The Motley Fool ชี้ว่าการที่ราคาหุ้นทะลุ  อาจทำให้บอร์ดบริหารพิจารณาประกาศแตกพาร์หุ้นเพื่อเพิ่มสภาพคล่องแก่นักลงทุนรายย่อย ขณะที่ผู้เชี่ยวชาญใน Benzinga และ Robinhood ชี้เป้าหมายถัดไปที่ $1,575 หากผู้บริหารแถลงภาพรวมคำสั่งซื้อ HBM3E/HBM4 และ DDR5 เซิร์ฟเวอร์ที่เติบโตต่อเนื่องในปี FY27"
+              }
+            ]
+          },
+          {
+            "subtitle": "ประเด็นสำคัญและผลกระทบเชิงกลยุทธ์",
+            "details": [
+              ": ",
+              "ราคาหุ้นฟื้นตัวปิดบวกที่ $1,065.08 (+1.05%) แรงซื้อเก็งกำไรดันราคาก่อนรายงานงบสำคัญคืนนี้",
+              "Micron Stock Price Today | NASDAQ: MU Live - Investing.com",
+              "Micron Earnings Set for Sept. 30 Report - InsiderFinance",
+              "The Motley Fool ชี้กระแสเก็งกำไรการแตกพาร์ (Stock Split) และเป้าหมายราคา $1,575 จากวิกฤตขาดแคลน HBM",
+              "Prediction: Micron Will Do a Stock-Split Before the End of the Year - The Motley Fool",
+              "MU Stock Price Quote & News - Robinhood",
+              "Sept. 30 Could Be the Start of a New Paradigm for Micron - The Motley Fool"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
     "slotId": "news-26 กันยายน 2026",
     "dateLabel": "26 กันยายน 2026",
     "title": "รายงานสรุปข้อมูลอัปเดตข่าวสาร",
